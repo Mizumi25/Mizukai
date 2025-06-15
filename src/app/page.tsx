@@ -45,7 +45,7 @@ import ReactDOM from 'react-dom/client';
 import gsap, { CSSRulePlugin } from 'gsap/all';
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Matter from 'matter-js';
+import * as Matter from 'matter-js';
 
 
 import Profile from '../../public/images/profile.jpg';
