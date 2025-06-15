@@ -8,9 +8,7 @@ import gsap from 'gsap'
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-
-const Musics: React.FC = () => {
-      // Type declarations for global objects
+   // Type declarations for global objects
     declare global {
       interface Window {
         ReactDOM: {
@@ -28,6 +26,9 @@ const Musics: React.FC = () => {
       }
     }
     
+
+const Musics: React.FC = () => {
+   
     const [cards, setCards] = useState<{ id: number; imgSrc: string }[]>([]);
     const [filtersInitialized, setFiltersInitialized] = useState(false);
     const [textSplitInitialized, setTextSplitInitialized] = useState(false);
