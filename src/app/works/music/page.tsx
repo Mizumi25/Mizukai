@@ -11,7 +11,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 
 const Musics: React.FC = () => {
-  const [cards, setCards] = useState([]);
+  const [cards, setCards] = useState<{ id: number; imgSrc: string }[]>([]);
   const [filtersInitialized, setFiltersInitialized] = useState(false);
   const [textSplitInitialized, setTextSplitInitialized] = useState(false);
   
