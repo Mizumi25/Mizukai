@@ -491,9 +491,9 @@ const Home: React.FC = () => {
           
             
         //Image Tracking
-        const preview = useRef<HTMLDivElement>(null);
-        const story = useRef<HTMLDivElement>(null);
-        const stories = useRef<HTMLDivElement[]>([]);
+        // const preview = useRef<HTMLDivElement>(null);
+//         const story = useRef<HTMLDivElement>(null);
+//         const stories = useRef<HTMLDivElement[]>([]);
         // let isInside = false;
         // const byPositions = {
         //   p1: "0 0",
@@ -1038,7 +1038,7 @@ useGSAP(() => {
             {storyPart1.continuation}
           </p>
           <br />
-          <p className="leading-[4rem] text-[3rem] my-[5rem]" ref={stories}>
+          <p className="leading-[4rem] text-[3rem] my-[5rem]"
             {storyPart2.content}
             <span className="underline" ref={story} id="p4">{storyPart2.highlight}</span>
             {storyPart2.continuation}
