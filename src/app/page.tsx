@@ -423,29 +423,49 @@ const Home: React.FC = () => {
               }
               switch (index) {
                 case 0:
-                  overlay.current.style.top = "25%";
-                  overlay.current.style.left = "80%";
-                  projectArts.current.className = "projectArts bg-color-red hovered";
+                  if (overlay.current) {
+                    overlay.current.style.top = "25%";
+                    overlay.current.style.left = "80%";
+                  }
+                  if (projectArts.current) {
+                    projectArts.current.className = "projectArts bg-color-red hovered";
+                  }
                   break;
                 case 1:
-                  overlay.current.style.top = "5%";
-                  overlay.current.style.left = "25%";
-                  projectArts.current.className = "projectArts bg-color-orange hovered";
+                  if (overlay.current) {
+                    overlay.current.style.top = "5%";
+                    overlay.current.style.left = "25%";
+                  }
+                  if (projectArts.current) {
+                    projectArts.current.className = "projectArts bg-color-orange hovered";
+                  }
                   break;
                 case 2:
-                  overlay.current.style.top = "0%";
-                  overlay.current.style.left = "13.25%";
-                  projectArts.current.className = "projectArts bg-color-green hovered";
+                  if (overlay.current) {
+                    overlay.current.style.top = "0%";
+                    overlay.current.style.left = "13.25%";
+                  }
+                  if (projectArts.current) {
+                    projectArts.current.className = "projectArts bg-color-green hovered";
+                  }
                   break;
                 case 3:
-                  overlay.current.style.top = "-10%";
-                  overlay.current.style.left = "-18.375%";
-                  projectArts.current.className = "projectArts bg-color-blue hovered";
+                  if (overlay.current) {
+                    overlay.current.style.top = "-10%";
+                    overlay.current.style.left = "-18.375%";
+                  }
+                  if (projectArts.current) {
+                    projectArts.current.className = "projectArts bg-color-blue hovered";
+                  }
                   break;
                 case 4:
-                  overlay.current.style.top = "-25%";
-                  overlay.current.style.left = "-80%";
-                  projectArts.current.className = "projectArts bg-color-violet hovered";
+                  if (overlay.current) {
+                    overlay.current.style.top = "-25%";
+                    overlay.current.style.left = "-80%";
+                  }
+                  if (projectArts.current) {
+                    projectArts.current.className = "projectArts bg-color-violet hovered";
+                  }
                   break;
                 default:
                   break;
