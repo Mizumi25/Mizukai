@@ -1091,6 +1091,6 @@ useGSAP(() => {
   </section>
 </>
   );
-};
+
 
 export default Home;
