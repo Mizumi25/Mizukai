@@ -62,73 +62,69 @@ const Home: React.FC = () => {
   
   const magnetRef = useRef<HTMLDivElement>(null);
   const magTextRef = useRef<HTMLDivElement>(null);
-  //magnet
-useEffect(() => {
-  
-
-  
-  
-    const activateMagneto = (e: React.MouseEvent) => {
-      const magnet = magnetRef.current;
-      const magText = magTextRef.current;
-    
-      if (!magnet || !magText) return;
-    
-      const boundBox = magnet.getBoundingClientRect();
-      const magnetoStrength = 40;
-      const magnetoTextStrength = 60;
-    
-      const newX = ((e.clientX - boundBox.left) / magnet.offsetWidth) - 0.5;
-      const newY = ((e.clientY - boundBox.top) / magnet.offsetHeight) - 0.5;
-    
-      const ctx = gsap.context(() => {
-        gsap.to(magnet, {
-          duration: 1,
-          x: newX * magnetoStrength,
-          y: newY * magnetoStrength,
-          ease: "Power4.easeOut"
-        });
-    
-        gsap.to(magText, {
-          duration: 1,
-          x: newX * magnetoTextStrength,
-          y: newY * magnetoTextStrength,
-          ease: "Power4.easeOut"
-        });
-      });
-    
-      return () => ctx.revert();
-    };
-
-
-
-  const resetMagneto = () => {
+ 
+   //magnet
+  useEffect(() => {
       const magnet = magnetRef.current;
       const magText = magTextRef.current;
       
       if (!magnet || !magText) return;
       
-      const ctx1 = gsap.context(() => {
-        gsap.to(magnet, {
+      const activateMagneto = (e: MouseEvent) => { // Note: MouseEvent, not React.MouseEvent
+        const boundBox = magnet.getBoundingClientRect();
+        const magnetoStrength = 40;
+        const magnetoTextStrength = 60;
+    
+        const newX = ((e.clientX - boundBox.left) / magnet.offsetWidth) - 0.5;
+        const newY = ((e.clientY - boundBox.top) / magnet.offsetHeight) - 0.5;
+    
+        const ctx = gsap.context(() => {
+          gsap.to(magnet, {
             duration: 1,
-            x: 0,
-            y: 0,
-            ease: "Elastic.easeOut"
-          })
-        
+            x: newX * magnetoStrength,
+            y: newY * magnetoStrength,
+            ease: "Power4.easeOut"
+          });
+    
           gsap.to(magText, {
             duration: 1,
-            x: 0,
-            y: 0,
-            ease: "Elastic.easeOut"
+            x: newX * magnetoTextStrength,
+            y: newY * magnetoTextStrength,
+            ease: "Power4.easeOut"
+          });
+        });
+    
+        return () => ctx.revert();
+      };
+    
+      const resetMagneto = () => {
+        const ctx1 = gsap.context(() => {
+          gsap.to(magnet, {
+              duration: 1,
+              x: 0,
+              y: 0,
+              ease: "Elastic.easeOut"
+            })
+          
+            gsap.to(magText, {
+              duration: 1,
+              x: 0,
+              y: 0,
+              ease: "Elastic.easeOut"
+            })
           })
-        })
-        return () => ctx1.revert()
-  };
-  
-  magnet.addEventListener("mousemove", activateMagneto)
-  magnet.addEventListener("mouseleave", resetMagneto)
-}, [])
+          return () => ctx1.revert()
+        };
+      
+      magnet.addEventListener("mousemove", activateMagneto);
+      magnet.addEventListener("mouseleave", resetMagneto);
+      
+      // Cleanup function
+      return () => {
+        magnet.removeEventListener("mousemove", activateMagneto);
+        magnet.removeEventListener("mouseleave", resetMagneto);
+      };
+    }, [])
   
   
   
