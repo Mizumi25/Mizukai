@@ -60,11 +60,11 @@ const Home: React.FC = () => {
   const section6Ref = useRef<HTMLDivElement>(null);
   
   
-  
+  const magnetRef = useRef<HTMLDivElement>(null);
+  const magTextRef = useRef<HTMLDivElement>(null);
   //magnet
 useEffect(() => {
-  const magnetRef = useRef<HTMLDivElement>(null);
- const magTextRef = useRef<HTMLDivElement>(null);
+  
 
   
   
