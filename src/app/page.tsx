@@ -202,19 +202,19 @@ const Home: React.FC = () => {
     }, { scope:exh });
 
     useGSAP(() => {
-      const images = gsap.utils.toArray('.section5 .animated__exh Image')
-
-      images.forEach(image => {
-          gsap.to(image, {
-            yPercent: -100 * image.dataset.speed,
-            ease: "none",
-            scrollTrigger:{
-              scrub: image.dataset.speed
-            }
+            const images = gsap.utils.toArray('.section5 .animated__exh Image') as HTMLElement[]
+          
+            images.forEach(image => {
+                gsap.to(image, {
+                  yPercent: -100 * Number(image.dataset.speed),
+                  ease: "none",
+                  scrollTrigger:{
+                    scrub: Number(image.dataset.speed)
+                  }
+                })
+            })
           })
-      })
-    })
-    
+              
     
     
           //opacity
