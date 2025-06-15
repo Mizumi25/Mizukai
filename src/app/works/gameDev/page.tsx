@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from "react";
+import AppsData from '@/data/gameDev/appIcons';
 import './style.css'
 import Image from 'next/image'
 import gsap from 'gsap';
