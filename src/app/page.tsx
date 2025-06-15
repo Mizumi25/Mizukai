@@ -63,11 +63,15 @@ const Home: React.FC = () => {
   
   //magnet
 useEffect(() => {
-  const magnet = document.querySelector(".magneto")
-  const magText = document.querySelector(".magneto .text")
+  const magnetRef = useRef<HTMLDivElement>(null);
+ const magTextRef = useRef<HTMLDivElement>(null);
+
   
   
     const activateMagneto = (e: React.MouseEvent) => {
+      const magnet = magnetRef.current;
+      const magText = magTextRef.current;
+    
       if (!magnet || !magText) return;
     
       const boundBox = magnet.getBoundingClientRect();
@@ -95,6 +99,7 @@ useEffect(() => {
     
       return () => ctx.revert();
     };
+
 
 
   const resetMagneto = () => {
