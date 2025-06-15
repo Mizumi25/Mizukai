@@ -473,15 +473,17 @@ const Home: React.FC = () => {
             });
       
             item?.addEventListener("mouseout", function () {
-              if (projectArts.current) {
-                projectArts.current.classList.remove("hovered");
-                projectArts.current.className = "projectArts";
-              }
+            if (projectArts.current) {
+              projectArts.current.classList.remove("hovered");
+              projectArts.current.className = "projectArts";
+            }
+            if (overlay.current) {                      // ← Add this null check
               overlay.current.style.top = "0%";
               overlay.current.style.left = "13.25%";
-              removeActionClass();
-              document.querySelector("#prev-3").classList.add("active");
-            });
+            }
+            removeActionClass();
+            document.querySelector("#prev-3")?.classList.add("active");  // ← Also add optional chaining here
+              });
           });
         }, []);
 
