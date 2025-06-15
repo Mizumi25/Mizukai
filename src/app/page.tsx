@@ -158,8 +158,8 @@ const Home: React.FC = () => {
   
   
   //ImageScroll Trigger
-    const exh = useRef<HTMLDivElement>();
-    const exh1 = useRef<HTMLDivElement>();
+    const exh = useRef<HTMLDivElement>(null);
+    const exh1 = useRef<HTMLDivElement>(null);
     useGSAP(() => {
       gsap.registerPlugin( ScrollTrigger ); 
       const ctx = gsap.context(() => {
