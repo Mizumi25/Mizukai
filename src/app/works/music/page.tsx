@@ -32,11 +32,11 @@ const Musics: React.FC = () => {
 };
 
   
-  const handleMouseOver = (e) => {
+  const handleMouseOver = ( e: React.MouseEvent<HTMLElement> ) => {
     e.currentTarget.style.left = "15%"
   }
   
-const handleMouseOut = (e) => {
+const handleMouseOut = ( e: React.MouseEvent<HTMLElement> ) => {
     e.currentTarget.style.left = "0%"
   }
   
