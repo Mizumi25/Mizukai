@@ -651,7 +651,7 @@ const dist = (x1: number, y1: number, x2: number, y2: number): number => {
       }
     };
 
-    const addBoundaries = (width, height) => {
+    const addBoundaries = (width: number, height: number): void => {
       const thickness = 50;
       Matter.World.add(engine.world, [
         Matter.Bodies.rectangle(width / 2, -thickness / 2, width, thickness, {
