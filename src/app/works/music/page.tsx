@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from "react";
-import musicThumbs from '@/data/music/musicImages.ts';
+import musicThumbs from '@/data/music/musicImages';
 import './style.css'
 import Image from 'next/image'
 import ReactDOM from 'react-dom/client';
