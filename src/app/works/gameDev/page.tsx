@@ -128,7 +128,7 @@ useEffect(() => {
              {apps.map((app, index) => (
                   index < 10 && 
                   <div key={app.id} className="item" style={{ '--position': (index + 1) } as React.CSSProperties}>
-                    <Image src={app.imgSrc} alt={`img${app.id}`} height={500} width={400} />
+                    <Image src={app.img} alt={`img${app.id}`} height={500} width={400} />
                   </div>
                 ))}
           </div>
@@ -157,7 +157,7 @@ useEffect(() => {
              {apps.map((app, index) => (
                   index < 4 && 
                   <div key={app.id} className="item">
-                    <Image src={app.imgSrc} alt={`img${app.id}`} height={500} width={400} />
+                    <Image src={app.img} alt={`img${app.id}`} height={500} width={400} />
                   </div>
                 ))}
           </div>
@@ -177,7 +177,7 @@ useEffect(() => {
              {apps.map((app, index) => (
                 index < 10 && 
                   <div key={app.id} className="block">
-                    <Image src={app.imgSrc} alt={`img${app.id}`} height={500} width={400} />
+                    <Image src={app.img} alt={`img${app.id}`} height={500} width={400} />
                   </div>
                 ))}
           </div>
