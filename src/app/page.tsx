@@ -620,142 +620,160 @@ const Home: React.FC = () => {
            
            
            
-  //Image Scattering
-  
-
-  const random = (min: number, max: number): number => {
-  return Math.random() * (max - min) + min;
-};
-const dist = (x1: number, y1: number, x2: number, y2: number): number => {
-  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-};
-
-  useEffect(() => {
-    let engine: Matter.Engine;
-    const items: Item[] = []; // Move inside useEffect
-    let lastMouseX = -1;
-    let lastMouseY = -1;
-    const setup = () => {
-      if (!section6Ref.current) return; // Add null check
-      
-      const { width, height } = section6Ref.current.getBoundingClientRect();
-      engine = Matter.Engine.create();
-      engine.world.gravity.y = 0;
-
-      addBoundaries(width, height);
-
-      for (let i = 0; i < 12; i++) {
-        const x = random(100, width - 100);
-        const y = random(100, height - 100);
-        items.push(new Item(x, y, `/stories/storyCovers/img${i + 1}.jpg`)); 
-      }
-    };
-
-    const addBoundaries = (width: number, height: number): void => {
-      const thickness = 50;
-      Matter.World.add(engine.world, [
-        Matter.Bodies.rectangle(width / 2, -thickness / 2, width, thickness, {
-          isStatic: true,
-        }),
-        Matter.Bodies.rectangle(width / 2, height + thickness / 2, width, thickness, {
-          isStatic: true,
-        }),
-        Matter.Bodies.rectangle(-thickness / 2, height / 2, thickness, height, {
-          isStatic: true,
-        }),
-        Matter.Bodies.rectangle(width + thickness / 2, height / 2, thickness, height, {
-          isStatic: true,
-        }),
-      ]);
-    };
-
-    class Item {
-      constructor(x, y, imagePath) {
-        const options = {
-          frictionAir: 0.075,
-          restitution: 0.25,
-          density: 0.002,
-          angle: Math.random() * Math.PI * 2,
-        };
-
-        this.body = Matter.Bodies.rectangle(x, y, 100, 200, options);
-        Matter.World.add(engine.world, this.body);
-
-        this.div = document.createElement('div');
-        this.div.className = 'item';
-        this.div.style.left = `${this.body.position.x - 50}px`;
-        this.div.style.top = `${this.body.position.y - 100}px`;
-        this.div.style.transform = `rotate(${options.angle}rad)`;
-        
-        const root = ReactDOM.createRoot(this.div)
-        const itemImg = (   
-          <Image 
-        src={imagePath} 
-        alt=""
-        width={200} 
-        height={200} 
-        />
-        );
-        root.render(itemImg);
-        section6Ref.current.appendChild(this.div);
-
-        this.div.addEventListener('mouseenter', () => {
-          this.div.addEventListener('mousemove', handleMouseMove);
-        });
-
-        this.div.addEventListener('mouseleave', () => {
-          this.div.removeEventListener('mousemove', handleMouseMove);
-        });
-      }
-
-      update() {
-        this.div.style.left = `${this.body.position.x - 50}px`;
-        this.div.style.top = `${this.body.position.y - 100}px`;
-        this.div.style.transform = `rotate(${this.body.angle}rad)`;
-      }
+     //Image Scattering
+    interface ItemBody {
+      position: { x: number; y: number };
+      angle: number;
     }
-
-    const handleMouseMove = (event) => {
-      const mouseX = event.clientX;
-      const mouseY = event.clientY;
-
-      if (dist(mouseX, mouseY, lastMouseX, lastMouseY) > 10) {
-        lastMouseX = mouseX;
-        lastMouseY = mouseY;
-
-        items.forEach((item) => {
-          if (
-            dist(mouseX, mouseY, item.body.position.x, item.body.position.y) < 150
-          ) {
-            const forceMagnitude = 3;
-            Matter.Body.applyForce(
-              item.body,
-              { x: item.body.position.x, y: item.body.position.y },
-              {
-                x: random(-forceMagnitude, forceMagnitude),
-                y: random(-forceMagnitude, forceMagnitude),
-              }
-            );
+    
+    const random = (min: number, max: number): number => {
+      return Math.random() * (max - min) + min;
+    };
+    
+    const dist = (x1: number, y1: number, x2: number, y2: number): number => {
+      return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    };
+    
+    useEffect(() => {
+      let engine: Matter.Engine;
+      const items: Item[] = []; // Move inside useEffect
+      let lastMouseX: number = -1;
+      let lastMouseY: number = -1;
+      let animationId: number;
+    
+      const setup = (): void => {
+        if (!section6Ref.current) return; // Add null check
+        
+        const { width, height } = section6Ref.current.getBoundingClientRect();
+        engine = Matter.Engine.create();
+        engine.world.gravity.y = 0;
+        addBoundaries(width, height);
+        for (let i = 0; i < 12; i++) {
+          const x = random(100, width - 100);
+          const y = random(100, height - 100);
+          items.push(new Item(x, y, `/stories/storyCovers/img${i + 1}.jpg`)); 
+        }
+      };
+    
+      const addBoundaries = (width: number, height: number): void => {
+        const thickness = 50;
+        Matter.World.add(engine.world, [
+          Matter.Bodies.rectangle(width / 2, -thickness / 2, width, thickness, {
+            isStatic: true,
+          }),
+          Matter.Bodies.rectangle(width / 2, height + thickness / 2, width, thickness, {
+            isStatic: true,
+          }),
+          Matter.Bodies.rectangle(-thickness / 2, height / 2, thickness, height, {
+            isStatic: true,
+          }),
+          Matter.Bodies.rectangle(width + thickness / 2, height / 2, thickness, height, {
+            isStatic: true,
+          }),
+        ]);
+      };
+    
+      class Item {
+        body: ItemBody;
+        div: HTMLDivElement;
+    
+        constructor(x: number, y: number, imagePath: string) {
+          const options = {
+            frictionAir: 0.075,
+            restitution: 0.25,
+            density: 0.002,
+            angle: Math.random() * Math.PI * 2,
+          };
+          this.body = Matter.Bodies.rectangle(x, y, 100, 200, options);
+          Matter.World.add(engine.world, this.body);
+          this.div = document.createElement('div');
+          this.div.className = 'item';
+          this.div.style.left = `${this.body.position.x - 50}px`;
+          this.div.style.top = `${this.body.position.y - 100}px`;
+          this.div.style.transform = `rotate(${options.angle}rad)`;
+          
+          const root = ReactDOM.createRoot(this.div);
+          const itemImg = (   
+            <Image 
+              src={imagePath} 
+              alt=""
+              width={200} 
+              height={200} 
+            />
+          );
+          root.render(itemImg);
+          
+          if (section6Ref.current) {
+            section6Ref.current.appendChild(this.div);
+          }
+          
+          this.div.addEventListener('mouseenter', () => {
+            this.div.addEventListener('mousemove', handleMouseMove);
+          });
+          this.div.addEventListener('mouseleave', () => {
+            this.div.removeEventListener('mousemove', handleMouseMove);
+          });
+        }
+    
+        update(): void {
+          this.div.style.left = `${this.body.position.x - 50}px`;
+          this.div.style.top = `${this.body.position.y - 100}px`;
+          this.div.style.transform = `rotate(${this.body.angle}rad)`;
+        }
+      }
+    
+      const handleMouseMove = (event: MouseEvent): void => {
+        const mouseX: number = event.clientX;
+        const mouseY: number = event.clientY;
+        if (dist(mouseX, mouseY, lastMouseX, lastMouseY) > 10) {
+          lastMouseX = mouseX;
+          lastMouseY = mouseY;
+          items.forEach((item: Item) => {
+            if (
+              dist(mouseX, mouseY, item.body.position.x, item.body.position.y) < 150
+            ) {
+              const forceMagnitude: number = 3;
+              Matter.Body.applyForce(
+                item.body,
+                { x: item.body.position.x, y: item.body.position.y },
+                {
+                  x: random(-forceMagnitude, forceMagnitude),
+                  y: random(-forceMagnitude, forceMagnitude),
+                }
+              );
+            }
+          });
+        }
+      };
+    
+      setup();
+      
+      const update = (): void => {
+        Matter.Engine.update(engine);
+        items.forEach((item: Item) => item.update());
+        animationId = requestAnimationFrame(update);
+      };
+      
+      update();
+    
+      return () => {
+        // Cleanup function
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+        }
+        // Remove all items from DOM
+        items.forEach((item: Item) => {
+          if (item.div && item.div.parentNode) {
+            item.div.parentNode.removeChild(item.div);
           }
         });
-      }
-    };
-
-    setup();
-
-    
-    const update = () => {
-      Matter.Engine.update(engine);
-      items.forEach((item) => item.update());
-      requestAnimationFrame(update);
-    };
-
-    update();
-
-    return () => {
-
-    };
-  }, []);
+        // Clear the world
+        if (engine && engine.world) {
+          Matter.World.clear(engine.world, false);
+          Matter.Engine.clear(engine);
+        }
+      };
+    }, []);
   
   
 //Service Morph 
