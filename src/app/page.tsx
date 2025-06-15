@@ -620,12 +620,7 @@ const Home: React.FC = () => {
            
            
            
-     //Image Scattering
-    interface ItemBody {
-      position: { x: number; y: number };
-      angle: number;
-    }
-    
+    //Image Scattering
     const random = (min: number, max: number): number => {
       return Math.random() * (max - min) + min;
     };
@@ -674,7 +669,7 @@ const Home: React.FC = () => {
       };
     
       class Item {
-        body: ItemBody;
+        body: Matter.Body;
         div: HTMLDivElement;
     
         constructor(x: number, y: number, imagePath: string) {
