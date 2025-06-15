@@ -781,6 +781,16 @@ useEffect(() => {
     threshold: 0.1,
   };
 
+  // Define ScrollTrigger self type
+  interface ScrollTriggerSelf {
+    progress: number;
+  }
+
+  // Define ScrollTrigger instance type
+  interface ScrollTriggerInstance {
+    kill: () => void;
+  }
+
   const observerCallback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver): void => {
     entries.forEach((entry: IntersectionObserverEntry) => {
       if (entry.isIntersecting) {
@@ -793,7 +803,7 @@ useEffect(() => {
             start: "bottom bottom",
             end: "top top",
             scrub: true,
-            onUpdate: (self: any) => {
+            onUpdate: (self: ScrollTriggerSelf) => {
               const progress: number = self.progress;
               const newWidth: number = 30 + 70 * progress;
               gsap.to(imageContainer, {
@@ -810,7 +820,7 @@ useEffect(() => {
           start: "top bottom",
           end: "top top",
           scrub: true,
-          onUpdate: (self: any) => {
+          onUpdate: (self: ScrollTriggerSelf) => {
             const progress: number = self.progress;
             const newHeight: number = 150 + 300 * progress;
             gsap.to(service, {
@@ -835,7 +845,7 @@ useEffect(() => {
   // Cleanup function
   return () => {
     observer.disconnect();
-    ScrollTrigger.getAll().forEach((trigger: any) => trigger.kill());
+    ScrollTrigger.getAll().forEach((trigger: ScrollTriggerInstance) => trigger.kill());
   };
 }, []);
 
