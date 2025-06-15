@@ -8,20 +8,28 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
 const GameAppDev: React.FC = () => {
-  const [apps, setApps] = useState([]);
-  
-  
-    //Compilation Mapping
-  useEffect(() => {
-    const newApps = appDetails.map((app, index) => ({
-      id: index + 1,
-      imgSrc: app.img,
-      title: app.title,
-      genre: app.genre,
-      description: app.description
-    }));
-    setApps(newApps)
-  }, []);
+  interface App {
+      id: number;
+      imgSrc: string;
+      title: string;
+      genre: string;
+      description: string;
+    }
+    
+    // Replace your useState declaration with proper typing
+    const [apps, setApps] = useState<App[]>([]);
+    
+    // Your useEffect should now work without errors
+    useEffect(() => {
+      const newApps = AppsData.map((app) => ({
+        id: app.id,
+        imgSrc: app.imgSrc,
+        title: app.title,
+        genre: app.genre,
+        description: app.description
+      }));
+      setApps(newApps);
+    }, []);
   
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
