@@ -119,7 +119,7 @@ useEffect(() => {
   
   
   
-};
+
 
 
 // 
@@ -1090,7 +1090,7 @@ useGSAP(() => {
     <div className="whiteSpace h-screen w-screen"></div>
   </section>
 </>
-  );
-
+  )
+};
 
 export default Home;
