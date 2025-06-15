@@ -63,85 +63,96 @@ useEffect(() => {
   const defaultFontSize = "75px"
   const activeFontSize = "250px"
   
-  function splitTextIntoSpans(selector) {
-    const elements = document.querySelectorAll(selector)
+  function splitTextIntoSpans(selector: string) {
+  const elements = document.querySelectorAll(selector);
     elements.forEach((element) => {
-      const text = element.innerText
-      const spans = text.split("").map((char) => `<span>${char === ' ' ? '&nbsp;' : char}</span>`).join("")
-      element.innerHTML = spans
+      const text = element.innerText;
+      const spans = text
+        .split("")
+        .map((char) => `<span>${char === " " ? "&nbsp;" : char}</span>`)
+        .join("");
+      element.innerHTML = spans;
     });
   }
-  
-  function animateFontSize(target, fontSize = activeFontSize) {
-    const spans = target.querySelectorAll("span")
-    const ctx = gsap.context(() => {
-      gsap.to(spans, {
-        fontSize: fontSize,
-        stagger: 0.025,
-        duration: 0.5,
-        ease: "power2.out"
-      });
-    })
-    return () => ctx.revert()
-  }
-  
-  function clearItems() {
-    itemsCols.forEach((col) => {
-      col.innerHTML = "";
-    })
-  }
-  
-  function addItemsToCols(filter = "all") {
-    let colIndex = 0;
-    const filteredItems = musicThumbs.filter(
-      (item) => filter === "all" || item.tag.includes(filter)
-    );
-    
-    filteredItems.forEach((item) => {
-      const itemElement = document.createElement("div")
-      itemElement.className = "item"
 
-      const itemImgContainer = document.createElement("div")
-      itemImgContainer.className = "item-img"
-      const root = ReactDOM.createRoot(itemImgContainer)
-      
-       const itemImg = (   <Image 
-        src={item.img}
-        alt={item.title} 
-        width={200} 
-        height={200} 
-        />
-        );
-        root.render(itemImg);
-
-      const itemCopy = document.createElement("div")
-      itemCopy.className = "item-copy"
-      itemCopy.innerHTML = `<p>${item.title}</p>`
-
-      itemElement.appendChild(itemImgContainer)
-      itemElement.appendChild(itemCopy)
-      itemsCols[colIndex % itemsCols.length].appendChild(itemElement)
-      colIndex++;
-    })
-  }
   
-  function animateItems(filter) {
-    const ctx = gsap.context(() => {
-    gsap.to(itemsContainer, {
-      opacity: 0,
-      duration: 0.25,
-      onComplete: () => {
-        clearItems()
-        addItemsToCols(filter)
-        gsap.to(itemsContainer, {
-          opacity: 1,
-          duration: 0.25,
+      function animateFontSize(target: Element, fontSize: string = activeFontSize): () => void {
+      const spans = target.querySelectorAll("span");
+      const ctx = gsap.context(() => {
+        gsap.to(spans, {
+          fontSize: fontSize,
+          stagger: 0.025,
+          duration: 0.5,
+          ease: "power2.out",
         });
-      }
-    });
-    })
-    return () => ctx.revert()
-  }
+      });
+      return () => ctx.revert();
+    }
+    
+    function clearItems(): void {
+      itemsCols.forEach((col: Element) => {
+        if (col instanceof HTMLElement) {
+          col.innerHTML = "";
+        }
+      });
+    }
+    
+    function addItemsToCols(filter: string = "all"): void {
+      let colIndex = 0;
+      const filteredItems = musicThumbs.filter(
+        (item) => filter === "all" || item.tag.includes(filter)
+      );
+    
+      filteredItems.forEach((item) => {
+        const itemElement = document.createElement("div");
+        itemElement.className = "item";
+    
+        const itemImgContainer = document.createElement("div");
+        itemImgContainer.className = "item-img";
+    
+        const root = (window as any).ReactDOM.createRoot(itemImgContainer);
+        const itemImg = (window as any).React.createElement("img", {
+          src: item.img,
+          alt: item.title,
+          width: 200,
+          height: 200,
+        });
+        root.render(itemImg);
+    
+        const itemCopy = document.createElement("div");
+        itemCopy.className = "item-copy";
+        itemCopy.innerHTML = `<p>${item.title}</p>`;
+    
+        itemElement.appendChild(itemImgContainer);
+        itemElement.appendChild(itemCopy);
+    
+        const col = itemsCols[colIndex % itemsCols.length];
+        if (col instanceof HTMLElement) {
+          col.appendChild(itemElement);
+        }
+    
+        colIndex++;
+      });
+    }
+    
+    function animateItems(filter: string): () => void {
+      const ctx = gsap.context(() => {
+        gsap.to(itemsContainer, {
+          opacity: 0,
+          duration: 0.25,
+          onComplete: () => {
+            clearItems();
+            addItemsToCols(filter);
+            gsap.to(itemsContainer, {
+              opacity: 1,
+              duration: 0.25,
+            });
+          },
+        });
+      });
+      return () => ctx.revert();
+    }
+
 
   // Initialize text splitting first
   splitTextIntoSpans(".filter h1")
