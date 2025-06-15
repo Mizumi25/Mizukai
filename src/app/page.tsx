@@ -1151,7 +1151,7 @@ useGSAP(() => {
     
     <div className="section section7 fixed h-screen w-screen overflow-hidden left-0 bottom-0 z-[-1]">
       <div id="content" className="flex flex-col justify-center items-center gap-[10rem]">
-         <div onClick={() => topFunction()} className="scroll-to-top">
+         <div className="scroll-to-top">
             <i className="fa fa-solid fa-angle-up fa-3x"></i>
           </div>
          <div className="footer-bg has-before absolute bottom-0 left-0 w-full h-[60%] z-[-1]">
