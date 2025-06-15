@@ -67,32 +67,34 @@ useEffect(() => {
   const magText = document.querySelector(".magneto .text")
   
   
- const activateMagneto = (e: React.MouseEvent) => {
-    const boundBox = magnet.getBoundingClientRect();
-    const magnetoStrength = 40;
-    const magnetoTextStrength = 60;
-  
-    const newX = ((e.clientX - boundBox.left) / magnet.offsetWidth) - 0.5;
-    const newY = ((e.clientY - boundBox.top) / magnet.offsetHeight) - 0.5;
-  
-    const ctx = gsap.context(() => {
-      gsap.to(magnet, {
-        duration: 1,
-        x: newX * magnetoStrength,
-        y: newY * magnetoStrength,
-        ease: "Power4.easeOut"
+    const activateMagneto = (e: React.MouseEvent) => {
+      if (!magnet || !magText) return;
+    
+      const boundBox = magnet.getBoundingClientRect();
+      const magnetoStrength = 40;
+      const magnetoTextStrength = 60;
+    
+      const newX = ((e.clientX - boundBox.left) / magnet.offsetWidth) - 0.5;
+      const newY = ((e.clientY - boundBox.top) / magnet.offsetHeight) - 0.5;
+    
+      const ctx = gsap.context(() => {
+        gsap.to(magnet, {
+          duration: 1,
+          x: newX * magnetoStrength,
+          y: newY * magnetoStrength,
+          ease: "Power4.easeOut"
+        });
+    
+        gsap.to(magText, {
+          duration: 1,
+          x: newX * magnetoTextStrength,
+          y: newY * magnetoTextStrength,
+          ease: "Power4.easeOut"
+        });
       });
-  
-      gsap.to(magText, {
-        duration: 1,
-        x: newX * magnetoTextStrength,
-        y: newY * magnetoTextStrength,
-        ease: "Power4.easeOut"
-      });
-    });
-  
-    return () => ctx.revert();
-  };
+    
+      return () => ctx.revert();
+    };
 
 
   const resetMagneto = () => {
