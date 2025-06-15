@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import musicThumbs from '@/data/music/musicImages';
 import './style.css'
 import Image from 'next/image'
-import ReactDOM from 'react-dom/client';
 import gsap from 'gsap'
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -97,13 +96,14 @@ useEffect(() => {
       });
     }
     
-    function addItemsToCols(filter: string = "all"): void {
+        function addItemsToCols(filter: string = "all"): void {
       let colIndex = 0;
+    
       const filteredItems = musicThumbs.filter(
-        (item) => filter === "all" || item.tag.includes(filter)
+        (item: { tag: string[] }) => filter === "all" || item.tag.includes(filter)
       );
     
-      filteredItems.forEach((item) => {
+      filteredItems.forEach((item: { img: string; title: string }) => {
         const itemElement = document.createElement("div");
         itemElement.className = "item";
     
@@ -136,63 +136,63 @@ useEffect(() => {
     }
     
     function animateItems(filter: string): () => void {
-      const ctx = gsap.context(() => {
-        gsap.to(itemsContainer, {
+      const ctx = (gsap as any).context(() => {
+        (gsap as any).to(itemsContainer, {
           opacity: 0,
           duration: 0.25,
           onComplete: () => {
             clearItems();
             addItemsToCols(filter);
-            gsap.to(itemsContainer, {
+            (gsap as any).to(itemsContainer, {
               opacity: 1,
               duration: 0.25,
             });
           },
         });
       });
+    
       return () => ctx.revert();
     }
+    
+    // Initialize text splitting first
+    splitTextIntoSpans(".filter h1");
+    setTextSplitInitialized(true);
+    
+    // Set initial active filter font size using GSAP instead of CSS
+    const activeFilter = document.querySelector(".filter.active h1");
+    if (activeFilter) {
+      const spans = activeFilter.querySelectorAll("span");
+      (gsap as any).set(spans, { fontSize: activeFontSize });
+    }
+    
+    addItemsToCols();
+    
+    filters.forEach((filter) => {
+      filter.addEventListener("click", function () {
+        if (this.classList.contains("active")) return;
+    
+        const previousActiveFilterH1 = document.querySelector(".filter.active h1");
+        if (previousActiveFilterH1) {
+          animateFontSize(previousActiveFilterH1, defaultFontSize);
+        }
+    
+        filters.forEach((f) => f.classList.remove("active"));
+        this.classList.add("active");
+    
+        const newActiveFilterH1 = this.querySelector("h1");
+        if (newActiveFilterH1) {
+          animateFontSize(newActiveFilterH1, activeFontSize);
+        }
+    
+        const filterValue = this.getAttribute("data-filter");
+        if (filterValue) {
+          animateItems(filterValue);
+        }
+      });
+    });
+    
+    setFiltersInitialized(true);
 
-
-  // Initialize text splitting first
-  splitTextIntoSpans(".filter h1")
-  setTextSplitInitialized(true)
-  
-  // Set initial active filter font size using GSAP instead of CSS
-  const activeFilter = document.querySelector(".filter.active h1")
-  if (activeFilter) {
-    const spans = activeFilter.querySelectorAll("span")
-    gsap.set(spans, { fontSize: activeFontSize })
-  }
-  
-  addItemsToCols()
-
-  filters.forEach((filter) => {
-    filter.addEventListener("click", function () {
-      if (this.classList.contains("active")) {
-        return;
-      }
-
-      const previousActiveFilterH1 = document.querySelector(".filter.active h1")
-      if (previousActiveFilterH1) {
-        animateFontSize(previousActiveFilterH1, defaultFontSize)
-      }
-
-      filters.forEach((f) => f.classList.remove("active"))
-      this.classList.add("active")
-
-      const newActiveFilterH1 = this.querySelector("h1")
-      if (newActiveFilterH1) {
-        animateFontSize(newActiveFilterH1, activeFontSize)
-      }
-
-      const filterValue = this.getAttribute("data-filter")
-      animateItems(filterValue)
-    })
-  })
-
-  // Mark filters as initialized
-  setFiltersInitialized(true)
 
 }, []);
 
