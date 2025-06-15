@@ -634,10 +634,10 @@ const items: ItemType[] = [];
   let lastMouseX = -1;
   let lastMouseY = -1;
 
-  const random = (min, max) => {
-    return Math.random() * (max - min) + min;
-  };
-const dist = (x1, y1, x2, y2) => {
+  const random = (min: number, max: number): number => {
+  return Math.random() * (max - min) + min;
+};
+const dist = (x1: number, y1: number, x2: number, y2: number): number => {
   return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 };
 
