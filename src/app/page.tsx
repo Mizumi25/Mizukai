@@ -491,7 +491,7 @@ const Home: React.FC = () => {
           
             
         //Image Tracking
-        // const preview = useRef<HTMLDivElement>(null);
+         const preview = useRef<HTMLDivElement>(null);
 //         const story = useRef<HTMLDivElement>(null);
 const story1Ref = useRef<HTMLParagraphElement>(null);
 const story2Ref = useRef<HTMLParagraphElement>(null);
