@@ -622,7 +622,15 @@ const Home: React.FC = () => {
            
   //Image Scattering
   let engine: Matter.Engine;
-  const items: any[] = [];
+  
+  
+  interface ItemType {
+  body: Matter.Body;
+  div: HTMLDivElement;
+  update: () => void;
+}
+
+const items: ItemType[] = [];
   let lastMouseX = -1;
   let lastMouseY = -1;
 
