@@ -621,18 +621,7 @@ const Home: React.FC = () => {
            
            
   //Image Scattering
-  let engine: Matter.Engine;
   
-  
-  interface ItemType {
-  body: Matter.Body;
-  div: HTMLDivElement;
-  update: () => void;
-}
-
-const items: ItemType[] = [];
-  let lastMouseX = -1;
-  let lastMouseY = -1;
 
   const random = (min: number, max: number): number => {
   return Math.random() * (max - min) + min;
@@ -642,6 +631,10 @@ const dist = (x1: number, y1: number, x2: number, y2: number): number => {
 };
 
   useEffect(() => {
+    let engine: Matter.Engine;
+    const items: Item[] = []; // Move inside useEffect
+    let lastMouseX = -1;
+    let lastMouseY = -1;
     const setup = () => {
       if (!section6Ref.current) return; // Add null check
       
