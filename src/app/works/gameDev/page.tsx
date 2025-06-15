@@ -10,19 +10,18 @@ import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 const GameAppDev: React.FC = () => {
   interface App {
       id: number;
-      imgSrc: string;
+      img: string;
       title: string;
       genre: string;
       description: string;
     }
     
-    // Replace your useState declaration with proper typing
     const [apps, setApps] = useState<App[]>([]);
     
     // Your useEffect should now work without errors
     useEffect(() => {
-      const newApps = AppsData.map((app) => ({
-        imgSrc: app.imgSrc,
+     const newApps = AppsData.map((app) => ({
+        img: app.img,
         title: app.title,
         genre: app.genre,
         description: app.description
