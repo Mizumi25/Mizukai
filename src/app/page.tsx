@@ -493,7 +493,16 @@ const Home: React.FC = () => {
         //Image Tracking
         // const preview = useRef<HTMLDivElement>(null);
 //         const story = useRef<HTMLDivElement>(null);
-//         const stories = useRef<HTMLDivElement[]>([]);
+const story1Ref = useRef<HTMLParagraphElement>(null);
+const story2Ref = useRef<HTMLParagraphElement>(null);
+const storySpanRefs = useRef<HTMLSpanElement[]>([]);
+
+// Helper function to add span refs
+const addSpanRef = (el: HTMLSpanElement | null) => {
+  if (el && !storySpanRefs.current.includes(el)) {
+    storySpanRefs.current.push(el);
+  }
+};
         // let isInside = false;
         // const byPositions = {
         //   p1: "0 0",
@@ -1014,42 +1023,42 @@ useGSAP(() => {
     </div>
     
     <div className="section section4 relative flex justify-center items-center transition-opacity duration-1000 ease h-[calc(100vh+600px)] overflow-hidden" ref={section4Ref}>
-      <div id="content" className="h-full w-full px-[10%]">
-        <div className="title flex items-center gap-[30px]">
-          <h2 className="view-btn relative w-[120px] overflow-hidden pb-[18px] h-[90px] text-current">
-            <span>{storyTitle}</span>
-            <i className="absolute w-full bottom-[23px] left-0 h-[5px]"></i>
-          </h2>
+        <div id="content" className="h-full w-full px-[10%]">
+          <div className="title flex items-center gap-[30px]">
+            <h2 className="view-btn relative w-[120px] overflow-hidden pb-[18px] h-[90px] text-current">
+              <span>{storyTitle}</span>
+              <i className="absolute w-full bottom-[23px] left-0 h-[5px]"></i>
+            </h2>
+          </div>
+          <div className="exhibit h-[300px] w-[500px] absolute top-1/2 right-[-80%] -translate-y-[10%] z-[-2]" ref={exh}>
+            <Image src={Profile} alt="exhibit1" className="h-full w-full" />
+          </div>
+          <div className="exhibit h-[300px] w-[500px] absolute top-1/2 right-[-80%] -translate-y-[10%] z-[-2]" ref={exh1}>
+            <Image src={Profile} alt="exhibit2" className="h-full w-full" />
+          </div>
+          <div className="preview overflow-hidden pointer-events-none origin-center scale-100 h-[250px] w-[250px] absolute z-[10]" ref={preview}>
+            <div className="preview-image h-full w-full bg-[url('../../public/images/profile.jpg')] bg-cover bg-[position:0_0] bg-no-repeat"></div>
+          </div>
+          <div className="description z-[10]">
+            <p className="leading-[4rem] text-[3rem] my-[5rem]" ref={story1Ref}>
+              <span className="underline" ref={addSpanRef} id="p1">{storyPart1.highlight}</span>
+              {storyPart1.content}
+              <span className="underline" ref={addSpanRef} id="p2">{storyPart1.nextHighlight}</span>
+              {storyPart1.continuation}
+            </p>
+            <br />
+            <p className="leading-[4rem] text-[3rem] my-[5rem]" ref={story2Ref}>
+              {storyPart2.content}
+              <span className="underline" ref={addSpanRef} id="p4">{storyPart2.highlight}</span>
+              {storyPart2.continuation}
+              <span className="underline" ref={addSpanRef} id="p5">{storyPart2.finalHighlight}</span>
+              {storyPart2.ending}
+            </p>
+          </div>
         </div>
-        <div className="exhibit h-[300px] w-[500px] absolute top-1/2 right-[-80%] -translate-y-[10%] z-[-2]" ref={exh}>
-          <Image src={Profile} alt="exhibit1" className="h-full w-full" />
-        </div>
-        <div className="exhibit h-[300px] w-[500px] absolute top-1/2 right-[-80%] -translate-y-[10%] z-[-2]" ref={exh1}>
-          <Image src={Profile} alt="exhibit2" className="h-full w-full" />
-        </div>
-        <div className="preview overflow-hidden pointer-events-none origin-center scale-100 h-[250px] w-[250px] absolute z-[10]" ref={preview}>
-          <div className="preview-image h-full w-full bg-[url('../../public/images/profile.jpg')] bg-cover bg-[position:0_0] bg-no-repeat"></div>
-        </div>
-        <div className="description z-[10]">
-          <p className="leading-[4rem] text-[3rem] my-[5rem]" ref={stories}>
-            <span className="underline" ref={story} id="p1">{storyPart1.highlight}</span>
-            {storyPart1.content}
-            <span className="underline" ref={story} id="p2">{storyPart1.nextHighlight}</span>
-            {storyPart1.continuation}
-          </p>
-          <br />
-          <p className="leading-[4rem] text-[3rem] my-[5rem]"
-            {storyPart2.content}
-            <span className="underline" ref={story} id="p4">{storyPart2.highlight}</span>
-            {storyPart2.continuation}
-            <span className="underline" ref={story} id="p5">{storyPart2.finalHighlight}</span>
-            {storyPart2.ending}
-          </p>
-        </div>
+        
+        <SeeMore />
       </div>
-      
-      <SeeMore />
-    </div>
 
     <div className="section section5 relative flex justify-center items-center transition-opacity duration-1000 ease h-[calc(100vh+600px)] w-full overflow-y-visible overflow-x-hidden" ref={section5Ref}>
       <div className="grid_wrapper-contain flex flex-col justify-center items-center">
