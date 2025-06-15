@@ -22,7 +22,6 @@ const GameAppDev: React.FC = () => {
     // Your useEffect should now work without errors
     useEffect(() => {
       const newApps = AppsData.map((app) => ({
-        id: app.id,
         imgSrc: app.imgSrc,
         title: app.title,
         genre: app.genre,
