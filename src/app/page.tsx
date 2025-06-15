@@ -103,22 +103,27 @@ useEffect(() => {
 
 
   const resetMagneto = () => {
-    const ctx1 = gsap.context(() => {
-    gsap.to(magnet, {
-        duration: 1,
-        x: 0,
-        y: 0,
-        ease: "Elastic.easeOut"
-      })
-    
-      gsap.to(magText, {
-        duration: 1,
-        x: 0,
-        y: 0,
-        ease: "Elastic.easeOut"
-      })
-    })
-    return () => ctx1.revert()
+      const magnet = magnetRef.current;
+      const magText = magTextRef.current;
+      
+      if (!magnet || !magText) return;
+      
+      const ctx1 = gsap.context(() => {
+        gsap.to(magnet, {
+            duration: 1,
+            x: 0,
+            y: 0,
+            ease: "Elastic.easeOut"
+          })
+        
+          gsap.to(magText, {
+            duration: 1,
+            x: 0,
+            y: 0,
+            ease: "Elastic.easeOut"
+          })
+        })
+        return () => ctx1.revert()
   };
   
   magnet.addEventListener("mousemove", activateMagneto)
