@@ -269,7 +269,7 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <>
       <nav>
         <div className="logo">
-          <a href="/">Mizumi</a>
+         {/*<a href="/">Mizumi</a>*/}
         </div>
         <div className="menu-toggle">
           <p id="menu-open">Menu</p>

@@ -193,7 +193,7 @@ useEffect(() => {
     }, { scope:exh });
 
     useGSAP(() => {
-      let images = gsap.utils.toArray('.section5 .animated__exh Image')
+      const images = gsap.utils.toArray('.section5 .animated__exh Image')
 
       images.forEach(image => {
           gsap.to(image, {
@@ -273,7 +273,7 @@ useEffect(() => {
             //ColorChange
             useGSAP(() => {
               gsap.registerPlugin(CSSRulePlugin); 
-              let bgGradient = CSSRulePlugin.getRule('.footer-bg::before')
+              const bgGradient = CSSRulePlugin.getRule('.footer-bg::before')
               const ctx = gsap.context(() => {
                 const tl = gsap.timeline({
                     scrollTrigger: {
@@ -534,7 +534,7 @@ useEffect(() => {
          //Grid images
           useGSAP(() => {
             const ctx = gsap.context(() => {
-                  let tl = gsap.timeline({
+                  const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: ".grid_item:nth-child(3n+1)",
                         start: "top bottom",
@@ -552,7 +552,7 @@ useEffect(() => {
 
             useGSAP(() => {
                const ctx = gsap.context(() => {
-                  let tl = gsap.timeline({
+                  const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: ".grid_item:nth-child(3n+2)",
                         start: "top bottom",
@@ -570,7 +570,7 @@ useEffect(() => {
 
                 useGSAP(() => {
                   const ctx = gsap.context(() => {
-                  let tl = gsap.timeline({
+                  const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: ".grid_item:nth-child(3n+3)",
                         start: "top bottom",
