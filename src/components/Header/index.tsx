@@ -1,11 +1,11 @@
 'use client'
 
 
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import "./style.css";
-import Link from 'next/link'
-import gsap, { CSSRulePlugin } from 'gsap/all';
-import { useGSAP } from "@gsap/react";
+// import Link from 'next/link'
+// import gsap, { CSSRulePlugin } from 'gsap/all';
+// import { useGSAP } from "@gsap/react";
 import Image from 'next/image'
 import Profile from '../../../public/images/profile.jpg';
 // import { useAiAssistant } from "@sista/ai-assistant-react";
@@ -283,7 +283,7 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
            <div className="col-lg">
             <div className="menu-preview-img"><Image src={Profile} alt="" /></div>
            </div>
-           <div className="col-sm">
+           {/*<div className="col-sm">
               <div className="menu-links">
                 <div className="link">
                   <a href="/" data-img={Profile}>Home</a>
@@ -305,13 +305,13 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <div className="social"><a href="">Twitter</a></div>
                 <div className="social"><a href="">Youtube</a></div>
               </div>
-           </div>
+           </div>*/}
           </div>
         </div>
         <div className="menu-footer">
           <div className="col-sm">
-            <a href="">Mizumi</a>
-            <a href="">James Rafty D. Libago</a>
+           {/* <a href="">Mizumi</a>
+            <a href="">James Rafty D. Libago</a>*/}
           </div>
         </div>
         

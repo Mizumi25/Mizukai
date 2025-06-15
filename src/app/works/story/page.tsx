@@ -2,10 +2,9 @@
 
 import storyData from '@/data/story/storyImages.ts';
 import Image from 'next/image';
-import { ReactLenis, useLenis } from 'lenis/react'
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import './style.css';
 import Profile from '../../../../public/images/profile.jpg';
 import { 

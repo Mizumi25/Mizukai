@@ -1,9 +1,8 @@
 'use client'
 
 
-import React, { useState, useEffect, useRef } from 'react';
-import { gsap, CSSRulePlugin, Power2, Power3 } from 'gsap/all';
-import { useGSAP } from "@gsap/react";
+import React, { useEffect, useRef } from 'react';
+import { gsap, Power2, Power3 } from 'gsap/all';
 // import { useAiAssistant } from "@sista/ai-assistant-react";
 
 const MusicPlay: React.FC = () => {
@@ -16,7 +15,7 @@ const MusicPlay: React.FC = () => {
   useEffect(() => {
     if (!canv.current || !audio.current) return;
 
-    let opt = {
+    const opt = {
       width: canv.current.offsetWidth,
       height: canv.current.offsetHeight,
       midY: canv.current.offsetHeight / 2,
@@ -92,9 +91,9 @@ const MusicPlay: React.FC = () => {
     });
     
     
-      const yor = () => {
-  audio.current.play()
-};
+      // const yor = () => {
+//   audio.current.play()
+// };
 
 
 

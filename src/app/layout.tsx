@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import LenisWrapper from "../components/LenisWrapper";
 
-import { ReactLenis, useLenis } from 'lenis/react';
+
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",

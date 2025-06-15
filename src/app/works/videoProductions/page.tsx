@@ -2,7 +2,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import gsap, { CSSRulePlugin } from 'gsap/all';
-import { useGSAP } from "@gsap/react";
 import { Draggable } from 'gsap/Draggable';
 import './style.css';
 import Image from 'next/image';
@@ -141,8 +140,8 @@ const Videos = () => {
         maxX: timelineWidth - scrollerWidth - gap
       },
       onDrag: function () {
-        let progress = (this.x - gap) / maxDragX
-        let containerX = -maxContainerX * progress
+        const progress = (this.x - gap) / maxDragX
+        const containerX = -maxContainerX * progress
         gsap.set(container, {
           x: containerX
         })

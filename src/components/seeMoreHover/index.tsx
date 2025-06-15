@@ -1,7 +1,6 @@
 'use client'
 
-import './style.css'
-import { useEffect } from 'react'
+import './style.css';
 
 const SeeMore = () => {
   

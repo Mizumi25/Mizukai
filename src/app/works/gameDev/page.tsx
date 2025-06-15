@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import appDetails from '@/data/gameDev/appIcons.ts';
 import './style.css'
 import Image from 'next/image'
-import { ReactLenis, useLenis } from 'lenis/react'
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 
@@ -136,7 +135,7 @@ const GameAppDev: React.FC = () => {
           
         <div className="section section2">
           <div className="headerRows">
-            <div className="headerRow"><h1>Let's</h1></div>
+            <div className="headerRow"><h1>Let&apos;s</h1></div>
             <div className="headerRow"><h1>dive</h1></div>
           </div>
         </div>

@@ -1,12 +1,10 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import musicThumbs from '@/data/music/musicImages.ts';
 import './style.css'
 import Image from 'next/image'
 import ReactDOM from 'react-dom/client';
-import lottie from 'lottie-web';
-import animationData from '../../../../public/lottieAnimations/musicWave.json'
 import gsap from 'gsap'
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -253,7 +251,7 @@ useGSAP(() => {
     let isPlaying = false;
     let isHidden = true;
     const currentTrack = document.createElement('audio');
-    const soundBars = document.querySelector('.soundBars');
+ 
 
     togglePlayer.addEventListener('click', function () {
       isHidden = !isHidden;

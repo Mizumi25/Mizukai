@@ -4,7 +4,7 @@
 
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './style.css';
 // import GlassyConfirmation from '../components/Confirmation/'
 import MusicPlay from '../components/MusicPlayer/'
@@ -13,8 +13,6 @@ import SeeMore from '../components/seeMoreHover/';
 
 
 import {
-  heroTitle,
-  heroSubtitle,
   personalIntroTitle,
   personalIntroContent,
   backgroundTitle,
@@ -36,13 +34,10 @@ import {
   otherServicesTitle,
   otherServicesDescription,
   storyTitle,
-  storyIntro,
   storyPart1,
   storyPart2,
   footerTitle,
   footerName,
-  footerTagline,
-  profileImage
 } from '../data/content';
 
 import Image from 'next/image'
@@ -51,18 +46,15 @@ import gsap, { CSSRulePlugin } from 'gsap/all';
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Matter from 'matter-js';
-import hoverEffect from 'hover-effect'
+
 
 import Profile from '../../public/images/profile.jpg';
-import Profile2 from '../../public/images/profile2.jpg';
-import distort from '../../public/images/pack_icon.png';
-import Phone from '../../public/images/phone.png';
+
 // import { useAiAssistant } from "@sista/ai-assistant-react";
 
 const Home: React.FC = () => {
   const section1Ref = useRef<HTMLDivElement>(null);
   const section2Ref = useRef<HTMLDivElement>(null);
-  const section3Ref = useRef<HTMLDivElement>(null);
   const section4Ref = useRef<HTMLDivElement>(null);
   const section5Ref = useRef<HTMLDivElement>(null);
   const section6Ref = useRef<HTMLDivElement>(null);
@@ -73,11 +65,10 @@ const Home: React.FC = () => {
 useEffect(() => {
   const magnet = document.querySelector(".magneto")
   const magText = document.querySelector(".magneto .text")
-  const dbgr = document.querySelector(".debugger")
   
   
   const activateMagneto = (e) => {
-    let boundBox = magnet.getBoundingClientRect();
+    const boundBox = magnet.getBoundingClientRect();
     const magnetoStrength = 40;
     const magnetoTextStrength = 60;
     
@@ -127,8 +118,7 @@ useEffect(() => {
 }, [])
   
   
-  const sayHelloWorld = () => {
-  console.log("Hello, World!");
+  
 };
 
 
@@ -164,7 +154,7 @@ useEffect(() => {
     useGSAP(() => {
       gsap.registerPlugin( ScrollTrigger ); 
       const ctx = gsap.context(() => {
-      let tl = gsap.timeline({
+      const tl = gsap.timeline({
         scrollTrigger: {
           trigger: exh.current,
           start: "-400% center",
@@ -182,7 +172,7 @@ useEffect(() => {
         duration: 0.8,
       })
       
-      let tl1 = gsap.timeline({
+      const tl1 = gsap.timeline({
         scrollTrigger: {
           trigger: exh1.current,
           start: "-400% center",
@@ -221,7 +211,7 @@ useEffect(() => {
           //opacity
           useGSAP(() => {
               const ctx = gsap.context(() => {
-                let tl = gsap.timeline({
+                const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: ".section2",
                         start: "top top",
@@ -244,7 +234,7 @@ useEffect(() => {
                     duration: 0
                 });
                 
-                let tl2 = gsap.timeline({
+                const tl2 = gsap.timeline({
                     scrollTrigger: {
                         trigger: ".section2",
                         start: "top center",
@@ -258,7 +248,7 @@ useEffect(() => {
                     duration: 0.3,
                     ease: "Power4.easeOut"
                 });
-                let tl3 = gsap.timeline({
+                const tl3 = gsap.timeline({
                 scrollTrigger: {
                   trigger: ".section5",
                   start: "top center",
@@ -285,7 +275,7 @@ useEffect(() => {
               gsap.registerPlugin(CSSRulePlugin); 
               let bgGradient = CSSRulePlugin.getRule('.footer-bg::before')
               const ctx = gsap.context(() => {
-                let tl = gsap.timeline({
+                const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: "#Home",
                         start: "top top",
@@ -312,7 +302,7 @@ useEffect(() => {
                     color: "#121214",
                     duration: 1
                 });
-                let tl2 = gsap.timeline({
+                const tl2 = gsap.timeline({
                     scrollTrigger: {
                         trigger: "#Home",
                         start: "top top",
@@ -335,7 +325,7 @@ useEffect(() => {
                     duration: 1
                 });
                 
-                let tl3 = gsap.timeline({
+                const tl3 = gsap.timeline({
                     scrollTrigger: {
                         trigger: "#Home",
                         start: "top top",
@@ -354,7 +344,7 @@ useEffect(() => {
                     backgroundColor: "#121214",
                 });
                 
-                let tl4 = gsap.timeline({
+                const tl4 = gsap.timeline({
                     scrollTrigger: {
                         trigger: "#Home",
                         start: "top top",
@@ -373,7 +363,7 @@ useEffect(() => {
                     backgroundColor: "#121214",
                 });
                 
-                let tl5 = gsap.timeline({
+                const tl5 = gsap.timeline({
                     scrollTrigger: {
                         trigger: "#Home",
                         start: "top top",
@@ -601,7 +591,7 @@ useEffect(() => {
            
   //Image Scattering
   let engine;
-  let items = [];
+  const items = [];
   let lastMouseX = -1;
   let lastMouseY = -1;
 
@@ -621,8 +611,8 @@ const dist = (x1, y1, x2, y2) => {
       addBoundaries(width, height);
 
       for (let i = 0; i < 12; i++) {
-        let x = random(100, width - 100);
-        let y = random(100, height - 100);
+        const x = random(100, width - 100);
+        const y = random(100, height - 100);
         items.push(new Item(x, y, `/stories/storyCovers/img${i + 1}.jpg`)); 
       }
     };
@@ -647,7 +637,7 @@ const dist = (x1, y1, x2, y2) => {
 
     class Item {
       constructor(x, y, imagePath) {
-        let options = {
+        const options = {
           frictionAir: 0.075,
           restitution: 0.25,
           density: 0.002,
@@ -703,7 +693,7 @@ const dist = (x1, y1, x2, y2) => {
           if (
             dist(mouseX, mouseY, item.body.position.x, item.body.position.y) < 150
           ) {
-            let forceMagnitude = 3;
+            const forceMagnitude = 3;
             Matter.Body.applyForce(
               item.body,
               { x: item.body.position.x, y: item.body.position.y },
@@ -756,8 +746,8 @@ useEffect(() => {
           end: "top top",
           scrub: true,
           onUpdate: (self) => {
-            let progress = self.progress;
-            let newWidth = 30 + 70 * progress;
+            const progress = self.progress;
+            const newWidth = 30 + 70 * progress;
             gsap.to(imageContainer, {
               width: newWidth + "%",
               duration: 0.1,
@@ -772,8 +762,8 @@ useEffect(() => {
           end: "top top",
           scrub: true,
           onUpdate: (self) => {
-            let progress = self.progress;
-            let newHeight = 150 + 300 * progress;
+            const progress = self.progress;
+            const newHeight = 150 + 300 * progress;
             gsap.to(service, {
               height: newHeight + "px", // Assuming you want pixel height
               duration: 0.1,
