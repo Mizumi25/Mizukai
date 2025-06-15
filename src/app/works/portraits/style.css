@@ -1,0 +1,22 @@
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+/* GSAP Animation specific styles that can't be converted to Tailwind */
+#Portraits .section1 .letters > div {
+  font-size: 10vw; /* Responsive font size for animations */
+}
+
+/* Image holder with complex clip-path animation */
+#Portraits .section2 .imageHolder {
+  clip-path: polygon(37.5% 20%, 62.5% 20%, 62.5% 80%, 37.5% 80%);
+  transform: rotate(30deg);
+}
+
+/* Image scale animation */
+#Portraits .section2 .imageHolder img {
+  transform: scale(2);
+}

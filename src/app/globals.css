@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+:root {
+  /* Light mode color palette (modern black & white aesthetic) */
+  --background: #f8f8f8; /* Soft white */
+  --surface: #ffffff;
+  --foreground: #1a1a1a; /* Deep charcoal, not pure black */
+
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+  --text-tertiary: #7a7a7a;
+  --text-inactive: #b3b3b3;
+
+  --primary: #222222;
+  --secondary: #444444;
+  --tertiary: #666666;
+  --quaternary: #888888;
+  --quinary: #aaaaaa;
+  --senary: #cccccc;
+  --septenary: #dddddd;
+  --octonary: #eeeeee;
+  --nonary: #f5f5f5;
+
+  --special: #f7accf; /* Cherry blossom pink */
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0e0e0e; 
+    --surface: #181818;
+    --foreground: #eaeaea;
+
+    --text-primary: #eaeaea;
+    --text-secondary: #c7c7c7;
+    --text-tertiary: #a5a5a5;
+    --text-inactive: #6e6e6e;
+
+    --primary: #ffffff;
+    --secondary: #e6e6e6;
+    --tertiary: #cccccc;
+    --quaternary: #b3b3b3;
+    --quinary: #999999;
+    --senary: #808080;
+    --septenary: #666666;
+    --octonary: #4d4d4d;
+    --nonary: #333333;
+
+    --special: #f7accf; /* Same cherry pink */
+  }
+}
+
+/* Tailwind v4 CSS-first config (linking variables to tokens) */
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-inactive: var(--text-inactive);
+
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-quaternary: var(--quaternary);
+  --color-quinary: var(--quinary);
+  --color-senary: var(--senary);
+  --color-septenary: var(--septenary);
+  --color-octonary: var(--octonary);
+  --color-nonary: var(--nonary);
+
+  --color-special: var(--special);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-sans), sans-serif;
+}

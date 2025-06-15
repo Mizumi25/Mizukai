@@ -1,0 +1,56 @@
+/* Remaining styles that couldn't be converted to Tailwind */
+
+/* Section 1 - Card positioning and animation properties */
+#Stories .section1 .titleContainer {
+  will-change: transform;
+  transition: none;
+}
+
+#card-1 {
+  top: 50%;
+  left: 20%;
+}
+
+#card-2 {
+  top: 25%;
+  left: 40%;
+}
+
+#card-3 {
+  top: 45%;
+  left: 60%;
+}
+
+#card-4 {
+  top: 15%;
+  left: 80%;
+}
+
+/* Section 3 - Gallery animations and transitions */
+#Stories .section3 .galleryContainer .indicator {
+  transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+  background-color: var(--foreground);
+}
+
+#Stories .section3 .galleryContainer .coverItem {
+  flex: 0 1 20px;
+  transition: flex 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+  filter: grayscale(50%);
+  background-color: var(--foreground);
+}
+
+#Stories .section3 .galleryContainer .coverItem:nth-child(2),
+#Stories .section3 .galleryContainer .coverItem:nth-child(7) {
+  transform: rotate(10deg);
+}
+
+#Stories .section3 .galleryContainer .covers:nth-child(2) .coverItem:nth-child(11) {
+  transform: rotate(350deg);
+}
+
+/* Section 5 - Slider progress bar transform */
+#Stories .section5 .content .slider .sliderProgress .sliderProgressBar {
+  transform: scaleX(0);
+  transform-origin: 0 0;
+  background-color: var(--foreground);
+}

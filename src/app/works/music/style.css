@@ -1,0 +1,122 @@
+/* Custom styles that can't be converted to Tailwind */
+#Musics .section1 {
+  /* Add minimum height for landscape mode spacing */
+  min-height: 100vh;
+  padding-bottom: 20vh; /* Extra space to prevent merging with section2 */
+}
+
+#Musics .section1 .slider {
+  transform: translate3d(-50%, -50%, 0) rotateX(0deg) rotateY(-25deg) rotateZ(-120deg);
+  transform-style: preserve-3d;
+  transition: 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+#Musics .section1 .slider .card {
+  transform: rotateX(20deg) rotateY(-10deg) rotateZ(130deg);
+  transition: 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+  border-color: rgba(255, 255, 255, 0.25); /* Keep original white border for cards */
+}
+
+#Musics .section2 .filters {
+  /* Remove CSS transitions to let GSAP handle everything */
+  /* Initial state will be set by GSAP */
+}
+
+#Musics .section2 .filters .filter.active p {
+  bottom: 24px;
+}
+
+#Musics .section2 .filters .filter h1 {
+  font-size: 75px; /* Default size - will be overridden by GSAP */
+  color: var(--text-primary);
+  line-height: 80%;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin: 0;
+  /* Ensure content is always present for text splitting */
+  min-height: 1em;
+}
+
+#Musics .section2 .filters .filter h1 span {
+  position: relative;
+  text-transform: uppercase;
+  font-size: inherit;
+  color: inherit;
+  line-height: inherit;
+  display: inline-block;
+  /* Remove CSS transitions to let GSAP handle font-size changes */
+  /* Ensure spans maintain their presence */
+  opacity: 1;
+}
+
+/* Remove the active state CSS since GSAP will handle it */
+#Musics .section2 .filters .filter.active h1 span {
+  color: var(--text-tertiary);
+}
+
+#Musics .section2 .items .items-col .item {
+  padding: 1em 1em 4em 1em;
+}
+
+#Musics .section2 .items .items-col .item .item-img {
+  width: 100%;
+  height: 300px;
+}
+
+.item-copy p {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0.5em 0;
+  color: var(--text-primary);
+}
+
+#Musics .section3 .musicPlayerContainer {
+  transition: all 0.75s cubic-bezier(0.075, 0.82, 0.165, 1);
+  background-color: var(--surface);
+  border: 1px solid var(--senary);
+}
+
+#Musics .section3 .musicPlayerContainer.hide {
+  width: 180px;
+}
+
+#Musics .section3 .musicPlayerContainer.hide .trackInfo,
+#Musics .section3 .musicPlayerContainer.hide .trackNav {
+  transition: all 0s ease;
+  opacity: 0;
+}
+
+#Musics .section3 .musicPlayerContainer .togglePlayer {
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+}
+
+#Musics .section3 .musicPlayerContainer .togglePlayer span {
+  font-size: 10px;
+}
+
+#Musics .section3 .musicPlayerContainer .player {
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+#Musics .section3 .musicPlayerContainer .trackInfo .trackName {
+  color: var(--text-primary);
+}
+
+#Musics .section3 .musicPlayerContainer .trackInfo .trackArtist {
+  color: var(--text-tertiary);
+}
+
+#Musics .section3 .musicPlayerContainer .trackNav > div {
+  color: var(--text-secondary);
+}
+
+/* Responsive adjustments for landscape mode */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+  #Musics .section1 {
+    padding-bottom: 30vh; /* More space for smaller landscape screens */
+  }
+}

@@ -1,0 +1,147 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+#Videos {
+  background: var(--background);
+  color: var(--text-primary);
+}
+
+#Videos .videoContainer .carousel .carouselInner .carouselItem .carouselCaption::before {
+  content: "";
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  border-radius: 100%;
+  z-index: -1;
+  transition: all 0.3s;
+}
+
+.carouselCaption.animateIn {
+  opacity: 1;
+  transition: all 0.3s;
+}
+
+#Videos .videoContainer .carouselControlPrev,
+#Videos .videoContainer .carouselControlNext {
+  color: var(--text-primary);
+}
+
+#Videos .container {
+  will-change: transform;
+}
+
+#Videos .marker {
+  position: absolute;
+  width: 2px;
+  height: 60%;
+  background: var(--text-tertiary);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+#Videos .marker:nth-child(even) {
+  height: 40%;
+  background: var(--text-inactive);
+}
+
+#Videos .scroller {
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--septenary);
+}
+
+#Videos .container .section:not(#Videos .container .section1) {
+  background: var(--background);
+}
+
+#Videos .container .section4 p {
+  color: var(--text-tertiary);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+#Videos .container .section4 .infiniteSlider {
+  perspective: 1000px;
+  perspective-origin: center center;
+}
+
+#Videos .container .section4 .infiCard {
+  background: var(--surface);
+  border: 1px solid var(--septenary);
+}
+
+#Videos .container .section4 .infiCard:hover {
+  transform: translate(-50%, -50%) scale(1.02);
+}
+
+#Videos .container .section4 .infiCard .inficardInfo {
+  background: var(--surface);
+  border-bottom: 1px solid var(--septenary);
+}
+
+#Videos .container .section4 .infiCard .inficardInfo .inficardItem p {
+  color: var(--text-tertiary);
+}
+
+#Videos .container .section4 .infiCard .inficardInfo .inficardItem:nth-child(2) p {
+  color: var(--text-primary);
+}
+
+#Videos .container .section4 .infiCard .infivideoPlayer > div {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#Videos .container .section4 .infiCard .infivideoPlayer video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+  #Videos .container .section4 .infiCard {
+    width: 85vw;
+    height: 50vh;
+  }
+  
+  #Videos .timeline {
+    height: 8vh;
+    padding: 1em;
+  }
+  
+  #Videos .scroller {
+    left: 0.5em;
+    padding: 0.3em 0.8em;
+  }
+  
+  #Videos .marker {
+    width: 1px;
+  }
+}
+
+@media (orientation: portrait) {
+  #Videos .container .section4 .infiCard {
+    width: 80vw;
+    height: 45vh;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 1024px) {
+  #Videos .container .section4 .infiCard {
+    width: 60vw;
+    height: 55vh;
+  }
+}
