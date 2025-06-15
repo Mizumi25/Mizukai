@@ -621,8 +621,8 @@ const Home: React.FC = () => {
            
            
   //Image Scattering
-  let engine;
-  const items = [];
+  let engine: Matter.Engine;
+  const items: any[] = [];
   let lastMouseX = -1;
   let lastMouseY = -1;
 
