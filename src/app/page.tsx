@@ -643,6 +643,8 @@ const dist = (x1: number, y1: number, x2: number, y2: number): number => {
 
   useEffect(() => {
     const setup = () => {
+      if (!section6Ref.current) return; // Add null check
+      
       const { width, height } = section6Ref.current.getBoundingClientRect();
       engine = Matter.Engine.create();
       engine.world.gravity.y = 0;
