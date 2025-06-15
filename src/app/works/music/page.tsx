@@ -23,9 +23,11 @@ const Musics: React.FC = () => {
   const handleScroll = () => {
     const scrollPos = window.scrollY
     const slider = document.querySelector(".slider")
-    const initialTransform = `translate3d(-50%, -50%, 0) rotateX(0deg) rotateY(-25deg) rotateZ(-120deg)`
-    const zOffset = scrollPos * 0.5
-    slider.style.transform = `${initialTransform} translateY(${zOffset}px)`
+    if (slider) {
+        const initialTransform = `translate3d(-50%, -50%, 0) rotateX(0deg) rotateY(-25deg) rotateZ(-120deg)`;
+        const zOffset = scrollPos * 0.5;
+        slider.style.transform = `${initialTransform} translateY(${zOffset}px)`;
+      }
   }
   
   const handleMouseOver = (e) => {
