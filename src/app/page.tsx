@@ -773,44 +773,46 @@ const Home: React.FC = () => {
   
 //Service Morph 
 useEffect(() => {
-  const services = gsap.utils.toArray("#Home .service");
-
-  const observerOptions = {
+  const services = gsap.utils.toArray("#Home .service") as Element[];
+  
+  const observerOptions: IntersectionObserverInit = {
     root: null,
     rootMargin: "0px",
     threshold: 0.1,
   };
 
-  const observerCallback = (entries, observer) => {
-    entries.forEach((entry) => {
+  const observerCallback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver): void => {
+    entries.forEach((entry: IntersectionObserverEntry) => {
       if (entry.isIntersecting) {
-        const service = entry.target;
-        const imageContainer = service.querySelector('.img');
-
-        ScrollTrigger.create({
-          trigger: service,
-          start: "bottom bottom",
-          end: "top top",
-          scrub: true,
-          onUpdate: (self) => {
-            const progress = self.progress;
-            const newWidth = 30 + 70 * progress;
-            gsap.to(imageContainer, {
-              width: newWidth + "%",
-              duration: 0.1,
-              ease: "none",
-            });
-          }
-        });
+        const service = entry.target as HTMLElement;
+        const imageContainer = service.querySelector('.img') as HTMLElement;
+        
+        if (imageContainer) {
+          ScrollTrigger.create({
+            trigger: service,
+            start: "bottom bottom",
+            end: "top top",
+            scrub: true,
+            onUpdate: (self: any) => {
+              const progress: number = self.progress;
+              const newWidth: number = 30 + 70 * progress;
+              gsap.to(imageContainer, {
+                width: newWidth + "%",
+                duration: 0.1,
+                ease: "none",
+              });
+            }
+          });
+        }
 
         ScrollTrigger.create({
           trigger: service,
           start: "top bottom",
           end: "top top",
           scrub: true,
-          onUpdate: (self) => {
-            const progress = self.progress;
-            const newHeight = 150 + 300 * progress;
+          onUpdate: (self: any) => {
+            const progress: number = self.progress;
+            const newHeight: number = 150 + 300 * progress;
             gsap.to(service, {
               height: newHeight + "px", // Assuming you want pixel height
               duration: 0.1,
@@ -824,10 +826,17 @@ useEffect(() => {
     });
   };
 
-  const observer = new IntersectionObserver(observerCallback, observerOptions);
-  services.forEach((service) => {
+  const observer: IntersectionObserver = new IntersectionObserver(observerCallback, observerOptions);
+  
+  services.forEach((service: Element) => {
     observer.observe(service);
   });
+
+  // Cleanup function
+  return () => {
+    observer.disconnect();
+    ScrollTrigger.getAll().forEach((trigger: any) => trigger.kill());
+  };
 }, []);
 
   
