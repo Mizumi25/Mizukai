@@ -10,130 +10,141 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 
 const Musics: React.FC = () => {
-  const [cards, setCards] = useState<{ id: number; imgSrc: string }[]>([]);
-  const [filtersInitialized, setFiltersInitialized] = useState(false);
-  const [textSplitInitialized, setTextSplitInitialized] = useState(false);
-  
-  gsap.registerPlugin(ScrollTrigger);
-
-  
-  
-  //Music Thumbnails Slider
-  const handleScroll = () => {
-  const scrollPos = window.scrollY;
-  const slider = document.querySelector(".slider");
-
-  if (slider instanceof HTMLElement) {
-    const initialTransform = `translate3d(-50%, -50%, 0) rotateX(0deg) rotateY(-25deg) rotateZ(-120deg)`;
-    const zOffset = scrollPos * 0.5;
-    slider.style.transform = `${initialTransform} translateY(${zOffset}px)`;
-  }
-};
-
-  
-  const handleMouseOver = ( e: React.MouseEvent<HTMLElement> ) => {
-    e.currentTarget.style.left = "15%"
-  }
-  
-const handleMouseOut = ( e: React.MouseEvent<HTMLElement> ) => {
-    e.currentTarget.style.left = "0%"
-  }
-  
-  useEffect(() => {
-    const newCards = musicThumbs.map((img, index) => ({
-      id: index + 1,
-      imgSrc: img.img,
-    }))
-   
-    setCards(newCards)
+      // Type declarations for global objects
+    declare global {
+      interface Window {
+        ReactDOM: {
+          createRoot: (element: HTMLElement) => {
+            render: (element: React.ReactElement) => void;
+          };
+        };
+        React: {
+          createElement: (
+            type: string,
+            props: Record<string, unknown>,
+            ...children: React.ReactNode[]
+          ) => React.ReactElement;
+        };
+      }
+    }
     
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-  
-  
-  
-  //Music Category Selector
-useEffect(() => {
-  
-  const itemsContainer = document.querySelector(".items")
-  const itemsCols = document.querySelectorAll(".items-col")
-  const filters = document.querySelectorAll(".filter")
-  const defaultFontSize = "75px"
-  const activeFontSize = "250px"
-  
-  function splitTextIntoSpans(selector: string) {
-  const elements = document.querySelectorAll(selector);
-    elements.forEach((element) => {
-      const text = element.innerText;
-      const spans = text
-        .split("")
-        .map((char) => `<span>${char === " " ? "&nbsp;" : char}</span>`)
-        .join("");
-      element.innerHTML = spans;
-    });
-  }
-
-  
-      function animateFontSize(target: Element, fontSize: string = activeFontSize): () => void {
-      const spans = target.querySelectorAll("span");
-      const ctx = gsap.context(() => {
-        gsap.to(spans, {
-          fontSize: fontSize,
-          stagger: 0.025,
-          duration: 0.5,
-          ease: "power2.out",
+    const [cards, setCards] = useState<{ id: number; imgSrc: string }[]>([]);
+    const [filtersInitialized, setFiltersInitialized] = useState(false);
+    const [textSplitInitialized, setTextSplitInitialized] = useState(false);
+    
+    gsap.registerPlugin(ScrollTrigger);
+    
+    //Music Thumbnails Slider
+    const handleScroll = () => {
+      const scrollPos = window.scrollY;
+      const slider = document.querySelector(".slider");
+    
+      if (slider instanceof HTMLElement) {
+        const initialTransform = `translate3d(-50%, -50%, 0) rotateX(0deg) rotateY(-25deg) rotateZ(-120deg)`;
+        const zOffset = scrollPos * 0.5;
+        slider.style.transform = `${initialTransform} translateY(${zOffset}px)`;
+      }
+    };
+    
+    const handleMouseOver = (e: React.MouseEvent<HTMLElement>) => {
+      e.currentTarget.style.left = "15%";
+    };
+    
+    const handleMouseOut = (e: React.MouseEvent<HTMLElement>) => {
+      e.currentTarget.style.left = "0%";
+    };
+    
+    useEffect(() => {
+      const newCards = musicThumbs.map((img, index) => ({
+        id: index + 1,
+        imgSrc: img.img,
+      }));
+    
+      setCards(newCards);
+    
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+    
+    //Music Category Selector
+    useEffect(() => {
+      const itemsContainer = document.querySelector(".items");
+      const itemsCols = document.querySelectorAll(".items-col");
+      const filters = document.querySelectorAll(".filter");
+      const defaultFontSize = "75px";
+      const activeFontSize = "250px";
+    
+      function splitTextIntoSpans(selector: string) {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach((element) => {
+          const text = element.textContent || "";
+          const spans = text
+            .split("")
+            .map((char) => `<span>${char === " " ? "&nbsp;" : char}</span>`)
+            .join("");
+          element.innerHTML = spans;
         });
-      });
-      return () => ctx.revert();
-    }
+      }
     
-    function clearItems(): void {
-      itemsCols.forEach((col: Element) => {
-        if (col instanceof HTMLElement) {
-          col.innerHTML = "";
-        }
-      });
-    }
+      function animateFontSize(target: Element, fontSize: string = activeFontSize): () => void {
+        const spans = target.querySelectorAll("span");
+        const ctx = gsap.context(() => {
+          gsap.to(spans, {
+            fontSize: fontSize,
+            stagger: 0.025,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        });
+        return () => ctx.revert();
+      }
     
-          function addItemsToCols(filter: string = "all"): void {
+      function clearItems(): void {
+        itemsCols.forEach((col: Element) => {
+          if (col instanceof HTMLElement) {
+            col.innerHTML = "";
+          }
+        });
+      }
+    
+      function addItemsToCols(filter: string = "all"): void {
         let colIndex = 0;
         const filteredItems = musicThumbs.filter(
           (item) => filter === "all" || item.tag.includes(filter)
         );
-      
+    
         filteredItems.forEach((item) => {
           const itemElement = document.createElement("div");
           itemElement.className = "item";
-      
+    
           const itemImgContainer = document.createElement("div");
           itemImgContainer.className = "item-img";
-      
-          const root = (window as unknown as { ReactDOM: any }).ReactDOM.createRoot(itemImgContainer);
-          const itemImg = (window as unknown as { React: any }).React.createElement("img", {
+    
+          const root = window.ReactDOM.createRoot(itemImgContainer);
+          const itemImg = window.React.createElement("img", {
             src: item.img,
             alt: item.title,
             width: 200,
             height: 200,
           });
           root.render(itemImg);
-      
+    
           const itemCopy = document.createElement("div");
           itemCopy.className = "item-copy";
           itemCopy.innerHTML = `<p>${item.title}</p>`;
-      
+    
           itemElement.appendChild(itemImgContainer);
           itemElement.appendChild(itemCopy);
-      
+    
           const col = itemsCols[colIndex % itemsCols.length];
           if (col instanceof HTMLElement) {
             col.appendChild(itemElement);
           }
-      
+    
           colIndex++;
         });
       }
-      
+    
       function animateItems(filter: string): () => void {
         const ctx = gsap.context(() => {
           gsap.to(itemsContainer, {
@@ -151,195 +162,188 @@ useEffect(() => {
         });
         return () => ctx.revert();
       }
-      
+    
       // Initialize text splitting first
       splitTextIntoSpans(".filter h1");
       setTextSplitInitialized(true);
-      
+    
       // Set initial active filter font size using GSAP instead of CSS
       const activeFilter = document.querySelector(".filter.active h1");
       if (activeFilter) {
         const spans = activeFilter.querySelectorAll("span");
         gsap.set(spans, { fontSize: activeFontSize });
       }
-      
+    
       addItemsToCols();
-      
+    
       filters.forEach((filter) => {
-        filter.addEventListener("click", function () {
+        filter.addEventListener("click", function (this: Element) {
           if (this.classList.contains("active")) {
             return;
           }
-      
+    
           const previousActiveFilterH1 = document.querySelector(".filter.active h1");
           if (previousActiveFilterH1) {
             animateFontSize(previousActiveFilterH1, defaultFontSize);
           }
-      
+    
           filters.forEach((f) => f.classList.remove("active"));
           this.classList.add("active");
-      
+    
           const newActiveFilterH1 = this.querySelector("h1");
           if (newActiveFilterH1) {
             animateFontSize(newActiveFilterH1, activeFontSize);
           }
-      
-          const filterValue = this.getAttribute("data-filter");
+    
+          const filterValue = this.getAttribute("data-filter") || "all";
           animateItems(filterValue);
         });
       });
-      
+    
       // Mark filters as initialized
       setFiltersInitialized(true);
-
-
-}, []);
-
-
-// Filters animation on scroll - Modified to work with text splitting
-useGSAP(() => {
-    // Don't run until both filters and text splitting are initialized
-    if (!filtersInitialized || !textSplitInitialized) return;
+    }, []);
     
-    // Set initial state using GSAP instead of CSS to avoid conflicts
-    gsap.set('.filters', { 
-      autoAlpha: 0, // This combines opacity: 0 and visibility: hidden
-      y: 50 
-    });
+    // Filters animation on scroll - Modified to work with text splitting
+    useGSAP(() => {
+      // Don't run until both filters and text splitting are initialized
+      if (!filtersInitialized || !textSplitInitialized) return;
     
-    // Create intersection observer to handle visibility
-    const section2 = document.querySelector("#Musics .section2");
-    const filters = document.querySelector('.filters');
+      // Set initial state using GSAP instead of CSS to avoid conflicts
+      gsap.set('.filters', {
+        autoAlpha: 0, // This combines opacity: 0 and visibility: hidden
+        y: 50
+      });
     
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Section2 is in view, show filters
-          filters.classList.add('visible');
-          gsap.to('.filters', {
-            autoAlpha: 1, // This combines opacity: 1 and visibility: visible
-            y: 0,
-            duration: 0.5,
-            ease: "power2.out"
-          });
+      // Create intersection observer to handle visibility
+      const section2 = document.querySelector("#Musics .section2");
+      const filters = document.querySelector('.filters');
+    
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Section2 is in view, show filters
+            filters?.classList.add('visible');
+            gsap.to('.filters', {
+              autoAlpha: 1, // This combines opacity: 1 and visibility: visible
+              y: 0,
+              duration: 0.5,
+              ease: "power2.out"
+            });
+          } else {
+            // Section2 is out of view, hide filters
+            filters?.classList.remove('visible');
+            gsap.to('.filters', {
+              autoAlpha: 0, // This combines opacity: 0 and visibility: hidden
+              y: 50,
+              duration: 0.3,
+              ease: "power2.out"
+            });
+          }
+        });
+      }, {
+        threshold: 0.1, // Trigger when 10% of section2 is visible
+        rootMargin: "-20% 0px -20% 0px" // Add some margin for better UX
+      });
+    
+      if (section2) {
+        observer.observe(section2);
+      }
+    
+      // Cleanup function
+      return () => {
+        if (section2) {
+          observer.unobserve(section2);
+        }
+      };
+    }, [filtersInitialized, textSplitInitialized]); // Add both dependencies
+    
+    //Music Player Widget
+    useEffect(() => {
+      const musicPlayer = document.querySelector('.musicPlayerContainer');
+      const togglePlayer = document.querySelector('.togglePlayer');
+      const trackInfo = document.querySelector('.trackInfo') as HTMLElement;
+      const trackName = document.querySelector('.trackName');
+      const trackArtist = document.querySelector('.trackArtist');
+      const trackNav = document.querySelector('.trackNav') as HTMLElement;
+      const playPauseBtn = document.querySelector('.playPauseTrack');
+      const prevBtn = document.querySelector('.prevTrack');
+      const nextBtn = document.querySelector('.nextTrack');
+      let trackIndex = 0;
+      let isPlaying = false;
+      let isHidden = true;
+      const currentTrack = document.createElement('audio');
+    
+      if (!musicPlayer || !togglePlayer || !trackInfo || !trackName || !trackArtist || 
+          !trackNav || !playPauseBtn || !prevBtn || !nextBtn) {
+        return; // Early return if required elements are not found
+      }
+    
+      togglePlayer.addEventListener('click', function () {
+        isHidden = !isHidden;
+        if (!isHidden) {
+          musicPlayer.classList.remove('hide');
+          togglePlayer.innerHTML = '-';
+          trackInfo.style.transitionDelay = '0.4s';
+          trackNav.style.transitionDelay = '0.4s';
         } else {
-          // Section2 is out of view, hide filters
-          filters.classList.remove('visible');
-          gsap.to('.filters', {
-            autoAlpha: 0, // This combines opacity: 0 and visibility: hidden
-            y: 50,
-            duration: 0.3,
-            ease: "power2.out"
-          });
+          musicPlayer.classList.add('hide');
+          togglePlayer.innerHTML = '+';
+          trackInfo.style.transitionDelay = '0s';
+          trackNav.style.transitionDelay = '0s';
         }
       });
-    }, {
-      threshold: 0.1, // Trigger when 10% of section2 is visible
-      rootMargin: "-20% 0px -20% 0px" // Add some margin for better UX
-    });
     
-    if (section2) {
-      observer.observe(section2);
-    }
+      const trackList = musicThumbs.map((music) => ({
+        name: music.title,
+        artist: 'mizumi',
+        path: music.path,
+      }));
     
-    // Cleanup function
-    return () => {
-      if (section2) {
-        observer.unobserve(section2);
+      function loadTrack(trackIndex: number) {
+        currentTrack.src = trackList[trackIndex].path;
+        currentTrack.load();
+        if (trackName) trackName.textContent = trackList[trackIndex].name;
+        if (trackArtist) trackArtist.textContent = trackList[trackIndex].artist;
+        currentTrack.addEventListener('ended', nextTrack);
       }
-    };
-}, [filtersInitialized, textSplitInitialized]) // Add both dependencies
-
-//Music Player Widget {
-  useEffect(() => {
-    const musicPlayer = document.querySelector('.musicPlayerContainer');
-    const togglePlayer = document.querySelector('.togglePlayer');
-    const trackInfo = document.querySelector('.trackInfo');
-    const trackName = document.querySelector('.trackName');
-    const trackArtist = document.querySelector('.trackArtist');
-    const trackNav = document.querySelector('.trackNav');
-    const playPauseBtn = document.querySelector('.playPauseTrack');
-    const prevBtn = document.querySelector('.prevTrack');
-    const nextBtn = document.querySelector('.nextTrack');
-    let trackIndex = 0;
-    let isPlaying = false;
-    let isHidden = true;
-    const currentTrack = document.createElement('audio');
- 
-
-    togglePlayer.addEventListener('click', function () {
-      isHidden = !isHidden;
-      if (!isHidden) {
-        musicPlayer.classList.remove('hide');
-        togglePlayer.innerHTML = '-';
-        trackInfo.style.transitionDelay = '0.4s';
-        trackNav.style.transitionDelay = '0.4s';
-      } else {
-        musicPlayer.classList.add('hide');
-        togglePlayer.innerHTML = '+';
-        trackInfo.style.transitionDelay = '0s';
-        trackNav.style.transitionDelay = '0s';
+      loadTrack(trackIndex);
+    
+      function playPauseTrack() {
+        if (!isPlaying) playTrack();
+        else pauseTrack();
       }
-    });
-   
-   
-
     
-
+      function playTrack() {
+        currentTrack.play();
+        isPlaying = true;
+        if (playPauseBtn) playPauseBtn.innerHTML = 'Pause';
+      }
     
-    const trackList = musicThumbs.map((music) => ({
-      name: music.title,
-      artist: 'mizumi',
-      path: music.path,
-    }));
-
-    function loadTrack(trackIndex) {
-      currentTrack.src = trackList[trackIndex].path;
-      currentTrack.load();
-      trackName.textContent = trackList[trackIndex].name;
-      trackArtist.textContent = trackList[trackIndex].artist;
-      currentTrack.addEventListener('ended', nextTrack);
-    }
-    loadTrack(trackIndex);
-
-    function playPauseTrack() {
-      if (!isPlaying) playTrack();
-      else pauseTrack();
-    }
-
-    function playTrack() {
-      currentTrack.play();
-      isPlaying = true;
-      playPauseBtn.innerHTML = 'Pause';
-      
-    }
-
-    function pauseTrack() {
-      currentTrack.pause();
-      isPlaying = false;
-      playPauseBtn.innerHTML = 'Play';
-      
-    }
-
-    function nextTrack() {
-      if (trackIndex < trackList.length - 1) trackIndex += 1;
-      else trackIndex = 0;
-      loadTrack(trackIndex);
-      playTrack();
-    }
-
-    function prevTrack() {
-      if (trackIndex > 0) trackIndex -= 1;
-      else trackIndex = trackList.length - 1;
-      loadTrack(trackIndex);
-      playTrack();
-    }
-
-    playPauseBtn.addEventListener('click', playPauseTrack);
-    prevBtn.addEventListener('click', prevTrack);
-    nextBtn.addEventListener('click', nextTrack);
-  }, []);
-
+      function pauseTrack() {
+        currentTrack.pause();
+        isPlaying = false;
+        if (playPauseBtn) playPauseBtn.innerHTML = 'Play';
+      }
+    
+      function nextTrack() {
+        if (trackIndex < trackList.length - 1) trackIndex += 1;
+        else trackIndex = 0;
+        loadTrack(trackIndex);
+        playTrack();
+      }
+    
+      function prevTrack() {
+        if (trackIndex > 0) trackIndex -= 1;
+        else trackIndex = trackList.length - 1;
+        loadTrack(trackIndex);
+        playTrack();
+      }
+    
+      playPauseBtn.addEventListener('click', playPauseTrack);
+      prevBtn.addEventListener('click', prevTrack);
+      nextBtn.addEventListener('click', nextTrack);
+    }, []);
 
   
   return (
