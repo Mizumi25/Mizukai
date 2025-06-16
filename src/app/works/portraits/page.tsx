@@ -14,13 +14,14 @@ const Portraits: React.FC = () => {
     gsap.registerPlugin(ScrollTrigger)
     
     const main = document.querySelector("#Portraits")
-    const section2Height = document.querySelector(".section2 .content")?.offsetHeight || 2000
+    const section2Element = document.querySelector(".section2 .content") as HTMLElement
+    const section2Height = section2Element?.offsetHeight || 2000
     const imageHolderHeight = window.innerHeight
     const additionalScrollHeight = window.innerHeight * 0.5
     
     const totalBodyHeight = section2Height + imageHolderHeight + additionalScrollHeight
     if (main) {
-      main.style.height = `${totalBodyHeight}px`
+      (main as HTMLElement).style.height = `${totalBodyHeight}px`
     }
     
     const ctx = gsap.context(() => {

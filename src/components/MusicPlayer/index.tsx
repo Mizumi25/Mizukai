@@ -72,7 +72,11 @@ const MusicPlay: React.FC = () => {
       opt.power = !opt.power;
 
       if (opt.power) {
-        audio.current.play();
+        if (audio.current) {
+          audio.current.play().catch(error => {
+            console.error('Error playing audio:', error);
+          });
+        }
         gsap.to(opt, {
           sinHeight: 4,
           stretch: 5,
@@ -80,7 +84,9 @@ const MusicPlay: React.FC = () => {
           ease: Power2.easeInOut,
         });
       } else {
-        audio.current.pause();
+        if (audio.current) {
+          audio.current.pause();
+        }
         gsap.to(opt, {
           sinHeight: 0,
           stretch: 10,

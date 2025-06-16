@@ -1,6 +1,6 @@
 'use client';
 
-import storyData from '@/data/story/storyImages.ts';
+import storyData from '@/data/story/storyImages';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
@@ -27,13 +27,23 @@ import {
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Define the story type
+interface Story {
+  id: number;
+  imgSrc: string;
+  title: string;
+  genre: string;
+  description: string;
+}
+
 const Stories: React.FC = () => {
-  const [stories, setStories] = useState([]);
+  // Initialize with proper type
+  const [stories, setStories] = useState<Story[]>([]);
   
   
     //Compilation Mapping
   useEffect(() => {
-    const newStories = storyData.map((story, index) => ({
+    const newStories: Story[] = storyData.map((story, index) => ({
       id: index + 1,
       imgSrc: story.img,
       title: story.title,
@@ -102,16 +112,17 @@ const Stories: React.FC = () => {
   const hoverItemFlex = "1 1 400px";
   const hoverItemRotate = "rotate(0deg)";
 
-  const updateCoverItems = (coverItems) => {
+  const updateCoverItems = (coverItems: NodeListOf<Element>) => {
     coverItems.forEach((item) => {
+      const htmlItem = item as HTMLElement & { isHovered?: boolean };
       let flex = defaultItemFlex;
       let rotate;
-      if (item.isHovered) {
+      if (htmlItem.isHovered) {
         flex = hoverItemFlex;
         rotate = hoverItemRotate;
       }
-      item.style.flex = flex;
-      item.style.transform = rotate;
+      htmlItem.style.flex = flex;
+      htmlItem.style.transform = rotate || '';
     });
   };
 
@@ -121,14 +132,17 @@ const Stories: React.FC = () => {
     coverItems.forEach((item) => {
       item.addEventListener("mouseenter", () => {
         coverItems.forEach((otherItem) => {
-          otherItem.isHovered = otherItem === item;
+          (otherItem as HTMLElement & { isHovered?: boolean }).isHovered = otherItem === item;
         });
         updateCoverItems(coverItems);
       });
     });
 
     galleryContainer.addEventListener("mousemove", (e) => {
-      indicator.style.left = `${e.clientX - galleryContainer.getBoundingClientRect().left}px`;
+      const mouseEvent = e as MouseEvent;
+      if (indicator) {
+        (indicator as HTMLElement).style.left = `${mouseEvent.clientX - galleryContainer.getBoundingClientRect().left}px`;
+      }
     });
   });
 
@@ -150,15 +164,40 @@ const Stories: React.FC = () => {
   
 // Image Touch Sliding 
 useEffect(() => {
-  const lerp = (f0, f1, t) => (1 - t) * f0 + t * f1;
-  const clamp = (val, min, max) => Math.max(min, Math.min(val, max));
+  const lerp = (f0: number, f1: number, t: number) => (1 - t) * f0 + t * f1;
+  const clamp = (val: number, min: number, max: number) => Math.max(min, Math.min(val, max));
 
   class DragScroll {
-    constructor(obj) {
-      this.el = document.querySelector(obj.el);
-      this.wrap = document.querySelector(obj.wrap);
-      this.items = document.querySelectorAll(obj.item);
-      this.bar = document.querySelector(obj.bar);
+    el: HTMLElement;
+    wrap: HTMLElement;
+    items: NodeListOf<HTMLElement>;
+    bar: HTMLElement;
+    progress: number;
+    speed: number;
+    oldX: number;
+    x: number;
+    playrate: number;
+    wrapWidth: number;
+    maxScroll: number;
+    dragging: boolean;
+    startX: number;
+    scale: number;
+
+    constructor(obj: { el: string; wrap: string; item: string; bar: string }) {
+      this.el = document.querySelector(obj.el) as HTMLElement;
+      this.wrap = document.querySelector(obj.wrap) as HTMLElement;
+      this.items = document.querySelectorAll(obj.item) as NodeListOf<HTMLElement>;
+      this.bar = document.querySelector(obj.bar) as HTMLElement;
+      this.progress = 0;
+      this.speed = 0;
+      this.oldX = 0;
+      this.x = 0;
+      this.playrate = 0;
+      this.wrapWidth = 0;
+      this.maxScroll = 0;
+      this.dragging = false;
+      this.startX = 0;
+      this.scale = 0;
       this.init();
     }
 
@@ -176,18 +215,14 @@ useEffect(() => {
     }
 
     bindings() {
-      [
-        "events",
-        "calculate",
-        "raf",
-        "handleWheel",
-        "move",
-        "handleTouchStart",
-        "handleTouchMove",
-        "handleTouchEnd"
-      ].forEach((method) => {
-        this[method] = this[method].bind(this);
-      });
+      this.events = this.events.bind(this);
+      this.calculate = this.calculate.bind(this);
+      this.raf = this.raf.bind(this);
+      this.handleWheel = this.handleWheel.bind(this);
+      this.move = this.move.bind(this);
+      this.handleTouchStart = this.handleTouchStart.bind(this);
+      this.handleTouchMove = this.handleTouchMove.bind(this);
+      this.handleTouchEnd = this.handleTouchEnd.bind(this);
     }
 
     calculate() {
@@ -198,20 +233,20 @@ useEffect(() => {
       this.maxScroll = this.wrapWidth - this.el.clientWidth;
     }
 
-    handleWheel(e) {
+    handleWheel(e: WheelEvent) {
       this.progress += e.deltaY;
       this.move();
     }
 
-    handleTouchStart(e) {
+    handleTouchStart(e: MouseEvent | TouchEvent) {
       e.preventDefault();
       this.dragging = true;
-      this.startX = e.clientX || e.touches[0].clientX;
+      this.startX = (e as MouseEvent).clientX || (e as TouchEvent).touches[0].clientX;
     }
 
-    handleTouchMove(e) {
+    handleTouchMove(e: MouseEvent | TouchEvent) {
       if (!this.dragging) return false;
-      const x = e.clientX || e.touches[0].clientX;
+      const x = (e as MouseEvent).clientX || (e as TouchEvent).touches[0].clientX;
       this.progress += (this.startX - x) * 2.5;
       this.startX = x;
       this.move();
@@ -250,7 +285,10 @@ useEffect(() => {
       this.scale = lerp(this.scale, this.speed, 0.1);
       this.items.forEach((item) => {
         item.style.transform = `scale(${1 - Math.abs(this.speed) * 0.005})`;
-        item.querySelector("figure img").style.transform = `scaleX(${1 + Math.abs(this.speed) * 0.004})`;
+        const img = item.querySelector("figure img") as HTMLElement;
+        if (img) {
+          img.style.transform = `scaleX(${1 + Math.abs(this.speed) * 0.004})`;
+        }
       });
     }
   }

@@ -7,16 +7,26 @@ import './style.css';
 import Image from 'next/image';
 import Profile from '../../../../public/images/profile.jpg';
 import dynamic from "next/dynamic";
-import videoCompilations from '@/data/videoProductions/videoCompilation.ts';
+import videoCompilations from '@/data/videoProductions/videoCompilation';
 import { videoProductionContent } from '@/data/videoProductions/content';
 
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false })
 
+// Define the video type
+interface VideoType {
+  id: number;
+  video: string;
+  title: string;
+  category: string;
+  date: string;
+}
+
 const Videos = () => {
-  const [videos, setVideos] = useState([]);
+  // Fix: Properly type the videos state
+  const [videos, setVideos] = useState<VideoType[]>([]);
   
   useEffect(() => {
-    const newVideos = videoCompilations.map((video, index) => ({
+    const newVideos: VideoType[] = videoCompilations.map((video, index) => ({
       id: index + 1,
       video: video.video,
       title: video.title,
@@ -27,7 +37,7 @@ const Videos = () => {
   }, []);
   
   // InfiniteSlider
-  const infisliderRef = useRef(null)
+  const infisliderRef = useRef<HTMLDivElement>(null)
   const [isAnimating, setIsAnimating] = useState(false)
   const [isClient, setIsClient] = useState(false)
   
@@ -42,7 +52,7 @@ const Videos = () => {
   }, [isClient, infisliderRef]);
   
   const initializeCards = () => {
-    const cards = Array.from(infisliderRef.current.querySelectorAll(".infiCard"))
+    const cards = Array.from(infisliderRef.current!.querySelectorAll(".infiCard"))
     console.log(cards)
     gsap.to(cards, {
       y: (i) => i * 15 + "px", // Changed from percentage to pixels for better control
@@ -58,9 +68,9 @@ const Videos = () => {
     if (isAnimating) return
     setIsAnimating(true)
     
-    const slider = infisliderRef.current
+    const slider = infisliderRef.current!
     const cards = Array.from(slider.querySelectorAll(".infiCard"))
-    const lastCard = cards.pop()
+    const lastCard = cards.pop()!
     
     gsap.to(lastCard, {
       y: "-=200", // Move upward instead
@@ -87,13 +97,13 @@ const Videos = () => {
     
     carouselItems.forEach((item) => {
       item.addEventListener("transitionend", (e) => {
-        if (e.target.classList.contains("active")) {
-          const caption = e.target.querySelector(".carouselCaption");
+        if ((e.target as HTMLElement).classList.contains("active")) {
+          const caption = (e.target as HTMLElement).querySelector(".carouselCaption");
           if (caption) {
             caption.classList.add("animateIn");
           }
         } else {
-          const caption = e.target.querySelector(".carouselCaption");
+          const caption = (e.target as HTMLElement).querySelector(".carouselCaption");
           if (caption) {
             caption.classList.remove("animateIn");
           }
@@ -106,9 +116,9 @@ const Videos = () => {
   useEffect(() => {
     gsap.registerPlugin(Draggable, CSSRulePlugin);
     
-    const timeline = document.querySelector('.timeline')
-    const scroller = document.querySelector('.scroller')
-    const container = document.querySelector('.container')
+    const timeline = document.querySelector('.timeline') as HTMLElement
+    const scroller = document.querySelector('.scroller') as HTMLElement
+    const container = document.querySelector('.container') as HTMLElement
     
     if (!timeline || !scroller || !container) return;
     
@@ -209,10 +219,10 @@ const Videos = () => {
             </div>
           </div>
         </div>
-        <a href="#myCarousel" className="carouselControlPrev absolute z-[2] top-1/2 left-16 no-underline" role="button" dataslide="prev">
+        <a href="#myCarousel" className="carouselControlPrev absolute z-[2] top-1/2 left-16 no-underline" role="button" data-slide="prev">
           {videoProductionContent.carousel.navigation.prev}
         </a>
-        <a href="#myCarousel" className="carouselControlNext absolute z-[2] top-1/2 right-16 no-underline" role="button" dataslide="next">
+        <a href="#myCarousel" className="carouselControlNext absolute z-[2] top-1/2 right-16 no-underline" role="button" data-slide="next">
         {videoProductionContent.carousel.navigation.next}
         </a>
       </div>
