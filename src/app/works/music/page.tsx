@@ -8,25 +8,6 @@ import gsap from 'gsap'
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-   // Type declarations for global objects
-    declare global {
-      interface Window {
-        ReactDOM: {
-          createRoot: (element: HTMLElement) => {
-            render: (element: React.ReactElement) => void;
-          };
-        };
-        React: {
-          createElement: (
-            type: string,
-            props: Record<string, unknown>,
-            ...children: React.ReactNode[]
-          ) => React.ReactElement;
-        };
-      }
-    }
-    
-
 const Musics: React.FC = () => {
    
     const [cards, setCards] = useState<{ id: number; imgSrc: string }[]>([]);
@@ -121,14 +102,13 @@ const Musics: React.FC = () => {
           const itemImgContainer = document.createElement("div");
           itemImgContainer.className = "item-img";
     
-          const root = window.ReactDOM.createRoot(itemImgContainer);
-          const itemImg = window.React.createElement("img", {
-            src: item.img,
-            alt: item.title,
-            width: 200,
-            height: 200,
-          });
-          root.render(itemImg);
+          // Fixed: Use vanilla JavaScript instead of ReactDOM
+          const itemImg = document.createElement("img");
+          itemImg.src = item.img;
+          itemImg.alt = item.title;
+          itemImg.width = 200;
+          itemImg.height = 200;
+          itemImgContainer.appendChild(itemImg);
     
           const itemCopy = document.createElement("div");
           itemCopy.className = "item-copy";

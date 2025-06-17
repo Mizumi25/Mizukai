@@ -3,9 +3,9 @@
 
 import React from "react";
 import "./style.css";
-// import Link from 'next/link'
-// import gsap, { CSSRulePlugin } from 'gsap/all';
-// import { useGSAP } from "@gsap/react";
+import Link from 'next/link'
+import gsap, { CSSRulePlugin } from 'gsap/all';
+import { useGSAP } from "@gsap/react";
 import Image from 'next/image'
 import Profile from '../../../public/images/profile.jpg';
 // import { useAiAssistant } from "@sista/ai-assistant-react";
@@ -283,35 +283,35 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
            <div className="col-lg">
             <div className="menu-preview-img"><Image src={Profile} alt="" /></div>
            </div>
-           {/*<div className="col-sm">
+             <div className="col-sm">
               <div className="menu-links">
                 <div className="link">
-                  <a href="/" data-img={Profile}>Home</a>
+                  <Link href="/" data-img={Profile}>Home</Link>
                 </div>
                 <div className="link">
-                  <a href="/" data-img={Profile}>About</a>
+                  <Link href="/about" data-img={Profile}>About</Link>
                 </div>
                 <div className="link">
-                  <a href="/" data-img={Profile}>Work</a>
+                  <Link href="/work" data-img={Profile}>Work</Link>
                 </div>
                 <div className="link">
-                  <a href="/" data-img={Profile}>Services</a>
+                  <Link href="/services" data-img={Profile}>Services</Link>
                 </div>
               </div>
               <div className="menu-socials">
-                <div className="social"><a href="">Facebook</a></div>
-                <div className="social"><a href="">Github</a></div>
-                <div className="social"><a href="">Instagram</a></div>
-                <div className="social"><a href="">Twitter</a></div>
-                <div className="social"><a href="">Youtube</a></div>
+                <div className="social"><Link href="#">Facebook</Link></div>
+                <div className="social"><Link href="#">Github</Link></div>
+                <div className="social"><Link href="#">Instagram</Link></div>
+                <div className="social"><Link href="#">Twitter</Link></div>
+                <div className="social"><Link href="#">Youtube</Link></div>
               </div>
-           </div>*/}
+            </div>
           </div>
         </div>
         <div className="menu-footer">
           <div className="col-sm">
-           {/* <a href="">Mizumi</a>
-            <a href="">James Rafty D. Libago</a>*/}
+           <a href="youtube.com">Mizumi</a>
+            <a href="Facebook.com">James Rafty D. Libago</a>
           </div>
         </div>
         
