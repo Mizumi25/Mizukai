@@ -35,8 +35,9 @@ export default function RootLayout({
       //  {/* className={`${geistSans.variable} ${geistMono.variable} antialiased`*/}
       >
         <LenisWrapper>
-          <Header />
+          <Header>
           {children}
+          </Header>
         </LenisWrapper>
       </body>
     </html>

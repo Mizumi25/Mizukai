@@ -4,8 +4,6 @@
 import React from "react";
 import "./style.css";
 import Link from 'next/link'
-import gsap, { CSSRulePlugin } from 'gsap/all';
-import { useGSAP } from "@gsap/react";
 import Image from 'next/image'
 import Profile from '../../../public/images/profile.jpg';
 // import { useAiAssistant } from "@sista/ai-assistant-react";
