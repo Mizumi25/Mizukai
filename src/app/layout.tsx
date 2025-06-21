@@ -2,22 +2,22 @@
 
 
 import type { Metadata } from "next";
-// import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import LenisWrapper from "@/components/LenisWrapper";
 import Header from "@/components/Header";
+import EntranceOne from '@/components/EntraceOne/'
 
 
+const nikkyou = localFont({
+  src: "../fonts/NikkyouSans-mLKax.ttf",
+  variable: "--font-nikkyou",
+});
 
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-// 
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
+const hiragino = localFont({
+  src: "../fonts/hiragino.otf",
+  variable: "--font-hiragino",
+});
 
 export const metadata: Metadata = {
   title: "Mizumi Kaito",
@@ -32,12 +32,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-      //  {/* className={`${geistSans.variable} ${geistMono.variable} antialiased`*/}
+      className={`${nikkyou.variable} ${hiragino.variable} antialiased`}
       >
         <LenisWrapper>
-          <Header>
-          {children}
-          </Header>
+          <EntranceOne>
+            <Header>
+              {children}
+            </Header>
+          </EntranceOne>
         </LenisWrapper>
       </body>
     </html>

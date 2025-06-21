@@ -292,7 +292,8 @@ const Home: React.FC = () => {
                         scrub: 1
                     }
                 });
-                tl.fromTo('.section:not(.section1)', {
+               
+                tl.fromTo(['.section:not(.section1)', '.container-wrapper'], {
                     backgroundColor: "#fffffd",
                     color: "#121214",
                     duration: 1
@@ -302,7 +303,7 @@ const Home: React.FC = () => {
                     duration: 1
                 });
                 
-                  tl.fromTo('.section:not(.section1)', {
+                tl.fromTo(['.section:not(.section1)', '.container-wrapper'], {
                     backgroundColor: "#121214",
                     color: "#fffffd",
                     duration: 1
@@ -901,10 +902,6 @@ useGSAP(() => {
       <div id="container" className="absolute w-full h-[50%] filter blur-[0.6px] flex justify-center items-center">
         <h1 id="text1" className="absolute w-full z-[1] mix-blend-difference tracking-[3rem] ml-[3rem] uppercase text-[80px] font-bold text-center text-[#fffffd]"></h1>
         <h1 id="text2" className="absolute w-full z-[1] mix-blend-difference tracking-[3rem] ml-[3rem] uppercase text-[80px] font-bold text-center text-[#fffffd]"></h1>
-        <div className="box box1 absolute z-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[75px] h-[350px] bg-purple-500"></div>
-        <div className="box box2 absolute z-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[75px] h-[350px] bg-purple-500"></div>
-        <div className="box box3 absolute z-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[75px] h-[350px] bg-purple-500"></div>
-        <div className="box box5 absolute z-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[75px] h-[350px] bg-purple-500"></div>
       </div>
       <svg id="filters">
         <defs>
@@ -916,13 +913,7 @@ useGSAP(() => {
           </filter>
         </defs>
       </svg>
-      <a href="#" className="button type--A absolute z-0 w-[240px] h-[56px] no-underline text-[14px] font-bold text-[#fffffd] tracking-[2px] transition-all duration-300 ease mt-[300px] bottom-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div className="button__line"></div>
-        <div className="button__line"></div>
-        <span className="button__text flex justify-center items-center w-full h-full">HIRE ME</span>
-        <div className="button__drow1"></div>
-        <div className="button__drow2"></div>
-      </a>
+      
     </div>
 
     <div className="section section2 relative flex justify-center items-center transition-[mix-blend-mode] duration-1000 ease-in-out pt-[500px] overflow-x-hidden" ref={section2Ref}>

@@ -90,7 +90,7 @@ const Portraits: React.FC = () => {
     })
     
     return () => ctx.revert()
-  }, [portrait.current])
+  }, []) // Empty dependency array - effect runs once on mount
   
   return (
     <>
