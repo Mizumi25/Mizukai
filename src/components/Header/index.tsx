@@ -209,6 +209,11 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div className="menu-toggle relative w-12 h-6 cursor-pointer">
           <p id="menu-open" className="absolute origin-top-left">Menu</p>
           <p id="menu-close" className="absolute origin-top-left">Close</p>
+          {/* Vertical text on left side of menu */}
+          <div className="vertical-text">
+            <span className="vertical-mizumi">Mizumi</span>
+            <span className="vertical-hiragana">みずみ</span>
+          </div>
         </div>
       </nav>
       
