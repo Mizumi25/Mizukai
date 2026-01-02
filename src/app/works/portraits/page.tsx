@@ -1,5 +1,5 @@
 'use client'
-import './style.css'
+import './page.module.css'
 import Image from 'next/image'
 import Profile from '../../../../public/images/profile.jpg';
 import gsap from 'gsap';

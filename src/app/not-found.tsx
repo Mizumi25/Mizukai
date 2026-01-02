@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import Link from 'next/link'
-import './not-found.css'
+import './not-found.module.css'
 
 // Modern pixel patterns - clean 404
 const PIXEL_PATTERNS = {

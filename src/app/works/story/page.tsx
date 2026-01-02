@@ -5,7 +5,7 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { useEffect, useState } from 'react';
-import './style.css';
+import './page.module.css';
 import Profile from '../../../../public/images/profile.jpg';
 import { 
   heroTitle,

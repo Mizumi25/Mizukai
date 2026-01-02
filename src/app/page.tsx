@@ -5,7 +5,7 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react';
-import './style.css';
+import './page.module.css';
 // import GlassyConfirmation from '../components/Confirmation/'
 import MusicPlay from '../components/MusicPlayer/'
 import SeeMore from '../components/seeMoreHover/';
