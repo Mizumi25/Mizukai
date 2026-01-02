@@ -13,16 +13,6 @@ import SeeMore from '../components/seeMoreHover/';
 
 
 import {
-  personalIntroTitle,
-  personalIntroContent,
-  backgroundTitle,
-  backgroundContent,
-  skillsTitle,
-  skillsContent,
-  visionTitle,
-  visionContent,
-  contactTitle,
-  contactContent,
   digitalArtTitle,
   digitalArtDescription,
   webDevelopmentTitle,
@@ -220,29 +210,25 @@ const Home: React.FC = () => {
           //opacity
           useGSAP(() => {
               const ctx = gsap.context(() => {
-                const tl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: ".section2",
-                        start: "top top",
-                        end: "bottom bottom",
-                        scrub: 1
-                    }
+                // Initial state: show only section1, hide the rest (except section7 which is handled separately).
+                gsap.set('.section1', { autoAlpha: 1 });
+                gsap.set('.section:not(.section1, .section7)', { autoAlpha: 0 });
+
+                // Intended behavior (fixed): reveal content as you start scrolling down from the top.
+                // Use a fixed scroll distance so it works consistently in portrait/landscape.
+                const revealTl = gsap.timeline({
+                  scrollTrigger: {
+                    trigger: '.section2',
+                    start: 'top top',
+                    end: '+=200',
+                    scrub: 1,
+                    invalidateOnRefresh: true,
+                  },
                 });
-                tl.fromTo('.section:not(.section1, .section7)', {
-                    autoAlpha: 0,
-                    duration: 1
-                }, {
-                    autoAlpha: 1,
-                    duration: 1
-                });
-                tl.fromTo('.section1', {
-                    autoAlpha: 1,
-                    duration: 0
-                }, {
-                    autoAlpha: 0,
-                    duration: 0
-                });
-                
+
+                revealTl.to('.section1', { autoAlpha: 0, duration: 1 }, 0);
+                revealTl.to('.section:not(.section1, .section7)', { autoAlpha: 1, duration: 1 }, 0);
+
                 const tl2 = gsap.timeline({
                     scrollTrigger: {
                         trigger: ".section2",
@@ -923,28 +909,32 @@ useGSAP(() => {
             <Image src={Profile} alt="profile" className="h-full w-full rounded-full transition duration-500 ease cursor-pointer" />
           </div>
         </div>
-        <h2 className="text-[2rem] mt-[120px] flex justify-center text-center">{personalIntroTitle}</h2>
+        <h2 className="text-[2rem] mt-[120px] flex justify-center text-center">
+          はじめまして、ミズミカイトと申します。
+        </h2>
         <hr className="my-[50px] h-[3px] w-[15%] border-none" />
-        <p className="text-[2rem] flex justify-center text-center">{personalIntroContent}</p>
-        <h2 className="text-[2rem] mt-[120px] flex justify-center text-center">{backgroundTitle}</h2>
-        <hr className="my-[50px] h-[3px] w-[15%] border-none" />
-        <p className="text-[2rem] flex justify-center text-center">{backgroundContent}</p>
-        <h2 className="text-[2rem] mt-[120px] flex justify-center text-center">{skillsTitle}</h2>
-        <hr className="my-[50px] h-[3px] w-[15%] border-none" />
-        <p className="text-[2rem] flex justify-center text-center">{skillsContent}</p>
-        <h2 className="text-[2rem] mt-[120px] flex justify-center text-center">{visionTitle}</h2>
-        <hr className="my-[50px] h-[3px] w-[15%] border-none" />
-        <p className="text-[2rem] flex justify-center text-center">{visionContent}</p>
-        <h2 className="text-[2rem] mt-[120px] flex justify-center text-center">{contactTitle}</h2>
-        <hr className="my-[50px] h-[3px] w-[15%] border-none" />
-        <p className="text-[2rem] flex justify-center text-center">{contactContent}</p>
-        <div className="scroll-down absolute left-1/2 bottom-[100px] block text-center text-[20px] z-0 no-underline w-[20px] h-[20px] border-b-2 border-r-2 border-white -translate-x-1/2 rotate-45"></div>
+        <p className="text-[2rem] flex justify-center text-center">
+          Hello, I'm James Rafty D Libago, also known by my pen name Mizumi Kaito. I'm a 20-year-old aspiring digital artist and full-stack developer from the Philippines.
+        </p>
       </div>
       
       <button className="magneto fixed h-[10rem] w-[10rem] rounded-full border-none bg-[#121214] text-[#fffffd] cursor-pointer right-0 bottom-[20%] z-[7000] mr-[50px] flex justify-center content-center">
         <span className="text absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">MyArts</span>
       </button>
       <div id="debugger" className="absolute text-[#121214] left-0 bottom-0 p-[2rem] w-[20rem]"></div>
+    </div>
+
+    <div className="extraBlock relative flex justify-center items-center transition-[mix-blend-mode] duration-1000 ease-in-out pt-[200px] pb-[200px] overflow-x-hidden bg-[#121214] text-[#fffffd]">
+      <style jsx>{`
+        .extraBlock hr { background-color: #fffffd; }
+      `}</style>
+      <div id="content" className="h-full w-full px-[10%] flex flex-col justify-center items-center font-[700]">
+        <h2 className="text-[2rem] mt-[120px] flex justify-center text-center">私のビジョン</h2>
+        <hr className="my-[50px] h-[3px] w-[15%] border-none" />
+        <p className="text-[2rem] flex justify-center text-center">
+          My goal is to bridge the gap between technology and art, creating meaningful digital experiences that resonate with people. I believe in the power of combining technical expertise with creative vision.
+        </p>
+      </div>
     </div>
 
     <div className="section section3 relative flex justify-center items-center transition-opacity duration-1000 ease h-[calc(100vh+600px)] w-full overflow-hidden">
