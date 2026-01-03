@@ -324,7 +324,12 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       </div>
       </div>
       
-      <div className="container-wrapper relative w-screen overflow-hidden min-h-screen">
+      {/*
+        IMPORTANT for ScrollTrigger pinning:
+        - Avoid `overflow: hidden` on the main page scroll container because it can clip pinned elements.
+        - Pinned elements often rely on `position: fixed`/transforms under the hood.
+      */}
+      <div className="container-wrapper relative w-screen min-h-screen overflow-visible">
         <div className="container relative w-full h-full origin-right-top max-w-screen">
           {children}
         </div>

@@ -100,9 +100,9 @@
   background: white;
   width: 100%;
   min-height: 100vh;
-  /* Create a fixed viewport for animation */
-  max-height: 100vh;
-  overflow-y: auto;
+  /* Do not create an inner scroll container (breaks ScrollTrigger pinning) */
+  max-height: none;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   clip-path: polygon(0 48%, 0 48%, 0 52%, 0 52%);
@@ -114,7 +114,8 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  overflow-y: auto;
+  /* Use the document/page scroll, not an inner scrolling container */
+  overflow: visible;
 }
 
 @media (max-width: 1000px) {

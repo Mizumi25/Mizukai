@@ -142,7 +142,8 @@ body.menu-open {
 
 /* Container animation properties */
 .container-wrapper {
-  clip-path: inset(0); 
+  /* Avoid clipping the main scroll container; it can break ScrollTrigger pin/fixed positioning */
+  clip-path: none;
 }
 
 .container {

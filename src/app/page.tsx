@@ -48,8 +48,9 @@ const Home: React.FC = () => {
   const section4Ref = useRef<HTMLDivElement>(null);
   const section5Ref = useRef<HTMLDivElement>(null);
   const section6Ref = useRef<HTMLDivElement>(null);
-  
-  
+
+  const extraBlockRef = useRef<HTMLDivElement>(null);
+
   const magnetRef = useRef<HTMLDivElement>(null);
   const magTextRef = useRef<HTMLDivElement>(null);
  
@@ -265,6 +266,39 @@ const Home: React.FC = () => {
             
             
             
+            // extraBlock: CodePen-style pin + stagger animation
+            useGSAP(() => {
+              const sectionEl = extraBlockRef.current;
+              if (!sectionEl) return;
+
+              const ctx = gsap.context(() => {
+                const flex = sectionEl.querySelector('.extraFlex');
+                const boxes = sectionEl.querySelectorAll('.box');
+                if (!flex || !boxes.length) return;
+
+                gsap.from(boxes, {
+                  scrollTrigger: {
+                    trigger: flex,
+                    pin: true,
+                    pinSpacing: true,
+                    scrub: 2,
+                    start: 'center center',
+                    end: '+=900 center',
+                    invalidateOnRefresh: true,
+                  },
+                  opacity: 0,
+                  y: -100,
+                  ease: 'back.out(4)',
+                  stagger: {
+                    amount: 3,
+                    from: 'random',
+                  },
+                });
+              }, sectionEl);
+
+              return () => ctx.revert();
+            });
+
             //ColorChange
             useGSAP(() => {
               gsap.registerPlugin(CSSRulePlugin); 
@@ -924,17 +958,39 @@ useGSAP(() => {
       <div id="debugger" className="absolute text-[#121214] left-0 bottom-0 p-[2rem] w-[20rem]"></div>
     </div>
 
-    <div className="extraBlock relative flex justify-center items-center transition-[mix-blend-mode] duration-1000 ease-in-out pt-[200px] pb-[200px] overflow-x-hidden bg-[#121214] text-[#fffffd]">
+    <div
+      className="extraBlock relative overflow-x-hidden bg-[#fffffd] text-[#121214]"
+      ref={extraBlockRef}
+    >
       <style jsx>{`
-        .extraBlock hr { background-color: #fffffd; }
+        .extraSpacer { height: 200vh; }
+        .extraFlex {
+          display: flex;
+          border: 1px solid blue;
+          padding: 2rem;
+          gap: 20px;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .box {
+          width: 100px;
+          height: 100px;
+          background-color: #121214;
+          margin-left: 20px;
+          border-radius: 100px;
+          border: none;
+        }
       `}</style>
-      <div id="content" className="h-full w-full px-[10%] flex flex-col justify-center items-center font-[700]">
-        <h2 className="text-[2rem] mt-[120px] flex justify-center text-center">私のビジョン</h2>
-        <hr className="my-[50px] h-[3px] w-[15%] border-none" />
-        <p className="text-[2rem] flex justify-center text-center">
-          My goal is to bridge the gap between technology and art, creating meaningful digital experiences that resonate with people. I believe in the power of combining technical expertise with creative vision.
-        </p>
+
+      <div className="extraSpacer" />
+
+      <div className="extraFlex">
+        {Array.from({ length: 11 }).map((_, i) => (
+          <div key={i} className="box" />
+        ))}
       </div>
+
+      <div className="extraSpacer" />
     </div>
 
     <div className="section section3 relative flex justify-center items-center transition-opacity duration-1000 ease h-[calc(100vh+600px)] w-full overflow-hidden">
