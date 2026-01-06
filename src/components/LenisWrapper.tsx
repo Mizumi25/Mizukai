@@ -24,7 +24,8 @@ export default function LenisWrapper({ children }: { children: React.ReactNode }
         return;
       }
 
-      const scroller = document.documentElement;
+      // Use the viewport as scroller so markers/pinning behave like the CodePen.
+      const scroller = window;
 
       // Make ScrollTrigger use Lenis' scroll position.
       ScrollTrigger.scrollerProxy(scroller, {
@@ -43,8 +44,7 @@ export default function LenisWrapper({ children }: { children: React.ReactNode }
             height: window.innerHeight,
           };
         },
-        // If the scrolling container is transformed, pinType should be "transform".
-        // For root/document scrolling it's typically "fixed".
+        // Viewport pins should use fixed.
         pinType: 'fixed',
       });
 
@@ -67,7 +67,7 @@ export default function LenisWrapper({ children }: { children: React.ReactNode }
         gsap.ticker.remove(update);
         lenis.off('scroll', ScrollTrigger.update);
         // remove scrollerProxy
-        ScrollTrigger.scrollerProxy(scroller, null as any);
+        ScrollTrigger.scrollerProxy(scroller, undefined);
       };
     };
 

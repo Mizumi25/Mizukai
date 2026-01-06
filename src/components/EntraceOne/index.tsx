@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import './style.css';
 import gsap from 'gsap';
 import { SplitText } from 'gsap/SplitText';
@@ -9,6 +9,7 @@ import { useGSAP } from "@gsap/react";
 
 const Entrance: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const entranceConRef = useRef<HTMLDivElement>(null);
+  const [isReady, setIsReady] = useState(false);
   
   useGSAP(() => {
     // Force scroll to top at the beginning
@@ -48,6 +49,9 @@ const Entrance: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       splitTextElements(".intro-title h1", "words, chars", true);
       splitTextElements(".outro-title h1");
       splitTextElements(".tag p", "words");
+
+      // Prevent FOUC: only show the entrance text once SplitText has created the wrappers
+      setIsReady(true);
       
       const isMobile = window.innerWidth < 1000;
       
@@ -216,7 +220,7 @@ const Entrance: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   
   return (
     <>
-      <div className="entrance">
+      <div className={`entrance${isReady ? ' is-ready' : ''}`}>
           <div className="preloader">
             <div className="intro-title">
               <h1>Mizumi Kaito</h1>

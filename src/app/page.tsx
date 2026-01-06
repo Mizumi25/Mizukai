@@ -1,1208 +1,517 @@
-
-
-
-
 'use client'
 
-import React, { useEffect, useRef } from 'react';
-import './page.module.css';
-// import GlassyConfirmation from '../components/Confirmation/'
-import MusicPlay from '../components/MusicPlayer/'
-import SeeMore from '../components/seeMoreHover/';
-
-
+import React, { useEffect, useMemo } from 'react';
+import Image, { type StaticImageData } from 'next/image';
+import Link from 'next/link';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import {
-  digitalArtTitle,
-  digitalArtDescription,
-  webDevelopmentTitle,
-  webDevelopmentDescription,
-  musicCompositionTitle,
-  musicCompositionDescription,
-  photoVideoTitle,
-  photoVideoDescription,
-  otherServicesTitle,
-  otherServicesDescription,
-  storyTitle,
-  storyPart1,
-  storyPart2,
+  personalIntroTitle,
+  personalIntroContent,
   footerTitle,
   footerName,
 } from '../data/content';
 
-import Image from 'next/image'
-import ReactDOM from 'react-dom/client';
-import gsap, { CSSRulePlugin } from 'gsap/all';
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import * as Matter from 'matter-js';
-
-
 import Profile from '../../public/images/profile.jpg';
 
-// import { useAiAssistant } from "@sista/ai-assistant-react";
+import AboutPreview from '../../public/nav/about-preview.jpg';
+import HomePreview from '../../public/nav/home-preview.jpg';
+import ServicesPreview from '../../public/nav/services-preview.jpg';
+import WorksPreview from '../../public/nav/works-preview.jpg';
+
+gsap.registerPlugin(ScrollTrigger);
+
+type WorkItem = {
+  href: string;
+  title: string;
+  year?: string;
+  tags: string[];
+  image: StaticImageData;
+};
 
 const Home: React.FC = () => {
-  const section1Ref = useRef<HTMLDivElement>(null);
-  const section2Ref = useRef<HTMLDivElement>(null);
-  const section4Ref = useRef<HTMLDivElement>(null);
-  const section5Ref = useRef<HTMLDivElement>(null);
-  const section6Ref = useRef<HTMLDivElement>(null);
+  const works: WorkItem[] = useMemo(
+    () => [
+      {
+        href: '/works/portraits',
+        title: 'Portraits',
+        year: '2024',
+        tags: ['DIGITAL ART', 'ILLUSTRATION'],
+        image: HomePreview,
+      },
+      {
+        href: '/works/gameDev',
+        title: 'Game Dev',
+        year: '2024',
+        tags: ['UNITY', 'DESIGN'],
+        image: WorksPreview,
+      },
+      {
+        href: '/works/music',
+        title: 'Music',
+        year: '2023',
+        tags: ['COMPOSITION', 'SOUND'],
+        image: ServicesPreview,
+      },
+      {
+        href: '/works/story',
+        title: 'Story',
+        year: '2022',
+        tags: ['WRITING', 'WORLD BUILDING'],
+        image: AboutPreview,
+      },
+      {
+        href: '/works/videoProductions',
+        title: 'Video Productions',
+        year: '2022',
+        tags: ['EDITING', 'MOTION'],
+        image: WorksPreview,
+      },
+    ],
+    []
+  );
 
-  const extraBlockRef = useRef<HTMLDivElement>(null);
+  // Parallax gallery: match reference behavior (pin section + large yPercent per image)
+  useGSAP(() => {
+    const section = document.getElementById('parallax-gallery');
+    if (!section) return;
 
-  const magnetRef = useRef<HTMLDivElement>(null);
-  const magTextRef = useRef<HTMLDivElement>(null);
- 
-   //magnet
+    const amplitudes = [500, 1000, 1500];
+    const scrubs = [1, 2, 3];
+
+    const images = gsap.utils.toArray<HTMLElement>('.ts-parallax-gallery-image');
+
+    const triggers: ScrollTrigger[] = [];
+
+    // Pin the whole section like the reference
+    const pinTrigger = ScrollTrigger.create({
+      trigger: section,
+      start: 'top top',
+      end: () => `+=${Math.max(0, section.clientHeight - 250)}`,
+      scrub: true,
+      pin: true,
+    });
+    triggers.push(pinTrigger);
+
+    images.forEach((el, index) => {
+      const amp = amplitudes[index % amplitudes.length];
+      const scrub = scrubs[index % scrubs.length];
+
+      gsap.set(el, { zIndex: amp / 100, position: 'relative' });
+
+      const tween = gsap.fromTo(
+        el,
+        { yPercent: amp },
+        {
+          yPercent: -amp,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub,
+          },
+        }
+      );
+
+      const st = tween.scrollTrigger;
+      if (st) triggers.push(st);
+    });
+
+    // Reference-like "is-active" behavior: add class once the scroll passes element midpoint.
+    const onScroll = () => {
+      const scrollY = window.scrollY;
+      const h = window.innerHeight;
+      images.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const top = rect.top + scrollY;
+        if (scrollY > top - h / 2) {
+          el.classList.add('is-active');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      triggers.forEach((t) => t.kill());
+    };
+  }, []);
+
+  // Works: apply the old "Services" per-item scaling animation to each work row
   useEffect(() => {
-      const magnet = magnetRef.current;
-      const magText = magTextRef.current;
-      
-      if (!magnet || !magText) return;
-      
-      const activateMagneto = (e: MouseEvent) => { // Note: MouseEvent, not React.MouseEvent
-        const boundBox = magnet.getBoundingClientRect();
-        const magnetoStrength = 40;
-        const magnetoTextStrength = 60;
-    
-        const newX = ((e.clientX - boundBox.left) / magnet.offsetWidth) - 0.5;
-        const newY = ((e.clientY - boundBox.top) / magnet.offsetHeight) - 0.5;
-    
-        const ctx = gsap.context(() => {
-          gsap.to(magnet, {
-            duration: 1,
-            x: newX * magnetoStrength,
-            y: newY * magnetoStrength,
-            ease: "Power4.easeOut"
-          });
-    
-          gsap.to(magText, {
-            duration: 1,
-            x: newX * magnetoTextStrength,
-            y: newY * magnetoTextStrength,
-            ease: "Power4.easeOut"
-          });
-        });
-    
-        return () => ctx.revert();
-      };
-    
-      const resetMagneto = () => {
-        const ctx1 = gsap.context(() => {
-          gsap.to(magnet, {
-              duration: 1,
-              x: 0,
-              y: 0,
-              ease: "Elastic.easeOut"
-            })
-          
-            gsap.to(magText, {
-              duration: 1,
-              x: 0,
-              y: 0,
-              ease: "Elastic.easeOut"
-            })
-          })
-          return () => ctx1.revert()
-        };
-      
-      magnet.addEventListener("mousemove", activateMagneto);
-      magnet.addEventListener("mouseleave", resetMagneto);
-      
-      // Cleanup function
-      return () => {
-        magnet.removeEventListener("mousemove", activateMagneto);
-        magnet.removeEventListener("mouseleave", resetMagneto);
-      };
-    }, [])
-  
-  
-  
+    const items = gsap.utils.toArray<HTMLElement>('#works-gallery .image-link');
 
+    const createdTriggers: ScrollTrigger[] = [];
 
+    interface ScrollTriggerSelf {
+      progress: number;
+    }
 
-// 
-//Define the functions to be voice-controlled
-// const aiFunctions = [
-//   {
-//     function: {
-//       handler: sayHelloWorld, // (required) pass a refference to your function
-//       description: "Greets the user with Hello World :)", // (required) its important to include clear description (our smart AI automatically handles different variations.)
-//     },
-//   },
-//   // ... register additional functions here
-// ];
-// 
-// const { registerFunctions } = useAiAssistant();
-// 
-// useEffect(() => {
-// 
-//   if (registerFunctions) {
-//     registerFunctions(aiFunctions);
-//   }
-//   
-// }, [registerFunctions]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
 
-  
-  
-  
-  
-  //ImageScroll Trigger
-    const exh = useRef<HTMLDivElement>(null);
-    const exh1 = useRef<HTMLDivElement>(null);
-    useGSAP(() => {
-      gsap.registerPlugin( ScrollTrigger ); 
-      const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: exh.current,
-          start: "-400% center",
-          end: "bottom center",
-          scrub: false,
-          markers: false,
-          toggleActions: "play pause reverse pause",
-        }
-      })
-      tl.to(exh.current, {
-        x: -900,
-        y: -300,
-        scale: 1.5,
-        rotate: -125,
-        duration: 0.8,
-      })
-      
-      const tl1 = gsap.timeline({
-        scrollTrigger: {
-          trigger: exh1.current,
-          start: "-400% center",
-          end: "bottom center",
-          scrub: false,
-          toggleActions: "play pause reverse pause",
-        }
-      })
-      tl1.to(exh1.current, {
-        x: -900,
-        y: -400,
-        scale: 1.5,
-        rotate: -190,
-        duration: 0.8,
-      })
-      })
-      return () => ctx.revert()
-    }, { scope:exh });
+          const item = entry.target as HTMLElement;
 
-    useGSAP(() => {
-            const images = gsap.utils.toArray('.section5 .animated__exh Image') as HTMLElement[]
-          
-            images.forEach(image => {
-                gsap.to(image, {
-                  yPercent: -100 * Number(image.dataset.speed),
-                  ease: "none",
-                  scrollTrigger:{
-                    scrub: Number(image.dataset.speed)
-                  }
-                })
-            })
-          })
-              
-    
-    
-          //opacity
-          useGSAP(() => {
-              const ctx = gsap.context(() => {
-                // Initial state: show only section1, hide the rest (except section7 which is handled separately).
-                gsap.set('.section1', { autoAlpha: 1 });
-                gsap.set('.section:not(.section1, .section7)', { autoAlpha: 0 });
+          // Animate the thumbnail container width (like the old `.img` in Services)
+          const imageWrapper = item.querySelector<HTMLElement>('a > div:last-child');
 
-                // Intended behavior (fixed): reveal content as you start scrolling down from the top.
-                // Use a fixed scroll distance so it works consistently in portrait/landscape.
-                const revealTl = gsap.timeline({
-                  scrollTrigger: {
-                    trigger: '.section2',
-                    start: 'top top',
-                    end: '+=200',
-                    scrub: 1,
-                    invalidateOnRefresh: true,
-                  },
+          if (imageWrapper) {
+            gsap.set(imageWrapper, { width: '30%' });
+
+            const imageTrigger = ScrollTrigger.create({
+              trigger: item,
+              start: 'top bottom',
+              end: 'top top',
+              scrub: true,
+              onUpdate: (self: ScrollTriggerSelf) => {
+                gsap.to(imageWrapper, {
+                  width: `${30 + self.progress * 70}%`,
+                  ease: 'none',
+                  overwrite: 'auto',
                 });
-
-                revealTl.to('.section1', { autoAlpha: 0, duration: 1 }, 0);
-                revealTl.to('.section:not(.section1, .section7)', { autoAlpha: 1, duration: 1 }, 0);
-
-                const tl2 = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: ".section2",
-                        start: "top center",
-                        end: "bottom center",
-                        scrub: false,
-                        toggleActions: "play pause reverse pause",
-                    }
-                });
-                tl2.to('.section2 .magneto', {
-                    autoAlpha: 0,
-                    duration: 0.3,
-                    ease: "Power4.easeOut"
-                });
-                const tl3 = gsap.timeline({
-                scrollTrigger: {
-                  trigger: ".section5",
-                  start: "top center",
-                  end: "bottom center",
-                  scrub: false,
-                  toggleActions: "play pause reverse pause"
-                }
-              })
-              gsap.set(".section7", {
-                autoAlpha: 0,
-                })
-              tl3.to(".section7", {
-                autoAlpha: 1
-                })
-              })
-              return () => ctx.revert()
-            });
-            
-            
-            
-            
-            // extraBlock: CodePen-style pin + stagger animation
-            useGSAP(() => {
-              const sectionEl = extraBlockRef.current;
-              if (!sectionEl) return;
-
-              const ctx = gsap.context(() => {
-                const flex = sectionEl.querySelector('.extraFlex');
-                const boxes = sectionEl.querySelectorAll('.box');
-                if (!flex || !boxes.length) return;
-
-                gsap.from(boxes, {
-                  scrollTrigger: {
-                    trigger: flex,
-                    pin: true,
-                    pinSpacing: true,
-                    scrub: 2,
-                    start: 'center center',
-                    end: '+=900 center',
-                    invalidateOnRefresh: true,
-                  },
-                  opacity: 0,
-                  y: -100,
-                  ease: 'back.out(4)',
-                  stagger: {
-                    amount: 3,
-                    from: 'random',
-                  },
-                });
-              }, sectionEl);
-
-              return () => ctx.revert();
+              },
             });
 
-            //ColorChange
-            useGSAP(() => {
-              gsap.registerPlugin(CSSRulePlugin); 
-              const bgGradient = CSSRulePlugin.getRule('.footer-bg::before')
-              const ctx = gsap.context(() => {
-                const tl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: "#Home",
-                        start: "top top",
-                        end: "bottom bottom",
-                        scrub: 1
-                    }
-                });
-               
-                tl.fromTo(['.section:not(.section1)', '.container-wrapper'], {
-                    backgroundColor: "#fffffd",
-                    color: "#121214",
-                    duration: 1
-                }, {
-                    backgroundColor: "#121214",
-                    color: "#fffffd",
-                    duration: 1
-                });
-                
-                tl.fromTo(['.section:not(.section1)', '.container-wrapper'], {
-                    backgroundColor: "#121214",
-                    color: "#fffffd",
-                    duration: 1
-                }, {
-                    backgroundColor: "#fffffd",
-                    color: "#121214",
-                    duration: 1
-                });
-                const tl2 = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: "#Home",
-                        start: "top top",
-                        end: "bottom bottom",
-                        scrub: 1
-                    }
-                });
-                tl2.fromTo('.section hr', {
-                    backgroundColor: "#121214",
-                    duration: 1
-                }, {
-                    backgroundColor: "#fffffd",
-                    duration: 1
-                });
-                tl2.fromTo('.section hr', {
-                    backgroundColor: "#fffffd",
-                    duration: 1,
-                }, {
-                    backgroundColor: "#121214",
-                    duration: 1
-                });
-                
-                const tl3 = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: "#Home",
-                        start: "top top",
-                        end: "bottom bottom",
-                        scrub: 1
-                    }
-                });
-                tl3.fromTo('.view-btn i', {
-                    backgroundColor: "#121214",
-                }, {
-                    backgroundColor: "#fffffd",
-                });
-                tl3.fromTo('.view-btn i', {
-                    backgroundColor: "#fffffd",
-                }, {
-                    backgroundColor: "#121214",
-                });
-                
-                const tl4 = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: "#Home",
-                        start: "top top",
-                        end: "bottom bottom",
-                        scrub: 1
-                    }
-                });
-                tl4.fromTo(bgGradient, {
-                    backgroundColor: "#121214",
-                }, {
-                    backgroundColor: "#fffffd",
-                });
-                tl4.fromTo(bgGradient, {
-                    backgroundColor: "#fffffd",
-                }, {
-                    backgroundColor: "#121214",
-                });
-                
-                const tl5 = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: "#Home",
-                        start: "top top",
-                        end: "bottom bottom",
-                        scrub: 1
-                    }
-                });
-                tl5.fromTo('.hoverLink', {
-                    color: "#fffffd",
-                }, {
-                    color: "#121214",
-                });
-                tl4.fromTo('.footer-bg', {
-                    color: "#121214",
-                }, {
-                    color: "fffffd",
-                });
-              })
-              return () => ctx.revert()
-            });
-            
-            
-            
-            
-       //Diagonal Carousel
-        const projectItems = useRef<HTMLDivElement[]>([]);
-        const projectArts = useRef<HTMLDivElement>(null);
-        const overlay = useRef<HTMLDivElement>(null);
-        const prevElements = useRef<HTMLDivElement[]>([]);
-      
-        useEffect(() => {
-          function removeActionClass() {
-            prevElements.current.forEach((prev) => {
-              prev?.classList.remove("active");
-            });
+            createdTriggers.push(imageTrigger);
           }
-      
-          projectItems?.current.forEach((item, index) => {
-            item?.addEventListener("mouseover", function () {
-              removeActionClass();
-              const activePrev = document.querySelector(`#prev-${index + 1}`);
-              if (activePrev) {
-                activePrev.classList.add("active");
-              }
-      
-              if (projectArts.current) {
-                projectArts.current.classList.add("hovered");
-              }
-              switch (index) {
-                case 0:
-                  if (overlay.current) {
-                    overlay.current.style.top = "25%";
-                    overlay.current.style.left = "80%";
-                  }
-                  if (projectArts.current) {
-                    projectArts.current.className = "projectArts bg-color-red hovered";
-                  }
-                  break;
-                case 1:
-                  if (overlay.current) {
-                    overlay.current.style.top = "5%";
-                    overlay.current.style.left = "25%";
-                  }
-                  if (projectArts.current) {
-                    projectArts.current.className = "projectArts bg-color-orange hovered";
-                  }
-                  break;
-                case 2:
-                  if (overlay.current) {
-                    overlay.current.style.top = "0%";
-                    overlay.current.style.left = "13.25%";
-                  }
-                  if (projectArts.current) {
-                    projectArts.current.className = "projectArts bg-color-green hovered";
-                  }
-                  break;
-                case 3:
-                  if (overlay.current) {
-                    overlay.current.style.top = "-10%";
-                    overlay.current.style.left = "-18.375%";
-                  }
-                  if (projectArts.current) {
-                    projectArts.current.className = "projectArts bg-color-blue hovered";
-                  }
-                  break;
-                case 4:
-                  if (overlay.current) {
-                    overlay.current.style.top = "-25%";
-                    overlay.current.style.left = "-80%";
-                  }
-                  if (projectArts.current) {
-                    projectArts.current.className = "projectArts bg-color-violet hovered";
-                  }
-                  break;
-                default:
-                  break;
-              }
-            });
-      
-            item?.addEventListener("mouseout", function () {
-            if (projectArts.current) {
-              projectArts.current.classList.remove("hovered");
-              projectArts.current.className = "projectArts";
-            }
-            if (overlay.current) {                      // ← Add this null check
-              overlay.current.style.top = "0%";
-              overlay.current.style.left = "13.25%";
-            }
-            removeActionClass();
-            document.querySelector("#prev-3")?.classList.add("active");  // ← Also add optional chaining here
-              });
-          });
-        }, []);
 
-          
-          
-            
-        //Image Tracking
-         const preview = useRef<HTMLDivElement>(null);
-//         const story = useRef<HTMLDivElement>(null);
-const story1Ref = useRef<HTMLParagraphElement>(null);
-const story2Ref = useRef<HTMLParagraphElement>(null);
-const storySpanRefs = useRef<HTMLSpanElement[]>([]);
-
-// Helper function to add span refs
-const addSpanRef = (el: HTMLSpanElement | null) => {
-  if (el && !storySpanRefs.current.includes(el)) {
-    storySpanRefs.current.push(el);
-  }
-};
-        // let isInside = false;
-        // const byPositions = {
-        //   p1: "0 0",
-        //   p2: "0 25%",
-        //   p3: "0 50%",
-        //   p4: "0 75%",
-        //   p5: "0 100%",
-        // }
-        // useEffect(() => {
-        // console.log(stories.current)
-        // const moveEntity = (e) => {
-          
-        //   const mouseInside = isMouseInsideContainer(e);
-          
-        //   if (mouseInside !== isInside) {
-        //     isInside = mouseInside;
-        //     if (isInside) {
-        //         gsap.to(preview.current, 0.3, {
-        //           scale: 1,
-        //         })
-        //     } else {
-        //         gsap.to(preview.current, 0.3, {
-        //           scale: 0,
-        //         })
-              
-        //     }
-        //   }
-        // }
-        
-        // const moveStory = (e) => {
-        //   const previewRect = preview.current.getBoundingClientRect();
-        //   const offsetX = previewRect.width / 2;
-        //   const offsetY = previewRect.height / 2;
-          
-        //   preview.current.style.left = e.pageX - offsetX + "px";
-        //   preview.current.style.top = e.pageY - offsetY + "px";
-        // }
-        
-        // const moveStoryImage = (story) => {
-        //   const storyId = story.id;
-        //     gsap.to('.preview .preview-image', 0.4, {
-        //       backgroundPosition: byPositions[storyId] || "0 0",
-        //     })
-        // }
-        
-        // const isMouseInsideContainer = (e) => {
-        //   const containerRect = stories.current.getBoundingClientRect();
-        //   console.log(containerRect)
-        //   return (
-        //     e.pageX >= containerRect.left &&
-        //     e.pageX <= containerRect.right &&
-        //     e.pageY >= containerRect.top &&
-        //     e.pageY <= containerRect.bottom
-        //   )
-        // }
-        
-        //   window.addEventListener("mousemove", moveEntity);
-        
-        //   Array.from(stories.current.children).forEach((story) => {
-        //   story.addEventListener("mousemove", moveStory);
-        //   story.addEventListener("mousemove", moveStoryImage.bind(null, story));
-        //   })
-            
-              
-        // }, [])
-            
-            
-            
-         //Grid images
-          useGSAP(() => {
-            const ctx = gsap.context(() => {
-                  const tl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: ".grid_item:nth-child(3n+1)",
-                        start: "top bottom",
-                        end: "bottom top",
-                        scrub: 1
-                    }
-                });
-                tl.to(".grid_item:nth-child(3n+1)", {
-                    y: "-30%",
-                    duration: 1
-                });
-            })
-            return () => ctx.revert()
-           })
-
-            useGSAP(() => {
-               const ctx = gsap.context(() => {
-                  const tl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: ".grid_item:nth-child(3n+2)",
-                        start: "top bottom",
-                        end: "bottom top",
-                        scrub: 2
-                    }
-                  });
-                  tl.to(".grid_item:nth-child(3n+2)", {
-                      y: "-50%",
-                      duration: 1
-                  });
-               })
-               return () => ctx.revert()
-                })
-
-                useGSAP(() => {
-                  const ctx = gsap.context(() => {
-                  const tl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: ".grid_item:nth-child(3n+3)",
-                        start: "top bottom",
-                        end: "bottom top",
-                        scrub: 1.5
-                    }
-                  });
-                  tl.to(".grid_item:nth-child(3n+3)", {
-                      y: "-70%",
-                      duration: 1
-                  });
-                  })
-                  return () => ctx.revert()
-                })
-
-           
-           
-           
-    //Image Scattering
-    const random = (min: number, max: number): number => {
-      return Math.random() * (max - min) + min;
-    };
-    
-    const dist = (x1: number, y1: number, x2: number, y2: number): number => {
-      return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-    };
-    
-    useEffect(() => {
-      let engine: Matter.Engine;
-      const items: Item[] = []; // Move inside useEffect
-      let lastMouseX: number = -1;
-      let lastMouseY: number = -1;
-      let animationId: number;
-    
-      const setup = (): void => {
-        if (!section6Ref.current) return; // Add null check
-        
-        const { width, height } = section6Ref.current.getBoundingClientRect();
-        engine = Matter.Engine.create();
-        engine.world.gravity.y = 0;
-        addBoundaries(width, height);
-        for (let i = 0; i < 12; i++) {
-          const x = random(100, width - 100);
-          const y = random(100, height - 100);
-          items.push(new Item(x, y, `/stories/storyCovers/img${i + 1}.jpg`)); 
-        }
-      };
-    
-      const addBoundaries = (width: number, height: number): void => {
-        const thickness = 50;
-        Matter.World.add(engine.world, [
-          Matter.Bodies.rectangle(width / 2, -thickness / 2, width, thickness, {
-            isStatic: true,
-          }),
-          Matter.Bodies.rectangle(width / 2, height + thickness / 2, width, thickness, {
-            isStatic: true,
-          }),
-          Matter.Bodies.rectangle(-thickness / 2, height / 2, thickness, height, {
-            isStatic: true,
-          }),
-          Matter.Bodies.rectangle(width + thickness / 2, height / 2, thickness, height, {
-            isStatic: true,
-          }),
-        ]);
-      };
-    
-      class Item {
-        body: Matter.Body;
-        div: HTMLDivElement;
-    
-        constructor(x: number, y: number, imagePath: string) {
-          const options = {
-            frictionAir: 0.075,
-            restitution: 0.25,
-            density: 0.002,
-            angle: Math.random() * Math.PI * 2,
-          };
-          this.body = Matter.Bodies.rectangle(x, y, 100, 200, options);
-          Matter.World.add(engine.world, this.body);
-          this.div = document.createElement('div');
-          this.div.className = 'item';
-          this.div.style.left = `${this.body.position.x - 50}px`;
-          this.div.style.top = `${this.body.position.y - 100}px`;
-          this.div.style.transform = `rotate(${options.angle}rad)`;
-          
-          const root = ReactDOM.createRoot(this.div);
-          const itemImg = (   
-            <Image 
-              src={imagePath} 
-              alt=""
-              width={200} 
-              height={200} 
-            />
-          );
-          root.render(itemImg);
-          
-          if (section6Ref.current) {
-            section6Ref.current.appendChild(this.div);
-          }
-          
-          this.div.addEventListener('mouseenter', () => {
-            this.div.addEventListener('mousemove', handleMouseMove);
-          });
-          this.div.addEventListener('mouseleave', () => {
-            this.div.removeEventListener('mousemove', handleMouseMove);
-          });
-        }
-    
-        update(): void {
-          this.div.style.left = `${this.body.position.x - 50}px`;
-          this.div.style.top = `${this.body.position.y - 100}px`;
-          this.div.style.transform = `rotate(${this.body.angle}rad)`;
-        }
-      }
-    
-      const handleMouseMove = (event: MouseEvent): void => {
-        const mouseX: number = event.clientX;
-        const mouseY: number = event.clientY;
-        if (dist(mouseX, mouseY, lastMouseX, lastMouseY) > 10) {
-          lastMouseX = mouseX;
-          lastMouseY = mouseY;
-          items.forEach((item: Item) => {
-            if (
-              dist(mouseX, mouseY, item.body.position.x, item.body.position.y) < 150
-            ) {
-              const forceMagnitude: number = 3;
-              Matter.Body.applyForce(
-                item.body,
-                { x: item.body.position.x, y: item.body.position.y },
-                {
-                  x: random(-forceMagnitude, forceMagnitude),
-                  y: random(-forceMagnitude, forceMagnitude),
-                }
-              );
-            }
-          });
-        }
-      };
-    
-      setup();
-      
-      const update = (): void => {
-        Matter.Engine.update(engine);
-        items.forEach((item: Item) => item.update());
-        animationId = requestAnimationFrame(update);
-      };
-      
-      update();
-    
-      return () => {
-        // Cleanup function
-        if (animationId) {
-          cancelAnimationFrame(animationId);
-        }
-        // Remove all items from DOM
-        items.forEach((item: Item) => {
-          if (item.div && item.div.parentNode) {
-            item.div.parentNode.removeChild(item.div);
-          }
-        });
-        // Clear the world
-        if (engine && engine.world) {
-          Matter.World.clear(engine.world, false);
-          Matter.Engine.clear(engine);
-        }
-      };
-    }, []);
-  
-  
-//Service Morph 
-useEffect(() => {
-  const services = gsap.utils.toArray("#Home .service") as Element[];
-  
-  const observerOptions: IntersectionObserverInit = {
-    root: null,
-    rootMargin: "0px",
-    threshold: 0.1,
-  };
-
-  // Define ScrollTrigger self type
-  interface ScrollTriggerSelf {
-    progress: number;
-  }
-
-  // Define ScrollTrigger instance type
-  interface ScrollTriggerInstance {
-    kill: () => void;
-  }
-
-  const observerCallback = (entries: IntersectionObserverEntry[], observer: IntersectionObserver): void => {
-    entries.forEach((entry: IntersectionObserverEntry) => {
-      if (entry.isIntersecting) {
-        const service = entry.target as HTMLElement;
-        const imageContainer = service.querySelector('.img') as HTMLElement;
-        
-        if (imageContainer) {
-          ScrollTrigger.create({
-            trigger: service,
-            start: "bottom bottom",
-            end: "top top",
+          // Fade the whole row a bit (same feel as Services)
+          const rowTrigger = ScrollTrigger.create({
+            trigger: item,
+            start: 'top bottom',
+            end: 'top top',
             scrub: true,
             onUpdate: (self: ScrollTriggerSelf) => {
-              const progress: number = self.progress;
-              const newWidth: number = 30 + 70 * progress;
-              gsap.to(imageContainer, {
-                width: newWidth + "%",
-                duration: 0.1,
-                ease: "none",
+              gsap.to(item, {
+                opacity: 0.1 + self.progress * 0.9,
+                ease: 'none',
+                overwrite: 'auto',
               });
-            }
+            },
           });
-        }
 
-        ScrollTrigger.create({
-          trigger: service,
-          start: "top bottom",
-          end: "top top",
-          scrub: true,
-          onUpdate: (self: ScrollTriggerSelf) => {
-            const progress: number = self.progress;
-            const newHeight: number = 150 + 300 * progress;
-            gsap.to(service, {
-              height: newHeight + "px", // Assuming you want pixel height
-              duration: 0.1,
-              ease: "none",
-            });
-          }
+          createdTriggers.push(rowTrigger);
+          observer.unobserve(item);
         });
+      },
+      { threshold: 0.1 }
+    );
 
-        observer.unobserve(service);
+    items.forEach((item) => observer.observe(item));
+
+    return () => {
+      observer.disconnect();
+      createdTriggers.forEach((t) => t.kill());
+    };
+  }, []);
+
+  // Hero "moon" effect + hero container move (reference vibe without frame assets)
+  useGSAP(() => {
+    const hero = document.getElementById('hero');
+    const heroContainer = document.getElementById('hero-container');
+    const canvas = document.getElementById('moon') as HTMLCanvasElement | null;
+
+    if (!hero || !canvas) return;
+
+    // If hero-container doesn't exist yet, fall back to hero itself.
+    const moveTarget = heroContainer ?? hero;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const state = { t: 0 };
+
+    const draw = (time: number) => {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Soft moon glow
+      const cx = w * 0.5 + Math.cos(time * 0.6) * 10;
+      const cy = h * 0.5 + Math.sin(time * 0.5) * 10;
+      const r1 = w * 0.18;
+      const r2 = w * 0.48;
+
+      const grad = ctx.createRadialGradient(cx, cy, r1, cx, cy, r2);
+      grad.addColorStop(0, 'rgba(255,255,255,0.40)');
+      grad.addColorStop(0.45, 'rgba(180,200,255,0.18)');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(w / 2, h / 2, w * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Subtle craters/noise dots
+      ctx.globalCompositeOperation = 'overlay';
+      ctx.fillStyle = 'rgba(255,255,255,0.06)';
+      for (let i = 0; i < 140; i += 1) {
+        const ang = (i / 140) * Math.PI * 2 + time * 0.2;
+        const rad = w * (0.12 + (i % 10) * 0.01);
+        const x = w / 2 + Math.cos(ang) * rad;
+        const y = h / 2 + Math.sin(ang * 1.3) * rad;
+        ctx.beginPath();
+        ctx.arc(x, y, 1 + (i % 3) * 0.6, 0, Math.PI * 2);
+        ctx.fill();
       }
+      ctx.globalCompositeOperation = 'source-over';
+    };
+
+    draw(0);
+
+    // Timeline: scrub both the canvas state + hero move
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: () => `+=${Math.round(hero.clientHeight * 0.8)}`,
+        scrub: true,
+      },
     });
-  };
 
-  const observer: IntersectionObserver = new IntersectionObserver(observerCallback, observerOptions);
-  
-  services.forEach((service: Element) => {
-    observer.observe(service);
-  });
+    tl.to(
+      state,
+      {
+        t: 1,
+        ease: 'none',
+        onUpdate: () => draw(state.t * 10),
+      },
+      0
+    ).to(
+      moveTarget,
+      {
+        y: '20rem',
+        ease: 'power4.out',
+      },
+      0
+    );
 
-  // Cleanup function
-  return () => {
-    observer.disconnect();
-    ScrollTrigger.getAll().forEach((trigger: ScrollTriggerInstance) => trigger.kill());
-  };
-}, []);
+    return () => {
+      tl.scrollTrigger?.kill();
+      tl.kill();
+    };
+  }, []);
 
-  
-  
-  
-  
-  
-  
-  
-  
+  // Works list hover background (reference-ish)
+  useEffect(() => {
+    const links = Array.from(document.querySelectorAll<HTMLElement>('.image-link'));
+    const allBg = Array.from(document.querySelectorAll<HTMLElement>('.image-link__bg'));
 
-//section7 reveal 
-useGSAP(() => {
-  const ctx = gsap.context(() => {
-    gsap.from(".section7", {
-    y: -800,
-    filter: "blur(10px)",
-    ease: "Power4.easeOutt",
-    scrollTrigger: {
-      trigger: ".section7 #content",
-      start: "center center",
-      end: "bottom -500vh",
-      scrub: true
-    }
-  })
-  })
-  return () => ctx.revert()
-})
+    const hideAll = () => {
+      allBg.forEach((el) => {
+        gsap.to(el, { autoAlpha: 0, duration: 0.25, overwrite: 'auto' });
+      });
+    };
 
-    
+    const onEnter = (li: HTMLElement) => {
+      const bg = li.querySelector<HTMLElement>('.image-link__bg');
+      if (!bg) return;
+      hideAll();
+      gsap.to(bg, { autoAlpha: 1, duration: 0.25, overwrite: 'auto' });
+    };
 
+    const onLeave = () => hideAll();
 
+    const cleanups = links.map((li) => {
+      const enter = () => onEnter(li);
+      li.addEventListener('mouseenter', enter);
+      li.addEventListener('mouseleave', onLeave);
+      return () => {
+        li.removeEventListener('mouseenter', enter);
+        li.removeEventListener('mouseleave', onLeave);
+      };
+    });
+
+    return () => {
+      cleanups.forEach((fn) => fn());
+    };
+  }, []);
 
   return (
-<>
-  <section id="Home">
-    {/*<GlassyConfirmation />*/}
-    <div className="MusicContainer fixed bottom-[15px] right-[10px] z-[10]">
-      <MusicPlay />
-    </div>
-
-    <div className="section section1 fixed w-full h-full flex flex-col uppercase justify-center items-center visible opacity-100 overflow-x-hidden" ref={section1Ref}>
-      <div id="container" className="absolute w-full h-[50%] filter blur-[0.6px] flex justify-center items-center">
-        <h1 id="text1" className="absolute w-full z-[1] mix-blend-difference tracking-[3rem] ml-[3rem] uppercase text-[80px] font-bold text-center text-[#fffffd]"></h1>
-        <h1 id="text2" className="absolute w-full z-[1] mix-blend-difference tracking-[3rem] ml-[3rem] uppercase text-[80px] font-bold text-center text-[#fffffd]"></h1>
+    <main id="Home" className="relative overflow-x-hidden">
+      {/* Background (reference-like fixed layers) */}
+      <div className="pointer-events-none fixed left-0 top-0 -z-10 h-full w-screen">
+        <div className="absolute inset-0 bg-[#121214]" />
+        <div className="absolute inset-0 opacity-30 mix-blend-multiply bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.25),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.15),transparent_50%)]" />
       </div>
-      <svg id="filters">
-        <defs>
-          <filter id="threshold">
-            <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0
-                          0 1 0 0 0
-                          0 0 1 0 0
-                          0 0 0 255 -140" />
-          </filter>
-        </defs>
-      </svg>
-      
-    </div>
 
-    <div className="section section2 relative flex justify-center items-center transition-[mix-blend-mode] duration-1000 ease-in-out pt-[500px] overflow-x-hidden" ref={section2Ref}>
-      <div id="content" className="h-full w-full px-[10%] flex flex-col justify-center items-center font-[700]">
-        <div className="nn">
-          <div className="wrapper h-[300px] w-[300px] filter grayscale transition-transform duration-600 ease">
-            <Image src={Profile} alt="profile" className="h-full w-full rounded-full transition duration-500 ease cursor-pointer" />
-          </div>
+      {/* HERO */}
+      <section
+        id="hero"
+        className="relative z-10 flex min-h-screen items-center justify-center overflow-hidden py-20 text-[#fffffd]"
+      >
+        {/* Dark base behind the video (reference-like) */}
+        <div className="absolute inset-0 z-0 bg-[#121214]" />
+
+        {/* Full-bleed background video (reference-like: opacity + mix-blend-multiply) */}
+        <div className="absolute inset-0 z-0 overflow-hidden opacity-50 mix-blend-multiply">
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+          >
+            <source src="/videos/tryy.mp4" type="video/mp4" />
+          </video>
         </div>
-        <h2 className="text-[2rem] mt-[120px] flex justify-center text-center">
-          はじめまして、ミズミカイトと申します。
-        </h2>
-        <hr className="my-[50px] h-[3px] w-[15%] border-none" />
-        <p className="text-[2rem] flex justify-center text-center">
-          Hello, I'm James Rafty D Libago, also known by my pen name Mizumi Kaito. I'm a 20-year-old aspiring digital artist and full-stack developer from the Philippines.
-        </p>
-      </div>
-      
-      <button className="magneto fixed h-[10rem] w-[10rem] rounded-full border-none bg-[#121214] text-[#fffffd] cursor-pointer right-0 bottom-[20%] z-[7000] mr-[50px] flex justify-center content-center">
-        <span className="text absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">MyArts</span>
-      </button>
-      <div id="debugger" className="absolute text-[#121214] left-0 bottom-0 p-[2rem] w-[20rem]"></div>
-    </div>
 
-    <div
-      className="extraBlock relative overflow-x-hidden bg-[#fffffd] text-[#121214]"
-      ref={extraBlockRef}
-    >
-      <style jsx>{`
-        .extraSpacer { height: 200vh; }
-        .extraFlex {
-          display: flex;
-          border: 1px solid blue;
-          padding: 2rem;
-          gap: 20px;
-          flex-wrap: wrap;
-          justify-content: center;
-        }
-        .box {
-          width: 100px;
-          height: 100px;
-          background-color: #121214;
-          margin-left: 20px;
-          border-radius: 100px;
-          border: none;
-        }
-      `}</style>
-
-      <div className="extraSpacer" />
-
-      <div className="extraFlex">
-        {Array.from({ length: 11 }).map((_, i) => (
-          <div key={i} className="box" />
-        ))}
-      </div>
-
-      <div className="extraSpacer" />
-    </div>
-
-    <div className="section section3 relative flex justify-center items-center transition-opacity duration-1000 ease h-[calc(100vh+600px)] w-full overflow-hidden">
-      <div id="content" className="h-full w-full">
-        <div className="services p-[8em_2em] flex flex-col">
-          <div className="servicesHeader w-full flex gap-[4em]">
-            <div className="col flex-[2]"></div>
-            <div className="col flex-[5] p-[1em]"><h1 className="text-[70px]">Services</h1></div>
-          </div>
-          <div className="service flex gap-[2em] h-[150px] border-t border-[rgba(255,255,255,0.2)]">
-            <div className="serviceInfo flex-[2] w-full h-full flex flex-col justify-between p-[1em]">
-              <h1 className="text-[36px] font-[500]">{digitalArtTitle}</h1>
-              <p className="text-[13px] font-[400] leading-[150%]">{digitalArtDescription}</p>
-            </div>
-            <div className="serviceImage flex-[5] w-full h-full p-[1em]">
-              <div className="img w-[30%] h-full rounded-[10px] overflow-hidden">
-                <Image src={Profile} alt="" className="h-full w-full object-cover" />
-              </div>
+        <div id="hero-container" className="relative z-20 w-full">
+          <div className="container mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 md:grid-cols-3 md:items-end">
+          <div className="md:col-start-2">
+            <div className="relative mx-auto h-72 w-72 overflow-hidden rounded-full md:h-[50vw] md:w-[50vw] lg:mx-0 lg:h-[22rem] lg:w-[22rem]">
+              {/* "Moon" canvas overlay (pure JS draw, animated via GSAP) */}
+              <canvas
+                id="moon"
+                width={600}
+                height={600}
+                className="pointer-events-none absolute inset-0 h-full w-full opacity-80 mix-blend-screen"
+              />
+              <Image src={Profile} alt="Profile" className="relative z-10 h-full w-full object-cover" priority />
             </div>
           </div>
-          <div className="service flex gap-[2em] h-[150px] border-t border-[rgba(255,255,255,0.2)]">
-            <div className="serviceInfo flex-[2] w-full h-full flex flex-col justify-between p-[1em]">
-              <h1 className="text-[36px] font-[500]">{webDevelopmentTitle}</h1>
-              <p className="text-[13px] font-[400] leading-[150%]">{webDevelopmentDescription}</p>
-            </div>
-            <div className="serviceImage flex-[5] w-full h-full p-[1em]">
-              <div className="img w-[30%] h-full rounded-[10px] overflow-hidden">
-                <Image src={Profile} alt="" className="h-full w-full object-cover" />
-              </div>
-            </div>
+
+          <div className="hidden md:block">
+            <p className="font-serif text-sm leading-relaxed text-[#c9c9c9]">
+              {personalIntroContent}
+            </p>
           </div>
-          <div className="service flex gap-[2em] h-[150px] border-t border-[rgba(255,255,255,0.2)]">
-            <div className="serviceInfo flex-[2] w-full h-full flex flex-col justify-between p-[1em]">
-              <h1 className="text-[36px] font-[500]">{musicCompositionTitle}</h1>
-              <p className="text-[13px] font-[400] leading-[150%]">{musicCompositionDescription}</p>
-            </div>
-            <div className="serviceImage flex-[5] w-full h-full p-[1em]">
-              <div className="img w-[30%] h-full rounded-[10px] overflow-hidden">
-                <Image src={Profile} alt="" className="h-full w-full object-cover" />
-              </div>
-            </div>
-          </div>
-          <div className="service flex gap-[2em] h-[150px] border-t border-[rgba(255,255,255,0.2)]">
-            <div className="serviceInfo flex-[2] w-full h-full flex flex-col justify-between p-[1em]">
-              <h1 className="text-[36px] font-[500]">{photoVideoTitle}</h1>
-              <p className="text-[13px] font-[400] leading-[150%]">{photoVideoDescription}</p>
-            </div>
-            <div className="serviceImage flex-[5] w-full h-full p-[1em]">
-              <div className="img w-[30%] h-full rounded-[10px] overflow-hidden">
-                <Image src={Profile} alt="" className="h-full w-full object-cover" />
-              </div>
-            </div>
-          </div>
-          <div className="service flex gap-[2em] h-[150px] border-t border-[rgba(255,255,255,0.2)]">
-            <div className="serviceInfo flex-[2] w-full h-full flex flex-col justify-between p-[1em]">
-              <h1 className="text-[36px] font-[500]">{otherServicesTitle}</h1>
-              <p className="text-[13px] font-[400] leading-[150%]">{otherServicesDescription}</p>
-            </div>
-            <div className="serviceImage flex-[5] w-full h-full p-[1em]">
-              <div className="img w-[30%] h-full rounded-[10px] overflow-hidden">
-                <Image src={Profile} alt="" className="h-full w-full object-cover" />
-              </div>
+
+          <div className="md:col-span-3">
+            <p className="font-serif text-sm uppercase tracking-[0.2em] text-[#c9c9c9]">
+              WEB DESIGN / FULL-STACK DEV / DIGITAL ART
+            </p>
+            <div className="mt-4 flex items-end justify-between gap-6">
+              <h1 className="text-5xl font-semibold tracking-tight md:text-7xl">
+                Mizumi Kaito
+              </h1>
+              <span className="hidden flex-col text-right font-serif text-sm text-[#9e9e9e] md:flex">
+                <span>(PORTFOLIO)</span>
+                <span className="text-2xl text-[#c9c9c9]">作品集</span>
+              </span>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    
-    <div className="section section4 relative flex justify-center items-center transition-opacity duration-1000 ease h-[calc(100vh+600px)] overflow-hidden" ref={section4Ref}>
-        <div id="content" className="h-full w-full px-[10%]">
-          <div className="title flex items-center gap-[30px]">
-            <h2 className="view-btn relative w-[120px] overflow-hidden pb-[18px] h-[90px] text-current">
-              <span>{storyTitle}</span>
-              <i className="absolute w-full bottom-[23px] left-0 h-[5px]"></i>
+        </div>
+      </section>
+
+      {/* PARALLAX GALLERY */}
+      <section id="parallax-gallery" className="relative z-20 overflow-hidden py-20 text-[#fffffd]">
+        <div className="absolute inset-0 -z-10 bg-[#121214]" />
+
+        <div className="relative mx-auto max-w-6xl px-6">
+          <div className="flex gap-10">
+            <ul className="flex flex-1 flex-col items-start gap-12">
+              {[HomePreview, AboutPreview, ServicesPreview, WorksPreview].map((img, i) => (
+                <li
+                  key={`l-${i}`}
+                  className="ts-parallax-gallery-image relative w-56 overflow-hidden md:w-[26rem]"
+                >
+                  <Image src={img} alt="gallery" className="w-full" />
+                  <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+                </li>
+              ))}
+            </ul>
+
+            <ul className="hidden flex-1 flex-col items-end gap-12 md:flex">
+              {[WorksPreview, ServicesPreview, AboutPreview, HomePreview].map((img, i) => (
+                <li
+                  key={`r-${i}`}
+                  className="ts-parallax-gallery-image relative w-56 overflow-hidden md:w-[26rem]"
+                >
+                  <Image src={img} alt="gallery" className="w-full" />
+                  <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex w-full -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+            <h2 className="pointer-events-auto text-center font-serif text-3xl font-medium md:text-5xl">
+              {personalIntroTitle}
             </h2>
-          </div>
-          <div className="exhibit h-[300px] w-[500px] absolute top-1/2 right-[-80%] -translate-y-[10%] z-[-2]" ref={exh}>
-            <Image src={Profile} alt="exhibit1" className="h-full w-full" />
-          </div>
-          <div className="exhibit h-[300px] w-[500px] absolute top-1/2 right-[-80%] -translate-y-[10%] z-[-2]" ref={exh1}>
-            <Image src={Profile} alt="exhibit2" className="h-full w-full" />
-          </div>
-          <div className="preview overflow-hidden pointer-events-none origin-center scale-100 h-[250px] w-[250px] absolute z-[10]" ref={preview}>
-            <div className="preview-image h-full w-full bg-[url('../../public/images/profile.jpg')] bg-cover bg-[position:0_0] bg-no-repeat"></div>
-          </div>
-          <div className="description z-[10]">
-            <p className="leading-[4rem] text-[3rem] my-[5rem]" ref={story1Ref}>
-              <span className="underline" ref={addSpanRef} id="p1">{storyPart1.highlight}</span>
-              {storyPart1.content}
-              <span className="underline" ref={addSpanRef} id="p2">{storyPart1.nextHighlight}</span>
-              {storyPart1.continuation}
-            </p>
-            <br />
-            <p className="leading-[4rem] text-[3rem] my-[5rem]" ref={story2Ref}>
-              {storyPart2.content}
-              <span className="underline" ref={addSpanRef} id="p4">{storyPart2.highlight}</span>
-              {storyPart2.continuation}
-              <span className="underline" ref={addSpanRef} id="p5">{storyPart2.finalHighlight}</span>
-              {storyPart2.ending}
-            </p>
+            <Link
+              href="/about"
+              className="pointer-events-auto mt-10 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 font-serif text-sm tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
+            >
+              MORE
+            </Link>
           </div>
         </div>
-        
-        <SeeMore />
-      </div>
+      </section>
 
-    <div className="section section5 relative flex justify-center items-center transition-opacity duration-1000 ease h-[calc(100vh+600px)] w-full overflow-y-visible overflow-x-hidden" ref={section5Ref}>
-      <div className="grid_wrapper-contain flex flex-col justify-center items-center">
-        <div className="grid_wrapper w-dyn-list">
-           <div role="list" className="grid_list w-dyn-items flex flex-row gap-[20rem]">
-              <div role="listitem" className="grid_item w-dyn-item">
-                <div className="grid_element h-[50rem]">
-                 <Image src={Profile} loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                </div>
-              </div>
-              <div role="listitem" className="grid_item w-dyn-item">
-                <div className="grid_element h-[50rem]">
-                  <Image src={Profile} loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                </div>
-              </div>
-              <div role="listitem" className="grid_item w-dyn-item">
-                <div className="grid_element h-[50rem]">
-                   <Image src={Profile}
-                    loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                </div>
-              </div>
-              <div role="listitem" className="grid_item w-dyn-item">
-                <div className="grid_element h-[50rem]">
-                  <Image src={Profile} loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                </div>
-              </div>
-            </div>
-         </div>
-          <div className="grid_wrapper w-dyn-list">
-            <div role="list" className="grid_list w-dyn-items flex flex-row gap-[20rem]">
-              <div role="listitem" className="grid_item w-dyn-item">
-                <div className="grid_element h-[50rem]">
-                  <Image src={Profile} loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                </div>
-              </div>
-                <div role="listitem" className="grid_item w-dyn-item">
-                  <div className="grid_element h-[50rem]">
-                    <Image src={Profile} loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                  </div>
-                </div>
-                <div role="listitem" className="grid_item w-dyn-item">
-                  <div className="grid_element h-[50rem]">
-                    <Image src={Profile}
-                      loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                  </div>
-                </div>
-                <div role="listitem" className="grid_item w-dyn-item">
-                  <div className="grid_element h-[50rem]">
-                    <Image src={Profile} loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                  </div>
-                </div>
-            </div>
-        </div>
-          <div className="grid_wrapper w-dyn-list">
-            <div role="list" className="grid_list w-dyn-items flex flex-row gap-[20rem]">
-              <div role="listitem" className="grid_item w-dyn-item">
-                <div className="grid_element h-[50rem]">
-                  <Image src={Profile} loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                </div>
-              </div>
-                <div role="listitem" className="grid_item w-dyn-item">
-                  <div className="grid_element h-[50rem]">
-                    <Image src={Profile} loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                  </div>
-                </div>
-                <div role="listitem" className="grid_item w-dyn-item">
-                  <div className="grid_element h-[50rem]">
-                    <Image src={Profile}
-                      loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                  </div>
-                </div>
-                <div role="listitem" className="grid_item w-dyn-item">
-                  <div className="grid_element h-[50rem]">
-                    <Image src={Profile} loading="lazy" alt="" sizes="29vw" className="grid_Image h-[400px] w-[300px] object-cover"/>
-                  </div>
-                </div>
-            </div>
-        </div>
-      </div>
-    </div>
-    
-    <div className="section section6 relative flex justify-center items-center transition-opacity duration-1000 ease h-[calc(100vh+600px)] overflow-x-hidden overflow-y-hidden flex" ref={section6Ref}>
-          <div id="content" className="flex flex-col justify-center items-center gap-[10rem]">
-            <a href="#top" className="back-top-btn" aria-label="back to top" data-back-top-btn>0%</a>
-         <div>
-           <span>{footerTitle}</span>
-         </div>
-        </div>
-    </div>
-    
-    <div className="section section7 fixed h-screen w-screen overflow-hidden left-0 bottom-0 z-[-1]">
-      <div id="content" className="flex flex-col justify-center items-center gap-[10rem]">
-         <div className="scroll-to-top">
-            <i className="fa fa-solid fa-angle-up fa-3x"></i>
+      {/* WORKS */}
+      <section id="works-gallery" className="relative bg-[#fffffd] py-24 text-[#121214]">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="flex md:justify-end">
+            <h2 className="text-4xl font-semibold md:text-6xl">Works</h2>
           </div>
-         <div className="footer-bg has-before absolute bottom-0 left-0 w-full h-[60%] z-[-1]">
-            <Image src={Profile} width={1920} height={1135} alt="Summary"
-                className="img-cover w-full h-full object-cover" />
+
+          <ul className="mt-10">
+            {works.map((w, idx) => (
+              <li key={w.href} className="image-link group relative">
+                <Link
+                  href={w.href}
+                  className="flex flex-col gap-6 border-t border-[rgba(18,18,20,0.2)] py-8 md:flex-row md:items-start md:gap-16"
+                >
+                  <div className="flex flex-1 flex-col">
+                    <div className="flex justify-between text-sm text-[rgba(18,18,20,0.6)]">
+                      <span>({idx + 1})</span>
+                      <span className="font-serif">{w.year ?? ''}</span>
+                    </div>
+
+                    <h3 className="mt-6 text-3xl font-medium md:text-4xl">{w.title}</h3>
+
+                    <ul className="mt-6 flex flex-wrap gap-x-3 gap-y-2 text-xs tracking-widest text-[rgba(18,18,20,0.6)] md:mt-auto md:flex-col md:text-sm">
+                      {w.tags.map((t) => (
+                        <li key={t}>{t}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="md:w-[40rem]">
+                    <Image src={w.image} alt={w.title} className="w-full rounded-xl object-cover" />
+                  </div>
+                </Link>
+
+                <div className="image-link__bg pointer-events-none fixed left-0 top-0 z-0 hidden h-screen w-screen opacity-0 transition-all duration-300 md:block">
+                  <Image src={w.image} alt={w.title} className="h-full w-full object-cover" />
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-20 flex flex-col items-center">
+            <Link href="/works" className="font-serif text-5xl tracking-tight md:text-7xl">
+              ALL WORKS
+            </Link>
+            <Link
+              href="/works"
+              className="mt-10 inline-block rounded-full border border-[#121214] px-10 py-4 font-serif text-sm tracking-widest transition-colors hover:bg-[#121214] hover:text-[#fffffd]"
+            >
+              MORE
+            </Link>
           </div>
-      </div>
-              <h1 className="uppercase text-[20rem] absolute bottom-[-5%] left-1/2 text-center text-[#121214] -translate-x-1/2 tracking-[100px]">{footerName}</h1>
-    </div>
-    
-    <div className="whiteSpace h-screen w-screen"></div>
-  </section>
-</>
-  )
+        </div>
+      </section>
+
+      {/* FOOTER-ish */}
+      <footer className="bg-[#121214] py-24 text-[#fffffd]">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="text-4xl font-semibold md:text-6xl">{footerTitle}</h2>
+          <p className="mt-6 font-serif text-lg text-[#c9c9c9]">{footerName}</p>
+        </div>
+      </footer>
+    </main>
+  );
 };
 
 export default Home;
