@@ -73,54 +73,38 @@ const Home: React.FC = () => {
     []
   );
 
-  // Parallax gallery: match reference behavior (pin section + large yPercent per image)
+  // Parallax gallery: Smooth parallax with reasonable values
   useGSAP(() => {
     const section = document.getElementById('parallax-gallery');
     if (!section) return;
 
-    const amplitudes = [500, 1000, 1500];
-    const scrubs = [1, 2, 3];
-
     const images = gsap.utils.toArray<HTMLElement>('.ts-parallax-gallery-image');
 
-    const triggers: ScrollTrigger[] = [];
-
-    // Pin the whole section like the reference
-    const pinTrigger = ScrollTrigger.create({
-      trigger: section,
-      start: 'top top',
-      end: () => `+=${Math.max(0, section.clientHeight - 250)}`,
-      scrub: true,
-      pin: true,
-    });
-    triggers.push(pinTrigger);
-
+    // Different speeds for each column - creates depth without extreme values
     images.forEach((el, index) => {
-      const amp = amplitudes[index % amplitudes.length];
-      const scrub = scrubs[index % scrubs.length];
+      // Left column (even indices in first ul) moves slower, right column faster
+      const isLeftColumn = index < 4;
+      const speed = isLeftColumn 
+        ? [100, 150, 200, 120][index % 4]  // Left column speeds
+        : [180, 220, 140, 200][index % 4]; // Right column speeds
 
-      gsap.set(el, { zIndex: amp / 100, position: 'relative' });
-
-      const tween = gsap.fromTo(
+      gsap.fromTo(
         el,
-        { yPercent: amp },
+        { yPercent: speed * 0.5 },
         {
-          yPercent: -amp,
+          yPercent: -speed * 0.5,
           ease: 'none',
           scrollTrigger: {
             trigger: section,
             start: 'top bottom',
             end: 'bottom top',
-            scrub,
+            scrub: 1.5,
           },
         }
       );
-
-      const st = tween.scrollTrigger;
-      if (st) triggers.push(st);
     });
 
-    // Reference-like "is-active" behavior: add class once the scroll passes element midpoint.
+    // is-active class behavior for grayscale effect
     const onScroll = () => {
       const scrollY = window.scrollY;
       const h = window.innerHeight;
@@ -136,10 +120,7 @@ const Home: React.FC = () => {
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
 
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      triggers.forEach((t) => t.kill());
-    };
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   // Works: apply the old "Services" per-item scaling animation to each work row
@@ -287,7 +268,7 @@ const Home: React.FC = () => {
     ).to(
       moveTarget,
       {
-        y: '20rem',
+        y: '8rem',
         ease: 'power4.out',
       },
       0
@@ -399,16 +380,16 @@ const Home: React.FC = () => {
               </span>
             </div>
           </div>
-        </div>
+          </div>
         </div>
       </section>
 
       {/* PARALLAX GALLERY */}
-      <section id="parallax-gallery" className="relative z-20 overflow-hidden py-20 text-[#fffffd]">
+      <section id="parallax-gallery" className="relative text-[#fffffd]">
         <div className="absolute inset-0 -z-10 bg-[#121214]" />
 
-        <div className="relative mx-auto max-w-6xl px-6">
-          <div className="flex gap-10">
+        <div className="relative mx-auto flex min-h-screen items-center max-w-6xl px-6 py-20">
+          <div className="flex w-full gap-10">
             <ul className="flex flex-1 flex-col items-start gap-12">
               {[HomePreview, AboutPreview, ServicesPreview, WorksPreview].map((img, i) => (
                 <li
@@ -434,17 +415,17 @@ const Home: React.FC = () => {
             </ul>
           </div>
 
-          <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex w-full -translate-x-1/2 -translate-y-1/2 flex-col items-center">
-            <h2 className="pointer-events-auto text-center font-serif text-3xl font-medium md:text-5xl">
-              {personalIntroTitle}
-            </h2>
-            <Link
-              href="/about"
-              className="pointer-events-auto mt-10 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 font-serif text-sm tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
-            >
-              MORE
-            </Link>
-          </div>
+        <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex w-full -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+          <h2 className="pointer-events-auto text-center font-serif text-3xl font-medium md:text-5xl">
+            {personalIntroTitle}
+          </h2>
+          <Link
+            href="/about"
+            className="pointer-events-auto mt-10 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 font-serif text-sm tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
+          >
+            MORE
+          </Link>
+        </div>
         </div>
       </section>
 
