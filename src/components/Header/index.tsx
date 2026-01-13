@@ -6,8 +6,9 @@ import Image from 'next/image'
 import React, { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { CSSRulePlugin } from 'gsap/CSSRulePlugin';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(CSSRulePlugin);
+gsap.registerPlugin(CSSRulePlugin, ScrollTrigger);
 
 const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   
@@ -16,6 +17,7 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const menuToggle = document.querySelector(".menu-toggle");
     const menuOverlay = document.querySelector(".menu-overlay");
     const menuContent = document.querySelector(".menu-content");
+    const menuVerticalText = document.querySelector<HTMLElement>(".vertical-text");
     const menuPreviewImg = document.querySelector(".menu-preview-img");
     const menuLinks = document.querySelectorAll(".link a");
 
@@ -24,12 +26,30 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     let isOpen = false;
     let isAnimating = false;
 
+    // Show/hide the vertical label based on the parallax section visibility (reference-like).
+    // This gives you "in" when approaching parallax and "out" when leaving.
+    const parallaxSection = document.getElementById('parallax-gallery');
+    if (parallaxSection && menuVerticalText) {
+      ScrollTrigger.create({
+        trigger: parallaxSection,
+        start: 'top bottom',
+        end: 'bottom top',
+        // Visible by default; hide while the parallax section is in view.
+        onEnter: () => menuVerticalText.setAttribute('data-active', 'false'),
+        onEnterBack: () => menuVerticalText.setAttribute('data-active', 'false'),
+        onLeave: () => menuVerticalText.setAttribute('data-active', 'true'),
+        onLeaveBack: () => menuVerticalText.setAttribute('data-active', 'true'),
+      });
+    }
+
     const openMenu = () => {
       if (isAnimating || isOpen) return;
       isAnimating = true;
 
       // Add overflow hidden to body to prevent scrolling/overflow when menu is open
       document.body.classList.add('menu-open');
+      // Hide the vertical label while menu is open.
+      menuVerticalText?.setAttribute('data-active', 'false');
 
       // Make overlay interactive
       gsap.set(menuOverlay, { pointerEvents: 'auto' });
@@ -114,6 +134,8 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           gsap.set(menuOverlay, { pointerEvents: 'none' });
           
           document.body.classList.remove('menu-open');
+          // Re-show the vertical label after menu closes.
+          menuVerticalText?.setAttribute('data-active', 'true');
         },
       });
     };
@@ -210,7 +232,7 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <p id="menu-open" className="absolute origin-top-left">Menu</p>
           <p id="menu-close" className="absolute origin-top-left">Close</p>
           {/* Vertical text on left side of menu */}
-          <div className="vertical-text">
+          <div className="vertical-text ts-focus-in" data-active="true">
             <span className="vertical-mizumi">Mizumi</span>
             <span className="vertical-hiragana">みずみ</span>
           </div>

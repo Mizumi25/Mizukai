@@ -81,8 +81,36 @@
 }
 
 body {
-  background-color: var(--background);
+  /* Global theme (overridden via body[data-theme]) */
+  --page-bg: #121214;
+  --page-fg: #fffffd;
+  --page-muted: #c9c9c9;
+
+  background-color: var(--page-bg);
+  color: var(--page-fg);
   font-family: var(--font-sans), sans-serif;
+  transition: background-color 0.8s ease, color 0.8s ease;
+}
+
+body[data-theme='light'] {
+  --page-bg: #fffffd;
+  --page-fg: #121214;
+  --page-muted: rgba(18, 18, 20, 0.6);
+}
+
+body[data-theme='dark'] {
+  --page-bg: #121214;
+  --page-fg: #fffffd;
+  --page-muted: #c9c9c9;
+}
+
+/* Helpers for fixed background layers */
+.global-bg {
+  background-color: var(--page-bg);
+  transition: background-color 0.8s ease;
+}
+.global-bg-overlay {
+  transition: opacity 0.8s ease;
 }
 
 html {

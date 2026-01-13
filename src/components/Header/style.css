@@ -21,7 +21,27 @@ a,
 }
 
 /* Menu toggle animation states */
+.menu-toggle {
+  /* Auto-invert against whatever background is behind it (like the reference site) */
+  color: #fff;
+  mix-blend-mode: difference;
+}
+
+/* Auto-invert the left logo too */
+.logo a {
+  color: #fff;
+  mix-blend-mode: difference;
+  /* make header branding BIG */
+  font-size: clamp(1.8rem, 2.5vw, 2.8rem);
+  letter-spacing: 0.02em;
+}
+
 .menu-toggle p {
+  /* override global `.header p { color: ... }` */
+  color: inherit;
+  font-size: clamp(1.25rem, 1.6vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
   position: absolute;
   transform-origin: top left;
   will-change: transform, opacity;
@@ -34,13 +54,38 @@ a,
 
 /* Vertical text beside menu */
 .vertical-text {
+  /* Default hidden; toggled via [data-active] */
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(10px);
+}
+
+.vertical-text[data-active='true'] {
+  animation: text-focus-in 0.8s ease forwards;
+}
+
+.vertical-text[data-active='false'] {
+  animation: text-focus-out 0.5s ease forwards;
+}
+
+@keyframes text-focus-in {
+  0% { opacity: 0; filter: blur(10px); transform: translateY(10px); }
+  100% { opacity: 1; filter: blur(0px); transform: translateY(0px); }
+}
+
+@keyframes text-focus-out {
+  0% { opacity: 1; filter: blur(0px); transform: translateY(0px); }
+  100% { opacity: 0; filter: blur(10px); transform: translateY(10px); }
+}
+
+.vertical-text {
   position: absolute;
-  left: -80px;
-  top: 0;
+  left: -120px;
+  top: -4px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: 0.75rem;
   writing-mode: vertical-rl;
   text-orientation: upright;
   pointer-events: none;
@@ -48,19 +93,20 @@ a,
 }
 
 .vertical-mizumi {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--text-primary);
+  font-size: clamp(1rem, 1.2vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: inherit;
   font-family: var(--font-sans);
 }
 
 .vertical-hiragana {
-  font-size: 0.7rem;
-  font-weight: 400;
-  color: var(--text-secondary);
+  font-size: clamp(0.95rem, 1.1vw, 1.2rem);
+  font-weight: 500;
+  color: inherit;
+  opacity: 0.85;
   font-family: var(--font-mono);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
 /* Menu overlay initial state and animation properties */

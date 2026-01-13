@@ -41,6 +41,8 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     setOverlayRoot(document.getElementById('overlay-root'));
+    // Default theme
+    document.body.dataset.theme = 'dark';
   }, []);
 
   const works: WorkItem[] = useMemo(
@@ -219,8 +221,25 @@ const Home: React.FC = () => {
     };
   }, []);
 
-  // Works: apply the old "Services" per-item scaling animation to each work row
+  // Works: theme switch + per-item scaling animation
   useEffect(() => {
+    const worksSection = document.getElementById('works-gallery');
+
+    // Smooth global theme switch (like the reference site)
+    let themeTrigger: ScrollTrigger | null = null;
+    if (worksSection) {
+      themeTrigger = ScrollTrigger.create({
+        trigger: worksSection,
+        start: 'top 70%',
+        end: 'bottom top',
+        onEnter: () => (document.body.dataset.theme = 'light'),
+        onEnterBack: () => (document.body.dataset.theme = 'light'),
+        // Keep light theme after passing Works; revert only when going back above.
+        onLeave: () => (document.body.dataset.theme = 'light'),
+        onLeaveBack: () => (document.body.dataset.theme = 'dark'),
+      });
+    }
+
     const items = gsap.utils.toArray<HTMLElement>('#works-gallery .image-link');
 
     const createdTriggers: ScrollTrigger[] = [];
@@ -286,6 +305,7 @@ const Home: React.FC = () => {
     return () => {
       observer.disconnect();
       createdTriggers.forEach((t) => t.kill());
+      themeTrigger?.kill();
     };
   }, []);
 
@@ -415,8 +435,8 @@ const Home: React.FC = () => {
     <main id="Home" className="relative overflow-x-hidden">
       {/* Background (reference-like fixed layers) */}
       <div className="pointer-events-none fixed left-0 top-0 -z-10 h-full w-screen">
-        <div className="absolute inset-0 bg-[#121214]" />
-        <div className="absolute inset-0 opacity-30 mix-blend-multiply bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.25),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.15),transparent_50%)]" />
+        <div className="absolute inset-0 global-bg" />
+        <div className="absolute inset-0 opacity-30 mix-blend-multiply global-bg-overlay bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.25),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.15),transparent_50%)]" />
       </div>
 
       {/* HERO */}
@@ -425,7 +445,7 @@ const Home: React.FC = () => {
         className="relative z-10 flex min-h-screen items-center justify-center overflow-hidden py-20 text-[#fffffd]"
       >
         {/* Dark base behind the video (reference-like) */}
-        <div className="absolute inset-0 z-0 bg-[#121214]" />
+        <div className="absolute inset-0 z-0 global-bg" />
 
         {/* Full-bleed background video (reference-like: opacity + mix-blend-multiply) */}
         <div className="absolute inset-0 z-0 overflow-hidden opacity-50 mix-blend-multiply">
@@ -457,22 +477,22 @@ const Home: React.FC = () => {
           </div>
 
           <div className="hidden md:block">
-            <p className="font-serif text-sm leading-relaxed text-[#c9c9c9]">
+            <p className="font-serif text-sm leading-relaxed text-[color:var(--page-muted)]">
               {personalIntroContent}
             </p>
           </div>
 
           <div className="md:col-span-3">
-            <p className="font-serif text-sm uppercase tracking-[0.2em] text-[#c9c9c9]">
+            <p className="font-serif text-sm uppercase tracking-[0.2em] text-[color:var(--page-muted)]">
               WEB DESIGN / FULL-STACK DEV / DIGITAL ART
             </p>
             <div className="mt-4 flex items-end justify-between gap-6">
               <h1 className="text-5xl font-semibold tracking-tight md:text-7xl">
                 Mizumi Kaito
               </h1>
-              <span className="hidden flex-col text-right font-serif text-sm text-[#9e9e9e] md:flex">
+              <span className="hidden flex-col text-right font-serif text-sm text-[color:var(--page-muted)] md:flex">
                 <span>(PORTFOLIO)</span>
-                <span className="text-2xl text-[#c9c9c9]">作品集</span>
+                <span className="text-2xl text-[color:var(--page-muted)]">作品集</span>
               </span>
             </div>
           </div>
@@ -483,11 +503,9 @@ const Home: React.FC = () => {
       {/* PARALLAX GALLERY */}
       <section
         id="parallax-gallery"
-        className="relative h-[220vh] overflow-x-hidden py-[4.6rem] md:h-[240vh] md:py-44 text-[#fffffd]"
-        style={{ backgroundColor: '#121214' }}
+        className="relative h-[220vh] overflow-x-hidden py-[4.6rem] md:h-[240vh] md:py-44"
       >
-        {/* Force-visible background layer for testing */}
-        <div className="absolute inset-0 z-0 bg-[#121214]" />
+        <div className="absolute inset-0 z-0 global-bg" />
 
         <div
           className="absolute inset-0 z-30 w-full max-w-6xl mx-auto px-6 overflow-hidden bg-transparent opacity-80"
@@ -634,7 +652,7 @@ const Home: React.FC = () => {
         )}
 
       {/* WORKS */}
-      <section id="works-gallery" className="relative bg-[#fffffd] py-24 text-[#121214]">
+      <section id="works-gallery" className="relative py-24 text-[color:var(--page-fg)]">
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex md:justify-end">
             <h2 className="text-4xl font-semibold md:text-6xl">Works</h2>
@@ -645,17 +663,17 @@ const Home: React.FC = () => {
               <li key={w.href} className="image-link group relative">
                 <Link
                   href={w.href}
-                  className="flex flex-col gap-6 border-t border-[rgba(18,18,20,0.2)] py-8 md:flex-row md:items-start md:gap-16"
+                  className="flex flex-col gap-6 border-t border-[color:var(--page-muted)]/30 py-8 md:flex-row md:items-start md:gap-16"
                 >
                   <div className="flex flex-1 flex-col">
-                    <div className="flex justify-between text-sm text-[rgba(18,18,20,0.6)]">
+                    <div className="flex justify-between text-sm text-[color:var(--page-muted)]">
                       <span>({idx + 1})</span>
                       <span className="font-serif">{w.year ?? ''}</span>
                     </div>
 
                     <h3 className="mt-6 text-3xl font-medium md:text-4xl">{w.title}</h3>
 
-                    <ul className="mt-6 flex flex-wrap gap-x-3 gap-y-2 text-xs tracking-widest text-[rgba(18,18,20,0.6)] md:mt-auto md:flex-col md:text-sm">
+                    <ul className="mt-6 flex flex-wrap gap-x-3 gap-y-2 text-xs tracking-widest text-[color:var(--page-muted)] md:mt-auto md:flex-col md:text-sm">
                       {w.tags.map((t) => (
                         <li key={t}>{t}</li>
                       ))}
@@ -680,7 +698,7 @@ const Home: React.FC = () => {
             </Link>
             <Link
               href="/works"
-              className="mt-10 inline-block rounded-full border border-[#121214] px-10 py-4 font-serif text-sm tracking-widest transition-colors hover:bg-[#121214] hover:text-[#fffffd]"
+              className="mt-10 inline-block rounded-full border border-[color:var(--page-fg)] px-10 py-4 font-serif text-sm tracking-widest transition-colors hover:bg-[color:var(--page-fg)] hover:text-[color:var(--page-bg)]"
             >
               MORE
             </Link>
@@ -689,10 +707,10 @@ const Home: React.FC = () => {
       </section>
 
       {/* FOOTER-ish */}
-      <footer className="bg-[#121214] py-24 text-[#fffffd]">
+      <footer className="py-24 text-[color:var(--page-fg)]">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-4xl font-semibold md:text-6xl">{footerTitle}</h2>
-          <p className="mt-6 font-serif text-lg text-[#c9c9c9]">{footerName}</p>
+          <p className="mt-6 font-serif text-lg text-[color:var(--page-muted)]">{footerName}</p>
         </div>
       </footer>
     </main>
