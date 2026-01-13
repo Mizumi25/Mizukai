@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   // to a different mount (example: /dev/shm) via NEXT_DIST_DIR.
   // Default remains ".next".
   distDir: process.env.NEXT_DIST_DIR || '.next',
+
 };
 
 export default nextConfig;
