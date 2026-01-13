@@ -89,3 +89,35 @@ html {
   overflow-x: hidden; 
 }
 
+/* --- Parallax gallery (reference-like) --- */
+.ts-parallax-gallery-image {
+  transition: filter 0.5s ease;
+}
+
+.ts-parallax-gallery-image img,
+.ts-parallax-gallery-image .bg-layer {
+  transition: all 1s ease;
+  will-change: transform, opacity, filter;
+}
+
+/* Alternate skew like the reference */
+.ts-parallax-gallery-image:nth-child(odd) .bg-layer {
+  transform: skewY(-10deg);
+}
+
+.ts-parallax-gallery-image:nth-child(even) .bg-layer {
+  transform: skewY(10deg);
+}
+
+.ts-parallax-gallery-image:not(.is-active) img {
+  filter: grayscale(100%);
+}
+
+.ts-parallax-gallery-image.is-active img {
+  filter: grayscale(0%);
+}
+
+.ts-parallax-gallery-image.is-active .bg-layer {
+  transform: translateY(100%);
+  opacity: 0;
+}

@@ -73,54 +73,108 @@ const Home: React.FC = () => {
     []
   );
 
-  // Parallax gallery: Smooth parallax with reasonable values
+  // Parallax gallery (reference-like): pin section + varied yPercent distances + scrub
   useGSAP(() => {
     const section = document.getElementById('parallax-gallery');
+    const overlay = document.getElementById('parallax-pinned-content');
     if (!section) return;
 
     const images = gsap.utils.toArray<HTMLElement>('.ts-parallax-gallery-image');
 
-    // Different speeds for each column - creates depth without extreme values
-    images.forEach((el, index) => {
-      // Left column (even indices in first ul) moves slower, right column faster
-      const isLeftColumn = index < 4;
-      const speed = isLeftColumn 
-        ? [100, 150, 200, 120][index % 4]  // Left column speeds
-        : [180, 220, 140, 200][index % 4]; // Right column speeds
+    // is-active class behavior for grayscale effect:
+    // keep only the item closest to the viewport center active
+    let raf = 0;
 
-      gsap.fromTo(
-        el,
-        { yPercent: speed * 0.5 },
-        {
-          yPercent: -speed * 0.5,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.5,
-          },
-        }
-      );
-    });
+    const updateActive = () => {
+      raf = 0;
+      const centerY = window.innerHeight / 2;
 
-    // is-active class behavior for grayscale effect
-    const onScroll = () => {
-      const scrollY = window.scrollY;
-      const h = window.innerHeight;
+      let closest: { el: HTMLElement; dist: number } | null = null;
+
       images.forEach((el) => {
         const rect = el.getBoundingClientRect();
-        const top = rect.top + scrollY;
-        if (scrollY > top - h / 2) {
-          el.classList.add('is-active');
-        }
+        const elCenter = rect.top + rect.height / 2;
+        const dist = Math.abs(elCenter - centerY);
+        if (!closest || dist < closest.dist) closest = { el, dist };
+      });
+
+      images.forEach((el) => {
+        el.classList.toggle('is-active', el === closest?.el);
       });
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    const scheduleActiveUpdate = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(updateActive);
+    };
 
-    return () => window.removeEventListener('scroll', onScroll);
+    // Pin only the center overlay (text/button) so it behaves like a typical pinned caption,
+    // without interfering with the image parallax (which uses its own ScrollTriggers).
+    const overlayPin = overlay
+      ? ScrollTrigger.create({
+          trigger: section,
+          start: 'top top',
+          end: () => `+=${Math.max(0, section.offsetHeight * 1.6)}`,
+          pin: overlay,
+          pinSpacing: false,
+          pinReparent: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        })
+      : null;
+    // Astro ref cycles distances and scrub values
+    const distances = [500, 1000, 1500];
+    const scrubs = [1, 2, 3];
+
+    const imageTriggers: ScrollTrigger[] = [];
+
+    images.forEach((el, index) => {
+      const distance = distances[index % distances.length];
+      const scrub = scrubs[index % scrubs.length];
+
+      gsap.set(el, { zIndex: Math.round(distance / 100), position: 'relative' });
+
+      const tween = gsap.fromTo(
+        el,
+        { yPercent: distance },
+        {
+          yPercent: -distance,
+          ease: 'none',
+          // Render initial state immediately so images aren't static before entering the section.
+          immediateRender: true,
+          scrollTrigger: {
+            trigger: section,
+            // Start animating as the section enters the viewport (fixes the "static then sudden start" feel).
+            start: 'top bottom',
+            end: () => `+=${Math.max(0, section.offsetHeight * 1.6)}`,
+            scrub,
+            invalidateOnRefresh: true,
+          },
+        }
+      );
+
+      if (tween.scrollTrigger) imageTriggers.push(tween.scrollTrigger);
+    });
+
+    // With Lenis, native scroll events can fire at different times than the visual scroll.
+    // Use ScrollTrigger callbacks/ticker instead.
+    ScrollTrigger.addEventListener('refresh', scheduleActiveUpdate);
+    window.addEventListener('resize', scheduleActiveUpdate);
+    scheduleActiveUpdate();
+
+    // Note: Avoid forcing a window 'load' refresh here; it can cause visible jumps.
+    // If you ever need one, prefer refreshing after specific assets (e.g., video metadata) instead.
+
+
+    return () => {
+      window.removeEventListener('resize', scheduleActiveUpdate);
+      // window.removeEventListener('load', refreshSoon);
+      ScrollTrigger.removeEventListener('refresh', scheduleActiveUpdate);
+      if (raf) window.cancelAnimationFrame(raf);
+
+      imageTriggers.forEach((t) => t.kill());
+      overlayPin?.kill();
+    };
   }, []);
 
   // Works: apply the old "Services" per-item scaling animation to each work row
@@ -385,47 +439,95 @@ const Home: React.FC = () => {
       </section>
 
       {/* PARALLAX GALLERY */}
-      <section id="parallax-gallery" className="relative text-[#fffffd]">
-        <div className="absolute inset-0 -z-10 bg-[#121214]" />
+      <section
+        id="parallax-gallery"
+        className="relative h-[220vh] overflow-x-hidden py-[4.6rem] md:h-[240vh] md:py-44 text-[#fffffd]"
+        style={{ backgroundColor: 'red' }}
+      >
+        {/* Force-visible background layer for testing */}
+        <div className="absolute inset-0 z-0 bg-red-500" />
 
-        <div className="relative mx-auto flex min-h-screen items-center max-w-6xl px-6 py-20">
-          <div className="flex w-full gap-10">
-            <ul className="flex flex-1 flex-col items-start gap-12">
-              {[HomePreview, AboutPreview, ServicesPreview, WorksPreview].map((img, i) => (
-                <li
-                  key={`l-${i}`}
-                  className="ts-parallax-gallery-image relative w-56 overflow-hidden md:w-[26rem]"
-                >
-                  <Image src={img} alt="gallery" className="w-full" />
-                  <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
-                </li>
-              ))}
-            </ul>
+        <div
+          className="absolute inset-0 z-10 w-full max-w-6xl mx-auto px-6 overflow-hidden bg-transparent opacity-80"
+        >
+          <div className="absolute inset-0 flex justify-between gap-6 md:gap-10 h-full">
+          {/* Left column - spread images across full height */}
+          <ul className="flex flex-1 flex-col items-start min-w-0 justify-around py-20">
+            <li className="ts-parallax-gallery-image relative w-full max-w-[11.5rem] md:max-w-[27rem] overflow-hidden">
+              <Image src={HomePreview} alt="left-01" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[7rem] md:max-w-[14rem] overflow-hidden">
+              <Image src={AboutPreview} alt="left-02" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[11.5rem] md:max-w-[21rem] self-center overflow-hidden">
+              <Image src={ServicesPreview} alt="left-03" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[8rem] md:max-w-[21rem] overflow-hidden">
+              <Image src={WorksPreview} alt="left-04" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[10rem] md:max-w-[24rem] self-end overflow-hidden">
+              <Image src={HomePreview} alt="left-05" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[9rem] md:max-w-[18rem] overflow-hidden">
+              <Image src={ServicesPreview} alt="left-06" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+          </ul>
 
-            <ul className="hidden flex-1 flex-col items-end gap-12 md:flex">
-              {[WorksPreview, ServicesPreview, AboutPreview, HomePreview].map((img, i) => (
-                <li
-                  key={`r-${i}`}
-                  className="ts-parallax-gallery-image relative w-56 overflow-hidden md:w-[26rem]"
-                >
-                  <Image src={img} alt="gallery" className="w-full" />
-                  <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
-                </li>
-              ))}
-            </ul>
+          {/* Right column - spread images across full height */}
+          <ul className="flex flex-1 flex-col items-end min-w-0 justify-around py-40">
+            <li className="ts-parallax-gallery-image relative w-full max-w-[9.25rem] md:max-w-[26rem] overflow-hidden">
+              <Image src={WorksPreview} alt="right-01" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[7rem] md:max-w-[12.5rem] overflow-hidden">
+              <Image src={ServicesPreview} alt="right-02" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[8rem] md:max-w-[22rem] self-center overflow-hidden">
+              <Image src={AboutPreview} alt="right-03" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[10.25rem] md:max-w-[30rem] overflow-hidden">
+              <Image src={HomePreview} alt="right-04" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[8rem] md:max-w-[20rem] self-start overflow-hidden">
+              <Image src={AboutPreview} alt="right-05" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[11rem] md:max-w-[25rem] overflow-hidden">
+              <Image src={WorksPreview} alt="right-06" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+          </ul>
+
+          </div>
           </div>
 
-        <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 flex w-full -translate-x-1/2 -translate-y-1/2 flex-col items-center">
-          <h2 className="pointer-events-auto text-center font-serif text-3xl font-medium md:text-5xl">
-            {personalIntroTitle}
-          </h2>
-          <Link
-            href="/about"
-            className="pointer-events-auto mt-10 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 font-serif text-sm tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
-          >
-            MORE
-          </Link>
-        </div>
+        {/* Center overlay (text + button) */}
+        <div
+          id="parallax-pinned-content"
+          className="pointer-events-none absolute inset-0 z-50 flex h-screen w-screen items-center justify-center"
+        >
+          <div className="text-[#c9c9c9] text-center px-6">
+            <h2 className="pointer-events-auto font-serif text-3xl font-medium md:text-5xl">
+              {personalIntroTitle}
+            </h2>
+            <div className="flex justify-center">
+              <Link
+                href="/about"
+                className="pointer-events-auto mt-10 md:mt-16 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 md:px-12 md:py-6 font-serif text-sm md:text-lg tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
+              >
+                MORE
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

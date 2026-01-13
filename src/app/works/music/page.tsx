@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import musicThumbs from '@/data/music/musicImages';
-import './page.module.css'
+import './page.css'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { useGSAP } from "@gsap/react";

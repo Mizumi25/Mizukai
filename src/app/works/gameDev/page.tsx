@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import AppsData from '@/data/gameDev/appIcons';
-import './page.module.css'
+import './page.css'
 import Image from 'next/image'
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';

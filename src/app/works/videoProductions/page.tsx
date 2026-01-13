@@ -3,7 +3,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import gsap, { CSSRulePlugin } from 'gsap/all';
 import { Draggable } from 'gsap/Draggable';
-import './page.module.css';
+import './page.css';
 import Image from 'next/image';
 import Profile from '../../../../public/images/profile.jpg';
 import dynamic from "next/dynamic";

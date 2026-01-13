@@ -1,22 +1,22 @@
 /* Reset and base styles */
-:global(*) {
+* {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
 
 /* GSAP Animation specific styles that can't be converted to Tailwind */
-:global(#Portraits .section1 .letters > div) {
+#Portraits .section1 .letters > div {
   font-size: 10vw; /* Responsive font size for animations */
 }
 
 /* Image holder with complex clip-path animation */
-:global(#Portraits .section2 .imageHolder) {
+#Portraits .section2 .imageHolder {
   clip-path: polygon(37.5% 20%, 62.5% 20%, 62.5% 80%, 37.5% 80%);
   transform: rotate(30deg);
 }
 
 /* Image scale animation */
-:global(#Portraits .section2 .imageHolder img) {
+#Portraits .section2 .imageHolder img {
   transform: scale(2);
 }
