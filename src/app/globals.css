@@ -118,6 +118,7 @@ html {
 }
 
 /* --- Parallax gallery (reference-like) --- */
+
 .ts-parallax-gallery-image {
   transition: filter 0.5s ease;
 }

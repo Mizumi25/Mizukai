@@ -38,6 +38,7 @@ const Home: React.FC = () => {
 
   const [isParallaxActive, setIsParallaxActive] = useState(false);
   const [overlayMode, setOverlayMode] = useState<OverlayMode>('top');
+  const [parallaxTitleIndex, setParallaxTitleIndex] = useState(0);
 
   useEffect(() => {
     setOverlayRoot(document.getElementById('overlay-root'));
@@ -133,6 +134,27 @@ const Home: React.FC = () => {
       onToggle: (self) => setIsParallaxActive(self.isActive),
     });
 
+    // Reliable switching: update React state based on section progress.
+    // This updates ALL overlay modes (top/bottom/pinned) consistently.
+    let lastIdx = -1;
+    const titleTrigger = ScrollTrigger.create({
+      trigger: section,
+      start: 'top bottom',
+      end: 'bottom top',
+      onUpdate: (self) => {
+        const p = self.progress;
+        // 4 changes in short intervals near the start
+        const idx = p < 0.25 ? 0 : p < 0.5 ? 1 : p < 0.75 ? 2 : 3;
+        if (idx !== lastIdx) {
+          lastIdx = idx;
+          setParallaxTitleIndex(idx);
+        }
+      },
+    });
+
+    // ensure initial state
+    setParallaxTitleIndex(0);
+
     const overlayPinnedTrigger = overlayInline
       ? ScrollTrigger.create({
           trigger: overlayInline,
@@ -216,8 +238,72 @@ const Home: React.FC = () => {
       imageTriggers.forEach((t) => t.kill());
       overlayPinnedTrigger?.kill();
       overlayBottomPinnedTrigger?.kill();
+      titleTrigger.kill();
       parallaxActiveTrigger.kill();
       // No state updates in cleanup.
+    };
+  }, []);
+
+  // Parallax title: blur/focus on each text change
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll<HTMLElement>('[data-parallax-title-display]'));
+    if (!els.length) return;
+
+    gsap.fromTo(
+      els,
+      { autoAlpha: 0, filter: 'blur(10px)', y: 10 },
+      {
+        autoAlpha: 1,
+        filter: 'blur(0px)',
+        y: 0,
+        duration: 0.45,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      }
+    );
+  }, [parallaxTitleIndex]);
+
+  // Works title: blur/focus in/out on section enter
+  useEffect(() => {
+    const worksSection = document.getElementById('works-gallery');
+    const worksTitle = document.querySelector<HTMLElement>('[data-works-title]');
+    if (!worksSection || !worksTitle) return;
+
+    // initial hidden
+    gsap.set(worksTitle, { autoAlpha: 0, filter: 'blur(10px)', y: 10 });
+
+    const tlIn = () =>
+      gsap.to(worksTitle, {
+        autoAlpha: 1,
+        filter: 'blur(0px)',
+        y: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      });
+
+    const tlOut = () =>
+      gsap.to(worksTitle, {
+        autoAlpha: 0,
+        filter: 'blur(10px)',
+        y: 10,
+        duration: 0.5,
+        ease: 'power2.inOut',
+        overwrite: 'auto',
+      });
+
+    const trigger = ScrollTrigger.create({
+      trigger: worksSection,
+      start: 'top 75%',
+      end: 'bottom top',
+      onEnter: tlIn,
+      onEnterBack: tlIn,
+      onLeave: tlOut,
+      onLeaveBack: tlOut,
+    });
+
+    return () => {
+      trigger.kill();
     };
   }, []);
 
@@ -503,9 +589,11 @@ const Home: React.FC = () => {
       {/* PARALLAX GALLERY */}
       <section
         id="parallax-gallery"
-        className="relative h-[220vh] overflow-x-hidden py-[4.6rem] md:h-[240vh] md:py-44"
+        className="relative h-[2000vh] overflow-x-hidden py-[4.6rem] md:h-[2000vh] md:py-44"
       >
         <div className="absolute inset-0 z-0 global-bg" />
+
+        {/* Title changes (4 states) early in the scroll. */}
 
         <div
           className="absolute inset-0 z-30 w-full max-w-6xl mx-auto px-6 overflow-hidden bg-transparent opacity-80"
@@ -537,6 +625,14 @@ const Home: React.FC = () => {
               <Image src={ServicesPreview} alt="left-06" className="w-full" />
               <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
             </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[8rem] md:max-w-[20rem] self-start overflow-hidden">
+              <Image src={AboutPreview} alt="left-07" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[10rem] md:max-w-[24rem] self-end overflow-hidden">
+              <Image src={WorksPreview} alt="left-08" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
           </ul>
 
           {/* Right column - spread images across full height */}
@@ -565,6 +661,14 @@ const Home: React.FC = () => {
               <Image src={WorksPreview} alt="right-06" className="w-full" />
               <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
             </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[8rem] md:max-w-[22rem] self-center overflow-hidden">
+              <Image src={HomePreview} alt="right-07" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[7rem] md:max-w-[14rem] overflow-hidden">
+              <Image src={ServicesPreview} alt="right-08" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
           </ul>
 
           </div>
@@ -588,7 +692,7 @@ const Home: React.FC = () => {
               <div className="flex justify-center">
                 <Link
                   href="/about"
-                  className="pointer-events-auto mt-10 md:mt-16 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 md:px-12 md:py-6 font-serif text-sm md:text-lg tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
+                  className="pointer-events-auto mt-10 md:mt-16 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 md:px-12 md:py-6 font-serif text-sm md:text-lg tracking-widest text-[#c9c9c9] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
                 >
                   MORE
                 </Link>
@@ -605,12 +709,23 @@ const Home: React.FC = () => {
           <div className="flex w-full items-center justify-center">
             <div className="text-[#c9c9c9] text-center px-6">
               <h2 className="pointer-events-auto font-serif text-3xl font-medium md:text-5xl">
-                {personalIntroTitle}
+                {
+                  <span data-parallax-title-display>
+                    {
+                      [
+                        personalIntroTitle,
+                        'I’m an artist and web developer.',
+                        'I design modern websites & experiences.',
+                        'Aiming for app dev, game dev, and illustration.',
+                      ][parallaxTitleIndex]
+                    }
+                  </span>
+                }
               </h2>
               <div className="flex justify-center">
                 <Link
                   href="/about"
-                  className="pointer-events-auto mt-10 md:mt-16 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 md:px-12 md:py-6 font-serif text-sm md:text-lg tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
+                  className="pointer-events-auto mt-10 md:mt-16 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 md:px-12 md:py-6 font-serif text-sm md:text-lg tracking-widest text-[#c9c9c9] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
                 >
                   MORE
                 </Link>
@@ -635,12 +750,23 @@ const Home: React.FC = () => {
             >
               <div className="text-[#c9c9c9] text-center px-6">
                 <h2 className="pointer-events-auto font-serif text-3xl font-medium md:text-5xl">
-                  {personalIntroTitle}
+                  {
+                    <span data-parallax-title-display>
+                      {
+                        [
+                          personalIntroTitle,
+                          'I’m an artist and web developer.',
+                          'I design modern websites & experiences.',
+                          'Aiming for app dev, game dev, and illustration.',
+                        ][parallaxTitleIndex]
+                      }
+                    </span>
+                  }
                 </h2>
                 <div className="flex justify-center">
                   <Link
                     href="/about"
-                    className="pointer-events-auto mt-10 md:mt-16 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 md:px-12 md:py-6 font-serif text-sm md:text-lg tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
+                    className="pointer-events-auto mt-10 md:mt-16 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 md:px-12 md:py-6 font-serif text-sm md:text-lg tracking-widest text-[#c9c9c9] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
                   >
                     MORE
                   </Link>
@@ -655,7 +781,7 @@ const Home: React.FC = () => {
       <section id="works-gallery" className="relative py-24 text-[color:var(--page-fg)]">
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex md:justify-end">
-            <h2 className="text-4xl font-semibold md:text-6xl">Works</h2>
+            <h2 data-works-title className="text-4xl font-semibold md:text-6xl">Works</h2>
           </div>
 
           <ul className="mt-10">
