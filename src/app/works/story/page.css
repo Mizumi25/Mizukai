@@ -44,7 +44,7 @@
   transform: rotate(10deg);
 }
 
-#Stories .section3 .galleryContainer .covers:nth-child(2 .coverItem:nth-child(11)) {
+#Stories .section3 .galleryContainer .covers .coverItem:nth-child(11) {
   transform: rotate(350deg);
 }
 

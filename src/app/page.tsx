@@ -34,8 +34,10 @@ type WorkItem = {
 
 const Home: React.FC = () => {
   const [overlayRoot, setOverlayRoot] = useState<HTMLElement | null>(null);
+  type OverlayMode = 'top' | 'pinned' | 'bottom';
+
   const [isParallaxActive, setIsParallaxActive] = useState(false);
-  const [isOverlayPinned, setIsOverlayPinned] = useState(false);
+  const [overlayMode, setOverlayMode] = useState<OverlayMode>('top');
 
   useEffect(() => {
     setOverlayRoot(document.getElementById('overlay-root'));
@@ -119,11 +121,13 @@ const Home: React.FC = () => {
     // Portal-based overlay pinning: we only use ScrollTrigger to toggle state.
     // This avoids pin-spacer/position:fixed issues inside transformed (Lenis) containers.
     const overlayInline = document.getElementById('parallax-pinned-content');
+    const overlayBottom = document.getElementById('parallax-pinned-content-bottom');
 
     const parallaxActiveTrigger = ScrollTrigger.create({
       trigger: section,
       start: 'top bottom',
-      end: 'bottom top',
+      // Stop as soon as the next section starts entering.
+      end: 'bottom bottom',
       onToggle: (self) => setIsParallaxActive(self.isActive),
     });
 
@@ -132,11 +136,25 @@ const Home: React.FC = () => {
           trigger: overlayInline,
           start: 'top center',
           endTrigger: section,
-          end: 'bottom top',
-          onEnter: () => setIsOverlayPinned(true),
-          onEnterBack: () => setIsOverlayPinned(true),
-          onLeave: () => setIsOverlayPinned(false),
-          onLeaveBack: () => setIsOverlayPinned(false),
+          end: 'bottom bottom',
+          onEnter: () => setOverlayMode('pinned'),
+          onEnterBack: () => setOverlayMode('pinned'),
+          // Once the section starts leaving (downwards), show the inline overlay at the bottom.
+          onLeave: () => setOverlayMode('bottom'),
+          // Scrolling back above the trigger restores the inline overlay at the top.
+          onLeaveBack: () => setOverlayMode('top'),
+        })
+      : null;
+
+    // Symmetric trigger for the bottom overlay when scrolling back up from the next section.
+    const overlayBottomPinnedTrigger = overlayBottom
+      ? ScrollTrigger.create({
+          trigger: overlayBottom,
+          start: 'top center',
+          endTrigger: section,
+          end: 'bottom bottom',
+          onEnterBack: () => setOverlayMode('pinned'),
+          onLeave: () => setOverlayMode('bottom'),
         })
       : null;
     // Astro ref cycles distances and scrub values
@@ -179,6 +197,10 @@ const Home: React.FC = () => {
     window.addEventListener('resize', scheduleActiveUpdate);
     scheduleActiveUpdate();
 
+    // Force a one-time measurement pass right after setup.
+    // This helps avoid a micro-delay when entering the section on fast scroll.
+    requestAnimationFrame(() => ScrollTrigger.refresh());
+
     // Note: Avoid forcing a window 'load' refresh here; it can cause visible jumps.
     // If you ever need one, prefer refreshing after specific assets (e.g., video metadata) instead.
 
@@ -191,7 +213,9 @@ const Home: React.FC = () => {
 
       imageTriggers.forEach((t) => t.kill());
       overlayPinnedTrigger?.kill();
+      overlayBottomPinnedTrigger?.kill();
       parallaxActiveTrigger.kill();
+      // No state updates in cleanup.
     };
   }, []);
 
@@ -533,9 +557,32 @@ const Home: React.FC = () => {
             - pins when it reaches the center of the viewport
             - releases when the parallax section ends
         */}
+        {/* Inline (top) overlay */}
         <div
           id="parallax-pinned-content"
-          className={`relative z-50 pointer-events-none ${isOverlayPinned ? 'opacity-0' : 'opacity-100'}`}
+          className={`relative z-50 pointer-events-none ${overlayMode === 'top' ? 'opacity-100' : 'opacity-0'}`}
+        >
+          <div className="flex w-full items-center justify-center">
+            <div className="text-[#c9c9c9] text-center px-6">
+              <h2 className="pointer-events-auto font-serif text-3xl font-medium md:text-5xl">
+                {personalIntroTitle}
+              </h2>
+              <div className="flex justify-center">
+                <Link
+                  href="/about"
+                  className="pointer-events-auto mt-10 md:mt-16 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 md:px-12 md:py-6 font-serif text-sm md:text-lg tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
+                >
+                  MORE
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Inline (bottom) overlay */}
+        <div
+          id="parallax-pinned-content-bottom"
+          className={`pointer-events-none absolute inset-x-0 bottom-10 z-50 ${overlayMode === 'bottom' ? 'opacity-100' : 'opacity-0'}`}
         >
           <div className="flex w-full items-center justify-center">
             <div className="text-[#c9c9c9] text-center px-6">
@@ -557,12 +604,12 @@ const Home: React.FC = () => {
 
       {overlayRoot &&
         isParallaxActive &&
-        isOverlayPinned &&
+        overlayMode === 'pinned' &&
         createPortal(
           <>
             <div
-              className="pointer-events-none fixed inset-0 bg-[#121214]"
-              style={{ zIndex: 2147483646 }}
+              className="pointer-events-none fixed inset-0"
+              style={{ zIndex: 2147483646, backgroundColor: 'transparent' }}
             />
             <div
               className="pointer-events-none fixed left-0 top-0 flex h-screen w-screen items-center justify-center"

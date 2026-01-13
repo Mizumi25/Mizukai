@@ -92,7 +92,7 @@
   color: var(--text-tertiary);
 }
 
-#Videos .container .section4 .infiCard .inficardInfo .inficardItem:nth-child(2 p) {
+#Videos .container .section4 .infiCard .inficardInfo .inficardItem:nth-child(2) p {
   color: var(--text-primary);
 }
 
