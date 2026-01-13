@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
@@ -32,6 +33,14 @@ type WorkItem = {
 };
 
 const Home: React.FC = () => {
+  const [overlayRoot, setOverlayRoot] = useState<HTMLElement | null>(null);
+  const [isParallaxActive, setIsParallaxActive] = useState(false);
+  const [isOverlayPinned, setIsOverlayPinned] = useState(false);
+
+  useEffect(() => {
+    setOverlayRoot(document.getElementById('overlay-root'));
+  }, []);
+
   const works: WorkItem[] = useMemo(
     () => [
       {
@@ -76,7 +85,6 @@ const Home: React.FC = () => {
   // Parallax gallery (reference-like): pin section + varied yPercent distances + scrub
   useGSAP(() => {
     const section = document.getElementById('parallax-gallery');
-    const overlay = document.getElementById('parallax-pinned-content');
     if (!section) return;
 
     const images = gsap.utils.toArray<HTMLElement>('.ts-parallax-gallery-image');
@@ -108,18 +116,27 @@ const Home: React.FC = () => {
       raf = window.requestAnimationFrame(updateActive);
     };
 
-    // Pin only the center overlay (text/button) so it behaves like a typical pinned caption,
-    // without interfering with the image parallax (which uses its own ScrollTriggers).
-    const overlayPin = overlay
+    // Portal-based overlay pinning: we only use ScrollTrigger to toggle state.
+    // This avoids pin-spacer/position:fixed issues inside transformed (Lenis) containers.
+    const overlayInline = document.getElementById('parallax-pinned-content');
+
+    const parallaxActiveTrigger = ScrollTrigger.create({
+      trigger: section,
+      start: 'top bottom',
+      end: 'bottom top',
+      onToggle: (self) => setIsParallaxActive(self.isActive),
+    });
+
+    const overlayPinnedTrigger = overlayInline
       ? ScrollTrigger.create({
-          trigger: section,
-          start: 'top top',
-          end: () => `+=${Math.max(0, section.offsetHeight * 1.6)}`,
-          pin: overlay,
-          pinSpacing: false,
-          pinReparent: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
+          trigger: overlayInline,
+          start: 'top center',
+          endTrigger: section,
+          end: 'bottom top',
+          onEnter: () => setIsOverlayPinned(true),
+          onEnterBack: () => setIsOverlayPinned(true),
+          onLeave: () => setIsOverlayPinned(false),
+          onLeaveBack: () => setIsOverlayPinned(false),
         })
       : null;
     // Astro ref cycles distances and scrub values
@@ -173,7 +190,8 @@ const Home: React.FC = () => {
       if (raf) window.cancelAnimationFrame(raf);
 
       imageTriggers.forEach((t) => t.kill());
-      overlayPin?.kill();
+      overlayPinnedTrigger?.kill();
+      parallaxActiveTrigger.kill();
     };
   }, []);
 
@@ -442,13 +460,13 @@ const Home: React.FC = () => {
       <section
         id="parallax-gallery"
         className="relative h-[220vh] overflow-x-hidden py-[4.6rem] md:h-[240vh] md:py-44 text-[#fffffd]"
-        style={{ backgroundColor: 'red' }}
+        style={{ backgroundColor: '#121214' }}
       >
         {/* Force-visible background layer for testing */}
-        <div className="absolute inset-0 z-0 bg-red-500" />
+        <div className="absolute inset-0 z-0 bg-[#121214]" />
 
         <div
-          className="absolute inset-0 z-10 w-full max-w-6xl mx-auto px-6 overflow-hidden bg-transparent opacity-80"
+          className="absolute inset-0 z-30 w-full max-w-6xl mx-auto px-6 overflow-hidden bg-transparent opacity-80"
         >
           <div className="absolute inset-0 flex justify-between gap-6 md:gap-10 h-full">
           {/* Left column - spread images across full height */}
@@ -510,26 +528,63 @@ const Home: React.FC = () => {
           </div>
           </div>
 
-        {/* Center overlay (text + button) */}
+        {/* Center overlay (text + button)
+            - starts at the top of the parallax section
+            - pins when it reaches the center of the viewport
+            - releases when the parallax section ends
+        */}
         <div
           id="parallax-pinned-content"
-          className="pointer-events-none absolute inset-0 z-50 flex h-screen w-screen items-center justify-center"
+          className={`relative z-50 pointer-events-none ${isOverlayPinned ? 'opacity-0' : 'opacity-100'}`}
         >
-          <div className="text-[#c9c9c9] text-center px-6">
-            <h2 className="pointer-events-auto font-serif text-3xl font-medium md:text-5xl">
-              {personalIntroTitle}
-            </h2>
-            <div className="flex justify-center">
-              <Link
-                href="/about"
-                className="pointer-events-auto mt-10 md:mt-16 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 md:px-12 md:py-6 font-serif text-sm md:text-lg tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
-              >
-                MORE
-              </Link>
+          <div className="flex w-full items-center justify-center">
+            <div className="text-[#c9c9c9] text-center px-6">
+              <h2 className="pointer-events-auto font-serif text-3xl font-medium md:text-5xl">
+                {personalIntroTitle}
+              </h2>
+              <div className="flex justify-center">
+                <Link
+                  href="/about"
+                  className="pointer-events-auto mt-10 md:mt-16 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 md:px-12 md:py-6 font-serif text-sm md:text-lg tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
+                >
+                  MORE
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+      {overlayRoot &&
+        isParallaxActive &&
+        isOverlayPinned &&
+        createPortal(
+          <>
+            <div
+              className="pointer-events-none fixed inset-0 bg-[#121214]"
+              style={{ zIndex: 2147483646 }}
+            />
+            <div
+              className="pointer-events-none fixed left-0 top-0 flex h-screen w-screen items-center justify-center"
+              style={{ zIndex: 2147483647 }}
+            >
+              <div className="text-[#c9c9c9] text-center px-6">
+                <h2 className="pointer-events-auto font-serif text-3xl font-medium md:text-5xl">
+                  {personalIntroTitle}
+                </h2>
+                <div className="flex justify-center">
+                  <Link
+                    href="/about"
+                    className="pointer-events-auto mt-10 md:mt-16 inline-block rounded-full border border-[#c9c9c9] px-10 py-4 md:px-12 md:py-6 font-serif text-sm md:text-lg tracking-widest text-[#fffffd] transition-colors hover:bg-[#fffffd] hover:text-[#121214]"
+                  >
+                    MORE
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </>,
+          overlayRoot
+        )}
 
       {/* WORKS */}
       <section id="works-gallery" className="relative bg-[#fffffd] py-24 text-[#121214]">

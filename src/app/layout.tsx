@@ -4,7 +4,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import LenisWrapper from "@/components/LenisWrapper";
+// Lenis disabled globally to prevent ScrollTrigger pin/fixed issues during animation work.
+// import LenisWrapper from "@/components/LenisWrapper";
 import Header from "@/components/Header";
 import EntranceOne from '@/components/EntraceOne/'
 
@@ -34,13 +35,13 @@ export default function RootLayout({
       <body
       className={`${nikkyou.variable} ${hiragino.variable} antialiased`}
       >
-        <LenisWrapper>
-          <EntranceOne>
-            <Header>
-              {children}
-            </Header>
-          </EntranceOne>
-        </LenisWrapper>
+        <EntranceOne>
+          <Header>
+            {children}
+          </Header>
+        </EntranceOne>
+        {/* Portal root for viewport-fixed overlays (placed last so it paints above everything) */}
+        <div id="overlay-root" />
       </body>
     </html>
   );
