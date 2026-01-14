@@ -44,6 +44,10 @@ const Home: React.FC = () => {
   const [zoomProgress, setZoomProgress] = useState(0);
   const [isZoomPinned, setIsZoomPinned] = useState(false);
   const [isZoomBgVisible, setIsZoomBgVisible] = useState(false);
+  
+  // Video modal state
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [videoModalSrc, setVideoModalSrc] = useState('');
   useEffect(() => {
     setOverlayRoot(document.getElementById('overlay-root'));
     // Default theme
@@ -438,6 +442,45 @@ const Home: React.FC = () => {
     return () => t.kill();
   }, []);
 
+  // Fade in intro name text after entrance animation completes
+  useEffect(() => {
+    const introNameText = document.getElementById('intro-name-text');
+    if (!introNameText) return;
+
+    const handleEntranceComplete = () => {
+      // Fade in the name text with a nice animation
+      gsap.to(introNameText, {
+        opacity: 1,
+        duration: 1.2,
+        ease: "power2.out",
+      });
+      
+      // Also animate the children with stagger
+      gsap.fromTo(
+        introNameText.querySelectorAll('p, h2'),
+        { 
+          y: 30, 
+          opacity: 0,
+          filter: 'blur(10px)'
+        },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1,
+          stagger: 0.15,
+          ease: "power2.out",
+        }
+      );
+    };
+
+    window.addEventListener('entranceComplete', handleEntranceComplete);
+    
+    return () => {
+      window.removeEventListener('entranceComplete', handleEntranceComplete);
+    };
+  }, []);
+
   // Nikon ZR-style zoom animation: simple CSS position switching like the reference
   useEffect(() => {
     const zoomSection = document.getElementById('zoom');
@@ -459,7 +502,10 @@ const Home: React.FC = () => {
         setIsZoomPinned(true);
         setIsZoomBgVisible(true);
       },
-      onLeave: () => setIsZoomPinned(false),
+      onLeave: () => {
+        setIsZoomPinned(false);
+        // Keep background visible - about section will scroll over it
+      },
       onLeaveBack: () => {
         setIsZoomPinned(false);
         setIsZoomBgVisible(false);
@@ -469,10 +515,10 @@ const Home: React.FC = () => {
       },
     });
 
-    // Hide background when scrolling past the about section
+    // Hide background when about section scrolls completely past (bottom reaches top of viewport)
     const aboutBottomTrigger = ScrollTrigger.create({
       trigger: aboutSection,
-      start: 'bottom bottom',
+      start: 'bottom top', // When bottom of about section reaches top of viewport
       onEnter: () => setIsZoomBgVisible(false),
       onLeaveBack: () => setIsZoomBgVisible(true),
     });
@@ -512,32 +558,43 @@ const Home: React.FC = () => {
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Soft moon glow
-      const cx = w * 0.5 + Math.cos(time * 0.6) * 10;
-      const cy = h * 0.5 + Math.sin(time * 0.5) * 10;
-      const r1 = w * 0.18;
-      const r2 = w * 0.48;
+      // Large outer glow - soft ethereal effect
+      const cx = w * 0.5 + Math.cos(time * 0.6) * 8;
+      const cy = h * 0.5 + Math.sin(time * 0.5) * 8;
+      
+      // Outer atmospheric glow
+      const outerGrad = ctx.createRadialGradient(cx, cy, w * 0.15, cx, cy, w * 0.5);
+      outerGrad.addColorStop(0, 'rgba(200,220,255,0.5)');
+      outerGrad.addColorStop(0.3, 'rgba(180,200,255,0.35)');
+      outerGrad.addColorStop(0.6, 'rgba(150,180,255,0.15)');
+      outerGrad.addColorStop(1, 'rgba(0,0,0,0)');
 
-      const grad = ctx.createRadialGradient(cx, cy, r1, cx, cy, r2);
-      grad.addColorStop(0, 'rgba(255,255,255,0.40)');
-      grad.addColorStop(0.45, 'rgba(180,200,255,0.18)');
-      grad.addColorStop(1, 'rgba(0,0,0,0)');
-
-      ctx.fillStyle = grad;
+      ctx.fillStyle = outerGrad;
       ctx.beginPath();
       ctx.arc(w / 2, h / 2, w * 0.5, 0, Math.PI * 2);
       ctx.fill();
 
-      // Subtle craters/noise dots
+      // Inner bright core - where profile sits
+      const innerGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.22);
+      innerGrad.addColorStop(0, 'rgba(255,255,255,0.6)');
+      innerGrad.addColorStop(0.5, 'rgba(230,240,255,0.4)');
+      innerGrad.addColorStop(1, 'rgba(200,220,255,0.1)');
+
+      ctx.fillStyle = innerGrad;
+      ctx.beginPath();
+      ctx.arc(w / 2, h / 2, w * 0.25, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Subtle surface texture dots
       ctx.globalCompositeOperation = 'overlay';
-      ctx.fillStyle = 'rgba(255,255,255,0.06)';
-      for (let i = 0; i < 140; i += 1) {
-        const ang = (i / 140) * Math.PI * 2 + time * 0.2;
-        const rad = w * (0.12 + (i % 10) * 0.01);
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      for (let i = 0; i < 100; i += 1) {
+        const ang = (i / 100) * Math.PI * 2 + time * 0.15;
+        const rad = w * (0.08 + (i % 8) * 0.015);
         const x = w / 2 + Math.cos(ang) * rad;
-        const y = h / 2 + Math.sin(ang * 1.3) * rad;
+        const y = h / 2 + Math.sin(ang * 1.2) * rad;
         ctx.beginPath();
-        ctx.arc(x, y, 1 + (i % 3) * 0.6, 0, Math.PI * 2);
+        ctx.arc(x, y, 1.5 + (i % 3) * 0.5, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.globalCompositeOperation = 'source-over';
@@ -644,6 +701,21 @@ const Home: React.FC = () => {
       {/* Transparent first section (shows only the video behind)
           with a bottom gradient to blend into the hero bg. */}
       <section aria-hidden className="relative h-screen w-full bg-transparent">
+        {/* Name text - fades in after entrance animation */}
+        <div 
+          id="intro-name-text"
+          className="absolute inset-0 flex items-center justify-center opacity-0"
+        >
+          <div className="text-center text-white">
+            <p className="text-sm md:text-base tracking-[0.3em] uppercase text-white/60 mb-4">Welcome</p>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight">
+              James Rafty D. Libago
+            </h2>
+            <p className="mt-4 text-sm md:text-lg tracking-[0.2em] uppercase text-white/50">
+              Portfolio 2024
+            </p>
+          </div>
+        </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-72 bg-[linear-gradient(to_bottom,rgba(0,0,0,0),rgba(18,18,20,1))]" />
       </section>
 
@@ -666,15 +738,30 @@ const Home: React.FC = () => {
         <div id="hero-container" className="relative z-20 w-full">
           <div className="container mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 md:grid-cols-3 md:items-end">
           <div className="md:col-start-2">
-            <div className="relative mx-auto h-72 w-72 overflow-hidden rounded-full md:h-[50vw] md:w-[50vw] lg:mx-0 lg:h-[22rem] lg:w-[22rem]">
-              {/* "Moon" canvas overlay (pure JS draw, animated via GSAP) */}
+            {/* Moon container - bigger to create the glow effect */}
+            <div className="relative mx-auto h-80 w-80 md:h-[55vw] md:w-[55vw] lg:mx-0 lg:h-[28rem] lg:w-[28rem] flex items-center justify-center">
+              {/* "Moon" canvas - fills the entire container for big glow */}
               <canvas
                 id="moon"
-                width={600}
-                height={600}
-                className="pointer-events-none absolute inset-0 h-full w-full opacity-80 mix-blend-screen"
+                width={800}
+                height={800}
+                className="pointer-events-none absolute inset-0 h-full w-full opacity-90 mix-blend-screen"
               />
-              <Image src={Profile} alt="Profile" className="relative z-10 h-full w-full object-cover" priority />
+              {/* Profile image - smaller, centered inside the moon */}
+              <div className="relative z-10 h-48 w-48 md:h-[30vw] md:w-[30vw] lg:h-[16rem] lg:w-[16rem] rounded-full overflow-hidden">
+                <Image 
+                  src={Profile} 
+                  alt="Profile" 
+                  className="h-full w-full object-cover"
+                  style={{
+                    filter: 'brightness(0.9) contrast(1.05)',
+                    mixBlendMode: 'luminosity',
+                  }}
+                  priority 
+                />
+                {/* Soft blend overlay to merge with moon */}
+                <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/30 rounded-full" />
+              </div>
             </div>
           </div>
 
@@ -725,10 +812,121 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ABOUT SECTION - just a spacer, content is in portal */}
-      <section id="about-zoom" className="relative z-10 h-[100vh]">
-        {/* This section is just a scroll trigger/spacer */}
+      {/* ABOUT SECTION - rendered in portal to be on same stacking context as background */}
+      <section id="about-zoom" className="relative min-h-[100vh]">
+        {/* Spacer for scroll height */}
       </section>
+      
+      {/* About content in portal - scrolls OVER the fixed background */}
+      {overlayRoot && isZoomBgVisible && zoomProgress >= 0.95 && createPortal(
+        <div
+          className="fixed inset-0 overflow-auto pointer-events-auto"
+          style={{ zIndex: 2147483645 }}
+        >
+          {/* Scrollable content container */}
+          <div className="min-h-[200vh]">
+            {/* First screen is empty - shows the background */}
+            <div className="h-screen" />
+            
+            {/* About content starts here */}
+            <div className="min-h-screen flex items-center" style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.7) 30%, rgba(19,22,19,1) 100%)' }}>
+              <div className="w-full max-w-[1100px] mx-auto px-6 py-24">
+                <div className="text-[#fffffd]">
+                  <h2 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight">
+                    Creative Development<br />& Digital Art
+                  </h2>
+                  <p className="mt-6 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
+                    Combining modern web technologies with artistic vision.
+                    Building immersive digital experiences that push boundaries.
+                  </p>
+                  <p className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
+                    From interactive websites to game development,
+                    every project is crafted with attention to detail and purpose.
+                  </p>
+                  <p className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
+                    Let&apos;s create something extraordinary together.
+                  </p>
+
+                  {/* Video Movie Section - like Nikon reference */}
+                  <div 
+                    className="mt-16 relative cursor-pointer group"
+                    onClick={() => {
+                      setVideoModalSrc('/videos/Home/DeCodeShowcase.mp4');
+                      setIsVideoModalOpen(true);
+                    }}
+                  >
+                    {/* Video thumbnail container with brackets */}
+                    <div className="relative overflow-hidden">
+                      {/* Corner brackets - like reference */}
+                      <div className="absolute top-0 left-0 w-12 h-12 border-t border-l border-white/50 z-10" />
+                      <div className="absolute top-0 right-0 w-12 h-12 border-t border-r border-white/50 z-10" />
+                      <div className="absolute bottom-0 left-0 w-12 h-12 border-b border-l border-white/50 z-10" />
+                      <div className="absolute bottom-0 right-0 w-12 h-12 border-b border-r border-white/50 z-10" />
+                      
+                      {/* Video thumbnail with hover video preview */}
+                      <div className="relative aspect-video bg-black/20">
+                        <Image 
+                          src={HomePreview} 
+                          alt="Concept Film" 
+                          className="w-full h-full object-cover opacity-90 group-hover:opacity-70 transition-opacity duration-300"
+                        />
+                        {/* Hover video preview */}
+                        <video 
+                          className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                          src="/videos/Home/DeCodeShowcase.mp4"
+                          muted
+                          loop
+                          playsInline
+                          onMouseEnter={(e) => e.currentTarget.play()}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.pause();
+                            e.currentTarget.currentTime = 0;
+                          }}
+                        />
+                      </div>
+
+                      {/* Play button - centered */}
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-[100px] h-[100px] md:w-[130px] md:h-[130px] rounded-full bg-white/30 backdrop-blur-xl flex items-center justify-center">
+                          <div className="text-center">
+                            <svg className="w-8 h-8 md:w-10 md:h-10 mx-auto" viewBox="0 0 24 24" fill="white">
+                              <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <span className="text-white text-xs md:text-sm font-medium tracking-wider mt-1 block">PLAY MOVIE</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Bottom text overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex justify-between items-end">
+                        <div>
+                          <h3 className="text-3xl md:text-5xl font-medium tracking-wide">
+                            <span className="relative">
+                              <span className="absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-600 rounded-full" />
+                              CONCEPT FILM
+                            </span>
+                          </h3>
+                          <span className="text-base md:text-lg text-white/80 mt-2 block">コンセプトフィルム</span>
+                        </div>
+                        {/* Small play button for mobile */}
+                        <div className="md:hidden">
+                          <div className="px-4 py-2 rounded-full bg-white/30 backdrop-blur-xl flex items-center gap-2">
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="white">
+                              <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <span className="text-white text-xs font-medium">PLAY</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>,
+        overlayRoot
+      )}
 
       {/* PARALLAX GALLERY */}
       <section
@@ -911,19 +1109,22 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ZOOM: Portal for scaling background - stays visible through #about-zoom section */}
+      {/* ZOOM: Portal for scaling background - stays FIXED and content scrolls over it */}
       {overlayRoot &&
         isZoomBgVisible &&
         createPortal(
           <>
-            {/* Background image */}
+            {/* Background image - ALWAYS fixed, scales with progress, stays put when full */}
             <div
               className="pointer-events-none fixed inset-0 overflow-hidden"
               style={{ zIndex: 2147483640 }}
             >
               <div
                 className="absolute top-1/2 left-1/2 w-screen h-screen"
-                style={{ transform: `translate(-50%, -50%) scale(${zoomProgress})` }}
+                style={{ 
+                  transform: `translate(-50%, -50%) scale(${Math.min(zoomProgress, 1)})`,
+                  // Once fully zoomed, it stays at scale(1) and remains fixed
+                }}
               >
                 <Image 
                   src={HomePreview} 
@@ -944,38 +1145,16 @@ const Home: React.FC = () => {
               </div>
             </div>
 
-            {/* About content - appears on top of background when zoom completes */}
-            {zoomProgress >= 0.95 && (
+            {/* Dark gradient overlay - appears when zoom is nearly complete */}
+            {zoomProgress >= 0.9 && (
               <div
-                className="fixed inset-0 flex items-center justify-center pointer-events-none"
-                style={{ zIndex: 2147483642 }}
-              >
-                {/* Dark gradient overlay */}
-                <div 
-                  className="absolute inset-0"
-                  style={{ background: 'linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)' }}
-                />
-                
-                {/* Content */}
-                <div className="relative z-10 max-w-[1100px] mx-auto px-6">
-                  <div className="text-[#fffffd]">
-                    <h2 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight">
-                      Creative Development<br />& Digital Art
-                    </h2>
-                    <p className="mt-6 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
-                      Combining modern web technologies with artistic vision.
-                      Building immersive digital experiences that push boundaries.
-                    </p>
-                    <p className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
-                      From interactive websites to game development,
-                      every project is crafted with attention to detail and purpose.
-                    </p>
-                    <p className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
-                      Let&apos;s create something extraordinary together.
-                    </p>
-                  </div>
-                </div>
-              </div>
+                className="pointer-events-none fixed inset-0"
+                style={{ 
+                  zIndex: 2147483641,
+                  background: 'linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
+                  opacity: Math.min(1, (zoomProgress - 0.9) * 10), // Fade in from 0.9 to 1.0
+                }}
+              />
             )}
           </>,
           overlayRoot
@@ -1106,6 +1285,65 @@ const Home: React.FC = () => {
           <p className="mt-6 font-serif text-lg text-[color:var(--page-muted)]">{footerName}</p>
         </div>
       </footer>
+
+      {/* VIDEO MODAL - Nikon reference style */}
+      {overlayRoot && createPortal(
+        <div
+          className={`fixed inset-0 transition-all duration-500 ${isVideoModalOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+          style={{ zIndex: 2147483650 }}
+        >
+          {/* Backdrop with blur */}
+          <div 
+            className="absolute inset-0 bg-black/90 backdrop-blur-lg"
+            onClick={() => {
+              setIsVideoModalOpen(false);
+              setVideoModalSrc('');
+            }}
+          />
+          
+          {/* Close button */}
+          <button
+            className={`absolute top-8 right-8 w-20 h-20 z-10 cursor-pointer transition-all duration-300 ${isVideoModalOpen ? 'opacity-100' : 'opacity-0'}`}
+            onClick={() => {
+              setIsVideoModalOpen(false);
+              setVideoModalSrc('');
+            }}
+            aria-label="Close modal"
+          >
+            <div className="relative w-full h-full flex items-center justify-center group">
+              <div className="absolute w-full h-[1px] bg-white rotate-45 transition-transform duration-300 group-hover:rotate-[225deg]" />
+              <div className="absolute w-full h-[1px] bg-white -rotate-45 transition-transform duration-300 group-hover:rotate-[-225deg]" />
+            </div>
+          </button>
+
+          {/* Video container */}
+          <div 
+            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-[1200px] transition-all duration-500 ${isVideoModalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
+          >
+            <div className="relative aspect-video bg-black rounded-sm overflow-hidden shadow-2xl">
+              {isVideoModalOpen && videoModalSrc && (
+                <video
+                  className="w-full h-full object-contain"
+                  src={videoModalSrc}
+                  controls
+                  autoPlay
+                  playsInline
+                />
+              )}
+            </div>
+            
+            {/* Video info below */}
+            <div className="mt-6 text-white">
+              <h3 className="text-2xl md:text-3xl font-medium tracking-wide flex items-center gap-3">
+                <span className="w-2 h-2 bg-red-600 rounded-full" />
+                CONCEPT FILM
+              </h3>
+              <p className="text-white/60 mt-2 text-sm md:text-base">コンセプトフィルム</p>
+            </div>
+          </div>
+        </div>,
+        overlayRoot
+      )}
     </main>
   );
 };

@@ -20,8 +20,29 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const menuVerticalText = document.querySelector<HTMLElement>(".vertical-text");
     const menuPreviewImg = document.querySelector(".menu-preview-img");
     const menuLinks = document.querySelectorAll(".link a");
+    const headerNav = document.querySelector(".header nav");
 
     if (!container || !menuToggle || !menuOverlay || !menuContent || !menuPreviewImg) return;
+
+    // Initially hide header until entrance animation completes
+    if (headerNav) {
+      gsap.set(headerNav, { opacity: 0, y: -20 });
+    }
+
+    // Listen for entrance animation complete event
+    const handleEntranceComplete = () => {
+      // Fade in the header
+      if (headerNav) {
+        gsap.to(headerNav, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power2.out",
+        });
+      }
+    };
+
+    window.addEventListener('entranceComplete', handleEntranceComplete);
 
     let isOpen = false;
     let isAnimating = false;
@@ -219,6 +240,10 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     // Initialize menu overlay as non-interactive
     gsap.set(menuOverlay, { pointerEvents: 'none' });
 
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener('entranceComplete', handleEntranceComplete);
+    };
   }, []);
 
   return (
