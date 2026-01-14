@@ -315,6 +315,8 @@
 
 #nikon-about.bottom .bg {
   position: absolute;
+  top: auto !important;
+  bottom: 0 !important;
 }
 
 #nikon-about::before {
@@ -323,7 +325,7 @@
   left: 0;
   width: 100vw;
   height: 100%;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0% 80%, transparent);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0% 20%, rgba(0, 0, 0, 0.5) 80%, transparent);
   content: "";
   z-index: 2;
 }
@@ -366,6 +368,7 @@
   position: relative;
   background-color: #282b28;
   padding: 160px 0 60px;
+  z-index: 10;
 }
 
 @media (max-width: 767px) {
