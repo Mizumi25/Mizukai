@@ -17,9 +17,10 @@
 }
 
 .sound-gate__title {
-  font-family: var(--font-mono);
-  letter-spacing: 0.28em;
-  font-size: 1.1rem;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  letter-spacing: 0.18em;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: rgba(255, 255, 255, 0.88);
 }
 

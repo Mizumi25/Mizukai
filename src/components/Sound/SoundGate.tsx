@@ -6,15 +6,12 @@ import EntranceOne from '@/components/EntraceOne/';
 import { useSound } from './SoundProvider';
 
 export default function SoundGate({ children }: { children: React.ReactNode }) {
-  const { preference, setPreference, toggle } = useSound();
-  const [mounted, setMounted] = React.useState(false);
+  const { loaded, preference, setPreference, toggle } = useSound();
 
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Until localStorage has been read, render nothing behind (prevents gate flash + EntranceOne starting).
+  if (!loaded) return null;
 
-  // IMPORTANT: block rendering until mounted so nothing behind flashes/runs before the gate.
-  const showGate = !mounted || preference === 'unknown';
+  const showGate = preference === 'unknown';
 
   return (
     <>

@@ -5,6 +5,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 export type SoundPreference = 'unknown' | 'on' | 'off';
 
 type SoundContextValue = {
+  loaded: boolean;
   preference: SoundPreference;
   setPreference: (p: Exclude<SoundPreference, 'unknown'>) => void;
   toggle: () => void;
@@ -15,6 +16,7 @@ const SoundContext = createContext<SoundContextValue | null>(null);
 const STORAGE_KEY = 'mizukai_sound_preference';
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
+  const [loaded, setLoaded] = useState(false);
   const [preference, setPreferenceState] = useState<SoundPreference>('unknown');
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -25,6 +27,8 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
       if (raw === 'on' || raw === 'off') setPreferenceState(raw);
     } catch {
       // ignore
+    } finally {
+      setLoaded(true);
     }
   }, []);
 
@@ -75,11 +79,12 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<SoundContextValue>(
     () => ({
+      loaded,
       preference,
       setPreference,
       toggle,
     }),
-    [preference, setPreference, toggle]
+    [loaded, preference, setPreference, toggle]
   );
 
   return <SoundContext.Provider value={value}>{children}</SoundContext.Provider>;

@@ -39,11 +39,17 @@ const Home: React.FC = () => {
   const [isParallaxActive, setIsParallaxActive] = useState(false);
   const [overlayMode, setOverlayMode] = useState<OverlayMode>('top');
   const [parallaxTitleIndex, setParallaxTitleIndex] = useState(0);
-
+  
+  // Zoom section state
+  const [zoomProgress, setZoomProgress] = useState(0);
+  const [isZoomPinned, setIsZoomPinned] = useState(false);
+  const [isAboutBgFixed, setIsAboutBgFixed] = useState(true);
   useEffect(() => {
     setOverlayRoot(document.getElementById('overlay-root'));
     // Default theme
     document.body.dataset.theme = 'dark';
+    // Hide the global overlay layer during the intro spacer.
+    document.body.dataset.intro = 'true';
   }, []);
 
   const works: WorkItem[] = useMemo(
@@ -318,11 +324,23 @@ const Home: React.FC = () => {
         trigger: worksSection,
         start: 'top 70%',
         end: 'bottom top',
-        onEnter: () => (document.body.dataset.theme = 'light'),
-        onEnterBack: () => (document.body.dataset.theme = 'light'),
+        onEnter: () => {
+          document.body.dataset.theme = 'light';
+          document.body.dataset.worksActive = 'true';
+        },
+        onEnterBack: () => {
+          document.body.dataset.theme = 'light';
+          document.body.dataset.worksActive = 'true';
+        },
         // Keep light theme after passing Works; revert only when going back above.
-        onLeave: () => (document.body.dataset.theme = 'light'),
-        onLeaveBack: () => (document.body.dataset.theme = 'dark'),
+        onLeave: () => {
+          document.body.dataset.theme = 'light';
+          document.body.dataset.worksActive = 'true';
+        },
+        onLeaveBack: () => {
+          document.body.dataset.theme = 'dark';
+          document.body.dataset.worksActive = 'false';
+        },
       });
     }
 
@@ -392,6 +410,76 @@ const Home: React.FC = () => {
       observer.disconnect();
       createdTriggers.forEach((t) => t.kill());
       themeTrigger?.kill();
+      document.body.dataset.worksActive = 'false';
+    };
+  }, []);
+
+  // Enable global overlay layer only after reaching the hero (so intro spacer is truly transparent)
+  useEffect(() => {
+    const hero = document.getElementById('hero');
+    if (!hero) return;
+
+    const t = ScrollTrigger.create({
+      trigger: hero,
+      // Only enable overlay once hero actually reaches the top of the viewport
+      start: 'top top',
+      end: 'bottom top',
+      onEnter: () => {
+        document.body.dataset.intro = 'false';
+      },
+      onEnterBack: () => {
+        document.body.dataset.intro = 'false';
+      },
+      onLeaveBack: () => {
+        document.body.dataset.intro = 'true';
+      },
+    });
+
+    return () => t.kill();
+  }, []);
+
+  // Nikon ZR-style zoom animation: simple CSS position switching like the reference
+  useEffect(() => {
+    const zoomSection = document.getElementById('zoom');
+    const aboutSection = document.getElementById('about-zoom');
+
+    if (!zoomSection || !aboutSection) return;
+
+    // Track zoom pinned state and progress (like reference: #zoom.top / #zoom.bottom classes)
+    const zoomPinnedTrigger = ScrollTrigger.create({
+      trigger: zoomSection,
+      start: 'top top',
+      end: 'bottom bottom',
+      onEnter: () => setIsZoomPinned(true),
+      onEnterBack: () => setIsZoomPinned(true),
+      onLeave: () => setIsZoomPinned(false),
+      onLeaveBack: () => setIsZoomPinned(false),
+      onUpdate: (self) => {
+        setZoomProgress(self.progress);
+      },
+    });
+
+    // Track when #about section passes bottom (to switch bg from fixed to absolute)
+    // Like reference: #about.bottom .bg { position: absolute !important; }
+    const aboutBottomTrigger = ScrollTrigger.create({
+      trigger: aboutSection,
+      start: 'bottom bottom',
+      end: 'bottom top',
+      onEnter: () => setIsAboutBgFixed(false),
+      onLeaveBack: () => setIsAboutBgFixed(true),
+    });
+
+    // Add visibility class for about text when zoom completes
+    const aboutVisibilityTrigger = ScrollTrigger.create({
+      trigger: aboutSection,
+      start: 'top 70%',
+      onEnter: () => aboutSection.classList.add('is-visible'),
+    });
+
+    return () => {
+      zoomPinnedTrigger.kill();
+      aboutBottomTrigger.kill();
+      aboutVisibilityTrigger.kill();
     };
   }, []);
 
@@ -519,8 +607,32 @@ const Home: React.FC = () => {
 
   return (
     <main id="Home" className="relative overflow-x-hidden">
+      {/* Fixed background video (LogoIntro) */}
+      <div className="pointer-events-none fixed left-0 top-0 -z-20 w-full h-screen bg-black">
+        <video
+          className="opacity-90"
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: '50% 50%' }}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+        >
+          <source src="/videos/Home/LogoIntro.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/40" />
+      </div>
+
+      {/* Transparent first section (shows only the video behind)
+          with a bottom gradient to blend into the hero bg. */}
+      <section aria-hidden className="relative h-screen w-full bg-transparent">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-72 bg-[linear-gradient(to_bottom,rgba(0,0,0,0),rgba(18,18,20,1))]" />
+      </section>
+
       {/* Background (reference-like fixed layers) */}
-      <div className="pointer-events-none fixed left-0 top-0 -z-10 h-full w-screen">
+      <div
+        className="pointer-events-none fixed left-0 top-0 -z-10 h-full w-screen global-overlay-layer"
+      >
         <div className="absolute inset-0 global-bg" />
         <div className="absolute inset-0 opacity-30 mix-blend-multiply global-bg-overlay bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.25),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.15),transparent_50%)]" />
       </div>
@@ -532,20 +644,6 @@ const Home: React.FC = () => {
       >
         {/* Dark base behind the video (reference-like) */}
         <div className="absolute inset-0 z-0 global-bg" />
-
-        {/* Full-bleed background video (reference-like: opacity + mix-blend-multiply) */}
-        <div className="absolute inset-0 z-0 overflow-hidden opacity-50 mix-blend-multiply">
-          <video
-            className="absolute inset-0 h-full w-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-          >
-            <source src="/videos/tryy.mp4" type="video/mp4" />
-          </video>
-        </div>
 
         <div id="hero-container" className="relative z-20 w-full">
           <div className="container mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 md:grid-cols-3 md:items-end">
@@ -582,6 +680,70 @@ const Home: React.FC = () => {
               </span>
             </div>
           </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ZOOM SECTION - just a spacer, the actual pinned content is in a portal */}
+      <section id="zoom" className="relative z-10 h-[150vh] bg-[#131613]">
+        {/* Inline logo shown when NOT pinned (before entering or after leaving) */}
+        <div
+          className={`absolute top-0 left-0 w-screen h-screen flex items-center justify-center ${!isZoomPinned ? 'opacity-100' : 'opacity-0'}`}
+        >
+          <h2 className="font-serif text-4xl md:text-6xl tracking-[0.18em] text-[#fffffd]">
+            Portfolio
+          </h2>
+        </div>
+        {/* Bottom placeholder for when unpinned at bottom */}
+        <div
+          className={`absolute bottom-0 left-0 w-screen h-screen flex items-center justify-center ${!isZoomPinned && zoomProgress > 0.5 ? 'opacity-100' : 'opacity-0'}`}
+        >
+          <h2 
+            className="font-serif text-4xl md:text-6xl tracking-[0.18em] text-[#fffffd]"
+            style={{ opacity: Math.max(0, 1 - zoomProgress * 2) }}
+          >
+            Portfolio
+          </h2>
+        </div>
+      </section>
+
+      {/* ABOUT SECTION - content appears after zoom completes */}
+      <section id="about-zoom" className="relative z-10 py-[400px] md:py-[400px]">
+        {/* Dark gradient overlay for text readability */}
+        <div 
+          className="absolute top-0 left-0 w-full h-full z-[1] pointer-events-none"
+          style={{ background: 'linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 80%, transparent 100%)' }}
+        />
+
+        {/* Content */}
+        <div className="relative z-10 max-w-[1100px] mx-auto px-6">
+          <div className="text-[#fffffd]">
+            <h2
+              data-about-title
+              className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight"
+            >
+              Creative Development<br />& Digital Art
+            </h2>
+            <p
+              data-about-text
+              className="mt-6 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl"
+            >
+              Combining modern web technologies with artistic vision.
+              Building immersive digital experiences that push boundaries.
+            </p>
+            <p
+              data-about-text
+              className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl"
+            >
+              From interactive websites to game development,
+              every project is crafted with attention to detail and purpose.
+            </p>
+            <p
+              data-about-text
+              className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl"
+            >
+              Let&apos;s create something extraordinary together.
+            </p>
           </div>
         </div>
       </section>
@@ -633,6 +795,22 @@ const Home: React.FC = () => {
               <Image src={WorksPreview} alt="left-08" className="w-full" />
               <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
             </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[7rem] md:max-w-[14rem] self-center overflow-hidden">
+              <Image src={ServicesPreview} alt="left-09" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[9rem] md:max-w-[18rem] self-start overflow-hidden">
+              <Image src={HomePreview} alt="left-10" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[8rem] md:max-w-[20rem] self-end overflow-hidden">
+              <Image src={AboutPreview} alt="left-11" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[11.5rem] md:max-w-[24rem] self-center overflow-hidden">
+              <Image src={WorksPreview} alt="left-12" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
           </ul>
 
           {/* Right column - spread images across full height */}
@@ -667,6 +845,22 @@ const Home: React.FC = () => {
             </li>
             <li className="ts-parallax-gallery-image relative w-full max-w-[7rem] md:max-w-[14rem] overflow-hidden">
               <Image src={ServicesPreview} alt="right-08" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[8rem] md:max-w-[22rem] self-center overflow-hidden">
+              <Image src={HomePreview} alt="right-09" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[9.25rem] md:max-w-[26rem] overflow-hidden">
+              <Image src={AboutPreview} alt="right-10" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[7rem] md:max-w-[12.5rem] overflow-hidden">
+              <Image src={ServicesPreview} alt="right-11" className="w-full" />
+              <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
+            </li>
+            <li className="ts-parallax-gallery-image relative w-full max-w-[10.25rem] md:max-w-[30rem] overflow-hidden">
+              <Image src={WorksPreview} alt="right-12" className="w-full" />
               <div className="bg-layer absolute -bottom-1/2 left-0 -z-10 h-[200%] w-full bg-[#c9c9c9]" />
             </li>
           </ul>
@@ -735,6 +929,56 @@ const Home: React.FC = () => {
         </div>
       </section>
 
+      {/* ZOOM: Portal for pinned logo + scaling background */}
+      {overlayRoot &&
+        isZoomPinned &&
+        createPortal(
+          <>
+            {/* Scaling background image */}
+            <div
+              className="pointer-events-none fixed inset-0 overflow-hidden"
+              style={{ zIndex: 2147483640 }}
+            >
+              <div
+                className="absolute top-1/2 left-1/2 w-screen h-screen"
+                style={{ transform: `translate(-50%, -50%) scale(${zoomProgress})` }}
+              >
+                <Image 
+                  src={HomePreview} 
+                  alt="Background" 
+                  className="object-cover"
+                  style={{ 
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '100%',
+                    height: '100%',
+                    minWidth: '100%',
+                    minHeight: '100%',
+                  }}
+                  priority
+                />
+              </div>
+            </div>
+
+            {/* Pinned logo */}
+            <div
+              className="pointer-events-none fixed left-0 top-0 flex h-screen w-screen items-center justify-center"
+              style={{ zIndex: 2147483641 }}
+            >
+              <h2 
+                className="font-serif text-4xl md:text-6xl tracking-[0.18em] text-[#fffffd]"
+                style={{ opacity: Math.max(0, 1 - zoomProgress * 2) }}
+              >
+                Portfolio
+              </h2>
+            </div>
+          </>,
+          overlayRoot
+        )}
+
+      {/* PARALLAX: Portal for pinned content */}
       {overlayRoot &&
         isParallaxActive &&
         overlayMode === 'pinned' &&
@@ -779,6 +1023,8 @@ const Home: React.FC = () => {
 
       {/* WORKS */}
       <section id="works-gallery" className="relative py-24 text-[color:var(--page-fg)]">
+        {/* Works background effects (mira-like) */}
+        <div className="works-bg-effects pointer-events-none" aria-hidden />
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex md:justify-end">
             <h2 data-works-title className="text-4xl font-semibold md:text-6xl">Works</h2>
