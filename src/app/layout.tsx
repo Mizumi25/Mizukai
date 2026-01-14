@@ -37,6 +37,14 @@ export default function RootLayout({
       <body
       className={`${nikkyou.variable} ${hiragino.variable} antialiased`}
       >
+        {/* Global background - moved here to avoid ScrollTrigger interference */}
+        <div
+          className="pointer-events-none fixed left-0 top-0 -z-10 h-full w-screen global-overlay-layer"
+        >
+          <div className="absolute inset-0 global-bg" />
+          <div className="absolute inset-0 opacity-30 mix-blend-multiply global-bg-overlay bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.25),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.15),transparent_50%)]" />
+        </div>
+
         <SoundProvider>
           <SoundGate>
             <Header>

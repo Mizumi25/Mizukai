@@ -720,13 +720,7 @@ const Home: React.FC = () => {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-72 bg-[linear-gradient(to_bottom,rgba(0,0,0,0),rgba(18,18,20,1))]" />
       </section>
 
-      {/* Background (reference-like fixed layers) */}
-      <div
-        className="pointer-events-none fixed left-0 top-0 -z-10 h-full w-screen global-overlay-layer"
-      >
-        <div className="absolute inset-0 global-bg" />
-        <div className="absolute inset-0 opacity-30 mix-blend-multiply global-bg-overlay bg-[radial-gradient(circle_at_20%_10%,rgba(255,255,255,0.25),transparent_45%),radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.15),transparent_50%)]" />
-      </div>
+      {/* Background moved to layout.tsx to avoid ScrollTrigger interference */}
 
       {/* HERO */}
       <section
@@ -792,9 +786,9 @@ const Home: React.FC = () => {
 
       {/* ZOOM SECTION - just a spacer, the actual pinned content is in a portal */}
       <section id="zoom" className="relative z-10 h-[150vh] bg-[#131613]">
-        {/* Inline logo shown when NOT pinned (before entering or after leaving) */}
+        {/* Inline logo shown when NOT pinned (before entering or after leaving) - positioned lower */}
         <div
-          className={`absolute top-0 left-0 w-screen h-screen flex items-center justify-center ${!isZoomPinned ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute top-[40vh] left-0 w-screen h-screen flex items-center justify-center ${!isZoomPinned ? 'opacity-100' : 'opacity-0'}`}
         >
           <h2 className="font-serif text-4xl md:text-6xl tracking-[0.18em] text-[#fffffd]">
             Portfolio
@@ -819,7 +813,8 @@ const Home: React.FC = () => {
       </section>
       
       {/* About content in portal - scrolls OVER the fixed background */}
-      {overlayRoot && isZoomBgVisible && zoomProgress >= 0.95 && createPortal(
+      {/* Note: Not tied to isZoomBgVisible so it stays visible */}
+      {overlayRoot && zoomProgress >= 0.95 && createPortal(
         <div
           className="fixed inset-0 overflow-auto pointer-events-auto"
           style={{ zIndex: 2147483645 }}
