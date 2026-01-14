@@ -4,12 +4,12 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import "@/components/Sound/sound.css";
-// Lenis disabled globally to prevent ScrollTrigger pin/fixed issues during animation work.
+// TEMPORARILY COMMENTED OUT - Testing pinning without wrappers
+// import "@/components/Sound/sound.css";
 // import LenisWrapper from "@/components/LenisWrapper";
-import Header from "@/components/Header";
-import { SoundProvider } from '@/components/Sound/SoundProvider'
-import SoundGate from '@/components/Sound/SoundGate'
+// import Header from "@/components/Header";
+// import { SoundProvider } from '@/components/Sound/SoundProvider'
+// import SoundGate from '@/components/Sound/SoundGate'
 
 
 const nikkyou = localFont({
@@ -37,7 +37,7 @@ export default function RootLayout({
       <body
       className={`${nikkyou.variable} ${hiragino.variable} antialiased`}
       >
-        {/* Global background - moved here to avoid ScrollTrigger interference */}
+        {/* TEMPORARILY COMMENTED OUT - Testing pinning
         <div
           className="pointer-events-none fixed left-0 top-0 -z-10 h-full w-screen global-overlay-layer"
         >
@@ -47,12 +47,16 @@ export default function RootLayout({
 
         <SoundProvider>
           <SoundGate>
-            <Header>
-              {children}
-            </Header>
+            <Header />
+            {children}
           </SoundGate>
         </SoundProvider>
-        {/* Portal root for viewport-fixed overlays (placed last so it paints above everything) */}
+        */}
+        
+        {/* CLEAN RENDER - Just children, no wrappers */}
+        {children}
+        
+        {/* Portal root for viewport-fixed overlays */}
         <div id="overlay-root" />
       </body>
     </html>

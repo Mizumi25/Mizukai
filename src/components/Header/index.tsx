@@ -10,10 +10,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(CSSRulePlugin, ScrollTrigger);
 
-const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const Header: React.FC = () => {
   
   useEffect(() => {
-    const container = document.querySelector(".container");
+    // Target the main page content for menu animation (now outside Header wrapper)
+    const container = document.querySelector("main");
     const menuToggle = document.querySelector(".menu-toggle");
     const menuOverlay = document.querySelector(".menu-overlay");
     const menuContent = document.querySelector(".menu-content");
@@ -22,7 +23,7 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const menuLinks = document.querySelectorAll(".link a");
     const headerNav = document.querySelector(".header nav");
 
-    if (!container || !menuToggle || !menuOverlay || !menuContent || !menuPreviewImg) return;
+    if (!menuToggle || !menuOverlay || !menuContent || !menuPreviewImg) return;
 
     // Initially hide header until entrance animation completes
     if (headerNav) {
@@ -75,14 +76,16 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       // Make overlay interactive
       gsap.set(menuOverlay, { pointerEvents: 'auto' });
 
-      gsap.to(container, {
-        rotation: 10,
-        x: 300,
-        y: 450,
-        scale: 1.5,
-        duration: 1.25,
-        ease: "power4.inOut",
-      });
+      if (container) {
+        gsap.to(container, {
+          rotation: 10,
+          x: 300,
+          y: 450,
+          scale: 1.5,
+          duration: 1.25,
+          ease: "power4.inOut",
+        });
+      }
 
       animateMenuToggle(true);
 
@@ -120,14 +123,16 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       if (isAnimating || !isOpen) return;
       isAnimating = true;
 
-      gsap.to(container, {
-        rotation: 0,
-        x: 0,
-        y: 0,
-        scale: 1,
-        duration: 1.25,
-        ease: "power4.inOut",
-      });
+      if (container) {
+        gsap.to(container, {
+          rotation: 0,
+          x: 0,
+          y: 0,
+          scale: 1,
+          duration: 1.25,
+          ease: "power4.inOut",
+        });
+      }
 
       animateMenuToggle(false);
 
@@ -369,17 +374,6 @@ const Header: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </div>
         </div>
       </div>
-      </div>
-      
-      {/*
-        IMPORTANT for ScrollTrigger pinning:
-        - Avoid `overflow: hidden` on the main page scroll container because it can clip pinned elements.
-        - Pinned elements often rely on `position: fixed`/transforms under the hood.
-      */}
-      <div className="container-wrapper relative w-screen min-h-screen overflow-visible">
-        <div className="container relative w-full h-full origin-right-top max-w-screen">
-          {children}
-        </div>
       </div>
     </>
   );
