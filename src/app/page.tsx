@@ -515,10 +515,11 @@ const Home: React.FC = () => {
       },
     });
 
-    // Hide background when about section scrolls completely past (bottom reaches top of viewport)
+    // Hide background when pre-parallax spacer starts (after the 100vh dark section in portal)
+    const preParallaxSpacer = document.getElementById('pre-parallax-spacer');
     const aboutBottomTrigger = ScrollTrigger.create({
-      trigger: aboutSection,
-      start: 'bottom top', // When bottom of about section reaches top of viewport
+      trigger: preParallaxSpacer,
+      start: 'top bottom', // When top of pre-parallax spacer reaches bottom of viewport
       onEnter: () => setIsZoomBgVisible(false),
       onLeaveBack: () => setIsZoomBgVisible(true),
     });
@@ -924,9 +925,17 @@ const Home: React.FC = () => {
               </div>
             </div>
           </div>
+          
+          {/* Extra dark section below About - connects to parallax */}
+          <div className="h-[100vh]" style={{ background: 'rgba(19,22,19,1)' }} />
         </div>,
         overlayRoot
       )}
+
+      {/* PRE-PARALLAX SECTION - 100vh spacer with same bg */}
+      <section id="pre-parallax-spacer" className="relative h-screen w-full">
+        <div className="absolute inset-0 z-0 global-bg" />
+      </section>
 
       {/* PARALLAX GALLERY */}
       <section
