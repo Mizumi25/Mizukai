@@ -45,6 +45,9 @@ const Home: React.FC = () => {
   const [isZoomPinned, setIsZoomPinned] = useState(false);
   const [isZoomBgVisible, setIsZoomBgVisible] = useState(false);
   
+  // About section scroll sync state
+  const [aboutScrollY, setAboutScrollY] = useState(0);
+  
   // Video modal state
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [videoModalSrc, setVideoModalSrc] = useState('');
@@ -531,10 +534,23 @@ const Home: React.FC = () => {
       onEnter: () => aboutSection.classList.add('is-visible'),
     });
 
+    // Track about section scroll position for portal sync
+    const aboutScrollTrigger = ScrollTrigger.create({
+      trigger: aboutSection,
+      start: 'top top',
+      end: 'bottom bottom',
+      onUpdate: (self) => {
+        // Calculate how much to scroll the portal content
+        const scrollAmount = self.progress * (aboutSection.offsetHeight - window.innerHeight);
+        setAboutScrollY(scrollAmount);
+      },
+    });
+
     return () => {
       zoomPinnedTrigger.kill();
       aboutBottomTrigger.kill();
       aboutVisibilityTrigger.kill();
+      aboutScrollTrigger.kill();
     };
   }, []);
 
@@ -807,125 +823,17 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ABOUT SECTION - rendered in portal to be on same stacking context as background */}
-      <section id="about-zoom" className="relative min-h-[100vh]">
-        {/* Spacer for scroll height */}
+      {/* ABOUT SECTION - Spacer in normal flow for scroll height */}
+      <section 
+        id="about-zoom" 
+        className="relative"
+        style={{ 
+          minHeight: '300vh', // Spacer height (100vh empty + 100vh content + 100vh dark)
+          position: 'relative',
+        }}
+      >
+        {/* Empty spacer - actual content is in portal above */}
       </section>
-      
-      {/* About content in portal - scrolls OVER the fixed background */}
-      {/* Note: Not tied to isZoomBgVisible so it stays visible */}
-      {overlayRoot && zoomProgress >= 0.95 && createPortal(
-        <div
-          className="fixed inset-0 overflow-auto pointer-events-auto"
-          style={{ zIndex: 2147483645 }}
-        >
-          {/* Scrollable content container */}
-          <div className="min-h-[200vh]">
-            {/* First screen is empty - shows the background */}
-            <div className="h-screen" />
-            
-            {/* About content starts here */}
-            <div className="min-h-screen flex items-center" style={{ background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.7) 30%, rgba(19,22,19,1) 100%)' }}>
-              <div className="w-full max-w-[1100px] mx-auto px-6 py-24">
-                <div className="text-[#fffffd]">
-                  <h2 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight">
-                    Creative Development<br />& Digital Art
-                  </h2>
-                  <p className="mt-6 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
-                    Combining modern web technologies with artistic vision.
-                    Building immersive digital experiences that push boundaries.
-                  </p>
-                  <p className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
-                    From interactive websites to game development,
-                    every project is crafted with attention to detail and purpose.
-                  </p>
-                  <p className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
-                    Let&apos;s create something extraordinary together.
-                  </p>
-
-                  {/* Video Movie Section - like Nikon reference */}
-                  <div 
-                    className="mt-16 relative cursor-pointer group"
-                    onClick={() => {
-                      setVideoModalSrc('/videos/Home/DeCodeShowcase.mp4');
-                      setIsVideoModalOpen(true);
-                    }}
-                  >
-                    {/* Video thumbnail container with brackets */}
-                    <div className="relative overflow-hidden">
-                      {/* Corner brackets - like reference */}
-                      <div className="absolute top-0 left-0 w-12 h-12 border-t border-l border-white/50 z-10" />
-                      <div className="absolute top-0 right-0 w-12 h-12 border-t border-r border-white/50 z-10" />
-                      <div className="absolute bottom-0 left-0 w-12 h-12 border-b border-l border-white/50 z-10" />
-                      <div className="absolute bottom-0 right-0 w-12 h-12 border-b border-r border-white/50 z-10" />
-                      
-                      {/* Video thumbnail with hover video preview */}
-                      <div className="relative aspect-video bg-black/20">
-                        <Image 
-                          src={HomePreview} 
-                          alt="Concept Film" 
-                          className="w-full h-full object-cover opacity-90 group-hover:opacity-70 transition-opacity duration-300"
-                        />
-                        {/* Hover video preview */}
-                        <video 
-                          className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                          src="/videos/Home/DeCodeShowcase.mp4"
-                          muted
-                          loop
-                          playsInline
-                          onMouseEnter={(e) => e.currentTarget.play()}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.pause();
-                            e.currentTarget.currentTime = 0;
-                          }}
-                        />
-                      </div>
-
-                      {/* Play button - centered */}
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 group-hover:scale-110 transition-transform duration-300">
-                        <div className="w-[100px] h-[100px] md:w-[130px] md:h-[130px] rounded-full bg-white/30 backdrop-blur-xl flex items-center justify-center">
-                          <div className="text-center">
-                            <svg className="w-8 h-8 md:w-10 md:h-10 mx-auto" viewBox="0 0 24 24" fill="white">
-                              <path d="M8 5v14l11-7z"/>
-                            </svg>
-                            <span className="text-white text-xs md:text-sm font-medium tracking-wider mt-1 block">PLAY MOVIE</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Bottom text overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex justify-between items-end">
-                        <div>
-                          <h3 className="text-3xl md:text-5xl font-medium tracking-wide">
-                            <span className="relative">
-                              <span className="absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-600 rounded-full" />
-                              CONCEPT FILM
-                            </span>
-                          </h3>
-                          <span className="text-base md:text-lg text-white/80 mt-2 block">コンセプトフィルム</span>
-                        </div>
-                        {/* Small play button for mobile */}
-                        <div className="md:hidden">
-                          <div className="px-4 py-2 rounded-full bg-white/30 backdrop-blur-xl flex items-center gap-2">
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="white">
-                              <path d="M8 5v14l11-7z"/>
-                            </svg>
-                            <span className="text-white text-xs font-medium">PLAY</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Extra dark section below About - connects to parallax */}
-          <div className="h-[100vh]" style={{ background: 'rgba(19,22,19,1)' }} />
-        </div>,
-        overlayRoot
-      )}
 
       {/* PRE-PARALLAX SECTION - 100vh spacer with same bg */}
       <section id="pre-parallax-spacer" className="relative h-screen w-full">
@@ -1181,6 +1089,112 @@ const Home: React.FC = () => {
           </div>,
           overlayRoot
         )}
+
+      {/* ABOUT SECTION - Portal that appears ABOVE zoom background (rendered after zoom portals) */}
+      {overlayRoot && zoomProgress >= 0.95 && createPortal(
+        <div
+          className="pointer-events-none fixed inset-0 overflow-hidden"
+          style={{ zIndex: 2147483645 }}
+        >
+          <div 
+            className="absolute w-full pointer-events-auto"
+            style={{ 
+              top: 0,
+              transform: `translateY(calc(100vh - ${aboutScrollY}px))`,
+              background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.7) 30%, rgba(19,22,19,1) 100%)',
+            }}
+          >
+            <div className="min-h-screen flex items-center">
+              <div className="w-full max-w-[1100px] mx-auto px-6 py-24">
+                <div className="text-[#fffffd]">
+                  <h2 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight">
+                    Creative Development<br />& Digital Art
+                  </h2>
+                  <p className="mt-6 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
+                    Combining modern web technologies with artistic vision.
+                    Building immersive digital experiences that push boundaries.
+                  </p>
+                  <p className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
+                    From interactive websites to game development,
+                    every project is crafted with attention to detail and purpose.
+                  </p>
+                  <p className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
+                    Let&apos;s create something extraordinary together.
+                  </p>
+
+                  {/* Video Movie Section */}
+                  <div 
+                    className="mt-16 relative cursor-pointer group"
+                    onClick={() => {
+                      setVideoModalSrc('/videos/Home/DeCodeShowcase.mp4');
+                      setIsVideoModalOpen(true);
+                    }}
+                  >
+                    <div className="relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-12 h-12 border-t border-l border-white/50 z-10" />
+                      <div className="absolute top-0 right-0 w-12 h-12 border-t border-r border-white/50 z-10" />
+                      <div className="absolute bottom-0 left-0 w-12 h-12 border-b border-l border-white/50 z-10" />
+                      <div className="absolute bottom-0 right-0 w-12 h-12 border-b border-r border-white/50 z-10" />
+                      
+                      <div className="relative aspect-video bg-black/20">
+                        <Image 
+                          src={HomePreview} 
+                          alt="Concept Film" 
+                          className="w-full h-full object-cover opacity-90 group-hover:opacity-70 transition-opacity duration-300"
+                        />
+                        <video 
+                          className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                          src="/videos/Home/DeCodeShowcase.mp4"
+                          muted
+                          loop
+                          playsInline
+                          onMouseEnter={(e) => e.currentTarget.play()}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.pause();
+                            e.currentTarget.currentTime = 0;
+                          }}
+                        />
+                      </div>
+
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-[100px] h-[100px] md:w-[130px] md:h-[130px] rounded-full bg-white/30 backdrop-blur-xl flex items-center justify-center">
+                          <div className="text-center">
+                            <svg className="w-8 h-8 md:w-10 md:h-10 mx-auto" viewBox="0 0 24 24" fill="white">
+                              <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <span className="text-white text-xs md:text-sm font-medium tracking-wider mt-1 block">PLAY MOVIE</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex justify-between items-end">
+                        <div>
+                          <h3 className="text-3xl md:text-5xl font-medium tracking-wide">
+                            <span className="relative">
+                              <span className="absolute -left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-600 rounded-full" />
+                              CONCEPT FILM
+                            </span>
+                          </h3>
+                          <span className="text-base md:text-lg text-white/80 mt-2 block">コンセプトフィルム</span>
+                        </div>
+                        <div className="md:hidden">
+                          <div className="px-4 py-2 rounded-full bg-white/30 backdrop-blur-xl flex items-center gap-2">
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="white">
+                              <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <span className="text-white text-xs font-medium">PLAY</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>,
+        overlayRoot
+      )}
 
       {/* PARALLAX: Portal for pinned content */}
       {overlayRoot &&
