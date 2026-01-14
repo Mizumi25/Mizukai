@@ -7,8 +7,8 @@ import "./globals.css";
 import "@/components/Sound/sound.css";
 import { SoundProvider } from '@/components/Sound/SoundProvider'
 import SoundGate from '@/components/Sound/SoundGate'
+import Header from "@/components/Header";
 // import LenisWrapper from "@/components/LenisWrapper";
-// import Header from "@/components/Header";
 
 
 const nikkyou = localFont({
@@ -38,6 +38,7 @@ export default function RootLayout({
       >
         <SoundProvider>
           <SoundGate>
+            <Header />
             {children}
           </SoundGate>
         </SoundProvider>

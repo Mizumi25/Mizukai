@@ -5,6 +5,7 @@ import './style.css';
 import gsap from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import { CustomEase } from 'gsap/CustomEase';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from "@gsap/react";
 
 const Entrance: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -210,6 +211,8 @@ const Entrance: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                             entranceConRef.current.style.height = 'auto';
                             entranceConRef.current.style.overflow = 'visible';
                           }
+                          // Refresh ScrollTrigger after DOM changes
+                          ScrollTrigger.refresh();
                           // Dispatch custom event to notify that entrance animation is done
                           window.dispatchEvent(new CustomEvent('entranceComplete'));
                         }

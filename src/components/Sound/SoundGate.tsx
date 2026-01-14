@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
-import EntranceOne from '@/components/EntraceOne/';
+// import EntranceOne from '@/components/EntraceOne/';
 import { useSound } from './SoundProvider';
 
 export default function SoundGate({ children }: { children: React.ReactNode }) {
@@ -16,7 +16,7 @@ export default function SoundGate({ children }: { children: React.ReactNode }) {
   return (
     <>
       {/* Block app entrance until sound choice is made */}
-      {!showGate ? <EntranceOne>{children}</EntranceOne> : null}
+      {!showGate ? children : null}
 
       {showGate ? (
         <div className="sound-gate" role="dialog" aria-modal="true" aria-label="Sound preference">
