@@ -43,7 +43,7 @@ const Home: React.FC = () => {
   // Zoom section state
   const [zoomProgress, setZoomProgress] = useState(0);
   const [isZoomPinned, setIsZoomPinned] = useState(false);
-  const [isAboutBgFixed, setIsAboutBgFixed] = useState(true);
+  const [isZoomBgVisible, setIsZoomBgVisible] = useState(false);
   useEffect(() => {
     setOverlayRoot(document.getElementById('overlay-root'));
     // Default theme
@@ -450,23 +450,30 @@ const Home: React.FC = () => {
       trigger: zoomSection,
       start: 'top top',
       end: 'bottom bottom',
-      onEnter: () => setIsZoomPinned(true),
-      onEnterBack: () => setIsZoomPinned(true),
+      onEnter: () => {
+        setIsZoomPinned(true);
+        setIsZoomBgVisible(true);
+      },
+      onEnterBack: () => {
+        setIsZoomPinned(true);
+        setIsZoomBgVisible(true);
+      },
       onLeave: () => setIsZoomPinned(false),
-      onLeaveBack: () => setIsZoomPinned(false),
+      onLeaveBack: () => {
+        setIsZoomPinned(false);
+        setIsZoomBgVisible(false);
+      },
       onUpdate: (self) => {
         setZoomProgress(self.progress);
       },
     });
 
-    // Track when #about section passes bottom (to switch bg from fixed to absolute)
-    // Like reference: #about.bottom .bg { position: absolute !important; }
+    // Hide background when scrolling past the about section
     const aboutBottomTrigger = ScrollTrigger.create({
       trigger: aboutSection,
       start: 'bottom bottom',
-      end: 'bottom top',
-      onEnter: () => setIsAboutBgFixed(false),
-      onLeaveBack: () => setIsAboutBgFixed(true),
+      onEnter: () => setIsZoomBgVisible(false),
+      onLeaveBack: () => setIsZoomBgVisible(true),
     });
 
     // Add visibility class for about text when zoom completes
@@ -707,45 +714,9 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ABOUT SECTION - content appears after zoom completes */}
-      <section id="about-zoom" className="relative z-10 py-[400px] md:py-[400px]">
-        {/* Dark gradient overlay for text readability */}
-        <div 
-          className="absolute top-0 left-0 w-full h-full z-[1] pointer-events-none"
-          style={{ background: 'linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 80%, transparent 100%)' }}
-        />
-
-        {/* Content */}
-        <div className="relative z-10 max-w-[1100px] mx-auto px-6">
-          <div className="text-[#fffffd]">
-            <h2
-              data-about-title
-              className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight"
-            >
-              Creative Development<br />& Digital Art
-            </h2>
-            <p
-              data-about-text
-              className="mt-6 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl"
-            >
-              Combining modern web technologies with artistic vision.
-              Building immersive digital experiences that push boundaries.
-            </p>
-            <p
-              data-about-text
-              className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl"
-            >
-              From interactive websites to game development,
-              every project is crafted with attention to detail and purpose.
-            </p>
-            <p
-              data-about-text
-              className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl"
-            >
-              Let&apos;s create something extraordinary together.
-            </p>
-          </div>
-        </div>
+      {/* ABOUT SECTION - just a spacer, content is in portal */}
+      <section id="about-zoom" className="relative z-10 h-[100vh]">
+        {/* This section is just a scroll trigger/spacer */}
       </section>
 
       {/* PARALLAX GALLERY */}
@@ -929,12 +900,12 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ZOOM: Portal for pinned logo + scaling background */}
+      {/* ZOOM: Portal for scaling background - stays visible through #about-zoom section */}
       {overlayRoot &&
-        isZoomPinned &&
+        isZoomBgVisible &&
         createPortal(
           <>
-            {/* Scaling background image */}
+            {/* Background image */}
             <div
               className="pointer-events-none fixed inset-0 overflow-hidden"
               style={{ zIndex: 2147483640 }}
@@ -962,19 +933,58 @@ const Home: React.FC = () => {
               </div>
             </div>
 
-            {/* Pinned logo */}
-            <div
-              className="pointer-events-none fixed left-0 top-0 flex h-screen w-screen items-center justify-center"
-              style={{ zIndex: 2147483641 }}
-            >
-              <h2 
-                className="font-serif text-4xl md:text-6xl tracking-[0.18em] text-[#fffffd]"
-                style={{ opacity: Math.max(0, 1 - zoomProgress * 2) }}
+            {/* About content - appears on top of background when zoom completes */}
+            {zoomProgress >= 0.95 && (
+              <div
+                className="fixed inset-0 flex items-center justify-center pointer-events-none"
+                style={{ zIndex: 2147483642 }}
               >
-                Portfolio
-              </h2>
-            </div>
+                {/* Dark gradient overlay */}
+                <div 
+                  className="absolute inset-0"
+                  style={{ background: 'linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)' }}
+                />
+                
+                {/* Content */}
+                <div className="relative z-10 max-w-[1100px] mx-auto px-6">
+                  <div className="text-[#fffffd]">
+                    <h2 className="text-4xl md:text-5xl font-semibold tracking-tight leading-tight">
+                      Creative Development<br />& Digital Art
+                    </h2>
+                    <p className="mt-6 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
+                      Combining modern web technologies with artistic vision.
+                      Building immersive digital experiences that push boundaries.
+                    </p>
+                    <p className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
+                      From interactive websites to game development,
+                      every project is crafted with attention to detail and purpose.
+                    </p>
+                    <p className="mt-4 font-serif text-lg md:text-xl leading-relaxed text-[#ffffffcc] max-w-2xl">
+                      Let&apos;s create something extraordinary together.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </>,
+          overlayRoot
+        )}
+
+      {/* ZOOM: Portal for pinned logo - only while scrolling through zoom section */}
+      {overlayRoot &&
+        isZoomPinned &&
+        createPortal(
+          <div
+            className="pointer-events-none fixed left-0 top-0 flex h-screen w-screen items-center justify-center"
+            style={{ zIndex: 2147483641 }}
+          >
+            <h2 
+              className="font-serif text-4xl md:text-6xl tracking-[0.18em] text-[#fffffd]"
+              style={{ opacity: Math.max(0, 1 - zoomProgress * 2) }}
+            >
+              Portfolio
+            </h2>
+          </div>,
           overlayRoot
         )}
 
