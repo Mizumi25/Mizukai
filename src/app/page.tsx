@@ -446,6 +446,7 @@ const Home: React.FC = () => {
     if (!zoomSection || !aboutSection) return;
 
     // Track zoom pinned state and progress (like reference: #zoom.top / #zoom.bottom classes)
+    // Reference uses: pin when section top hits viewport top
     const zoomPinnedTrigger = ScrollTrigger.create({
       trigger: zoomSection,
       start: 'top top',
@@ -545,12 +546,22 @@ const Home: React.FC = () => {
     draw(0);
 
     // Timeline: scrub both the canvas state + hero move
+    // Throttle draw calls to reduce lag
+    let lastDrawTime = 0;
+    const throttledDraw = (t: number) => {
+      const now = performance.now();
+      if (now - lastDrawTime > 32) { // ~30fps max for canvas
+        lastDrawTime = now;
+        draw(t);
+      }
+    };
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: hero,
         start: 'top top',
         end: () => `+=${Math.round(hero.clientHeight * 0.8)}`,
-        scrub: true,
+        scrub: 0.5, // Add slight smoothing to reduce jitter
       },
     });
 
@@ -559,7 +570,7 @@ const Home: React.FC = () => {
       {
         t: 1,
         ease: 'none',
-        onUpdate: () => draw(state.t * 10),
+        onUpdate: () => throttledDraw(state.t * 10),
       },
       0
     ).to(

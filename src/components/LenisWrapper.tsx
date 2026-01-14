@@ -80,8 +80,18 @@ export default function LenisWrapper({ children }: { children: React.ReactNode }
   }, []);
 
   // `root` means Lenis uses document scrolling.
+  // Lower lerp = more responsive scrolling (default is ~0.1)
   return (
-    <ReactLenis ref={lenisRef} autoRaf={false} root>
+    <ReactLenis 
+      ref={lenisRef} 
+      autoRaf={false} 
+      root
+      options={{
+        lerp: 0.15,
+        wheelMultiplier: 1.2,
+        touchMultiplier: 1.5,
+      }}
+    >
       {children}
     </ReactLenis>
   );
