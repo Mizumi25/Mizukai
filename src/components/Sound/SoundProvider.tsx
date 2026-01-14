@@ -20,16 +20,11 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   const [preference, setPreferenceState] = useState<SoundPreference>('unknown');
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Load stored preference once.
+  // Load stored preference once - ALWAYS START WITH 'unknown' to show gate
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw === 'on' || raw === 'off') setPreferenceState(raw);
-    } catch {
-      // ignore
-    } finally {
-      setLoaded(true);
-    }
+    // Always start with 'unknown' so sound gate shows every time
+    setPreferenceState('unknown');
+    setLoaded(true);
   }, []);
 
   // Create audio element once.
