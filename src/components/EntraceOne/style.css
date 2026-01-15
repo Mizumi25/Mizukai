@@ -85,17 +85,12 @@
   transform-origin: top left;
 }
 
-/* Entrance reveal overlay - covers page and reveals via clip-path */
-.entrance-reveal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #0a0a0a;
-  z-index: 9999;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  pointer-events: none;
+/* Content wrapper with clip-path animation */
+.entranceCon {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  clip-path: polygon(0 48%, 0 48%, 0 52%, 0 52%);
 }
 
 @media (max-width: 1000px) {

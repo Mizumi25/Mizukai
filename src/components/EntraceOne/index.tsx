@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './style.css';
 import gsap from 'gsap';
 import { SplitText } from 'gsap/SplitText';
@@ -8,8 +8,9 @@ import { CustomEase } from 'gsap/CustomEase';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from "@gsap/react";
 
-// Standalone entrance component - doesn't wrap children
-const Entrance: React.FC = () => {
+// Entrance component that wraps children
+const Entrance: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const entranceConRef = useRef<HTMLDivElement>(null);
   const [isReady, setIsReady] = useState(false);
   
   useGSAP(() => {
@@ -161,7 +162,7 @@ const Entrance: React.FC = () => {
         4.5
       )
       .to(
-        ".entrance-reveal",
+        ".entranceCon",
         {
           clipPath: "polygon(0% 48%, 100% 48%, 100% 52%, 0% 52%)",
           duration: 1,
@@ -189,7 +190,7 @@ const Entrance: React.FC = () => {
         6
       )
       .to(
-        ".entrance-reveal",
+        ".entranceCon",
         {
           clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0 100%)",
           duration: 1,
@@ -215,37 +216,41 @@ const Entrance: React.FC = () => {
   });
   
   return (
-    <div className={`entrance${isReady ? ' is-ready' : ''}`}>
-      {/* Preloader overlay - top half */}
-      <div className="preloader">
-        <div className="intro-title">
-          <h1>Mizumi Kaito</h1>
+    <>
+      <div className={`entrance${isReady ? ' is-ready' : ''}`}>
+        {/* Preloader overlay - top half */}
+        <div className="preloader">
+          <div className="intro-title">
+            <h1>Mizumi Kaito</h1>
+          </div>
+          <div className="outro-title">
+            <h1>IZU</h1>
+          </div>
         </div>
-        <div className="outro-title">
-          <h1>IZU</h1>
+        
+        {/* Split overlay - bottom half */}
+        <div className="split-overlay">
+          <div className="intro-title">
+            <h1>Mizumi Kaito</h1>
+          </div>
+          <div className="outro-title">
+            <h1>IZU</h1>
+          </div>
+        </div>
+        
+        {/* Tags overlay */}
+        <div className="tags-overlay">
+          <div className="tag tag-1"><p>Full Stack</p></div>
+          <div className="tag tag-2"><p>Digital Artist</p></div>
+          <div className="tag tag-3"><p>James Rafty Libago</p></div>
         </div>
       </div>
       
-      {/* Split overlay - bottom half */}
-      <div className="split-overlay">
-        <div className="intro-title">
-          <h1>Mizumi Kaito</h1>
-        </div>
-        <div className="outro-title">
-          <h1>IZU</h1>
-        </div>
+      {/* Content wrapper with clip-path animation */}
+      <div className="entranceCon" ref={entranceConRef}>
+        {children}
       </div>
-      
-      {/* Tags overlay */}
-      <div className="tags-overlay">
-        <div className="tag tag-1"><p>Full Stack</p></div>
-        <div className="tag tag-2"><p>Digital Artist</p></div>
-        <div className="tag tag-3"><p>James Rafty Libago</p></div>
-      </div>
-      
-      {/* Reveal overlay - covers the page initially, then reveals via clip-path */}
-      <div className="entrance-reveal"></div>
-    </div>
+    </>
   );
 }
 

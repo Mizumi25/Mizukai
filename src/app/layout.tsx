@@ -39,9 +39,10 @@ export default function RootLayout({
       >
         <SoundProvider>
           <SoundGate>
-            <Entrance />
-            <Header />
-            {children}
+            <Entrance>
+              <Header />
+              {children}
+            </Entrance>
           </SoundGate>
         </SoundProvider>
         
