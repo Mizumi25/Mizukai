@@ -85,44 +85,17 @@
   transform-origin: top left;
 }
 
-/* Updated entranceCon styles */
-.entranceCon {
-  position: relative;
-  background: white;
-  width: 100%;
-  /* Fixed height during animation, then auto */
+/* Entrance reveal overlay - covers page and reveals via clip-path */
+.entrance-reveal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
   height: 100vh;
-  /* Prevent scrolling during animation */
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  clip-path: polygon(0 48%, 0 48%, 0 52%, 0 52%);
-  z-index: 20000;
-}
-
-/* Alternative approach - if you prefer min-height */
-.entranceCon-alt {
-  position: relative;
-  background: white;
-  width: 100%;
-  min-height: 100vh;
-  /* Do not create an inner scroll container (breaks ScrollTrigger pinning) */
-  max-height: none;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  clip-path: polygon(0 48%, 0 48%, 0 52%, 0 52%);
-  z-index: 20000;
-}
-
-/* Animation-safe content wrapper */
-.content-wrapper {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-  /* Use the document/page scroll, not an inner scrolling container */
-  overflow: visible;
+  background: #0a0a0a;
+  z-index: 9999;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  pointer-events: none;
 }
 
 @media (max-width: 1000px) {

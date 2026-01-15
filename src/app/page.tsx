@@ -22,240 +22,284 @@ const Home: React.FC = () => {
   const aboutBgRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Zoom section pinning - like Nikon reference
-    const zoomSection = zoomSectionRef.current;
-    const zoomInner = zoomInnerRef.current;
-    
-    if (zoomSection && zoomInner) {
-      // Pin the inner content while scrolling through the section
-      ScrollTrigger.create({
-        trigger: zoomSection,
-        start: 'top top',
-        end: 'bottom bottom',
-        pin: zoomInner,
-        pinSpacing: false,
-      });
-    }
-
-    // About section - pin background and scale
-    const aboutSection = aboutSectionRef.current;
-    const aboutBg = aboutBgRef.current;
-    
-    if (aboutSection && aboutBg) {
-      ScrollTrigger.create({
-        trigger: aboutSection,
-        start: 'top top',
-        end: 'bottom bottom',
-        pin: aboutBg,
-        pinSpacing: false,
-      });
-
-      // Scale the background as you scroll
-      gsap.to(aboutBg.querySelector('.bg-scale'), {
-        scale: 1,
-        scrollTrigger: {
-          trigger: aboutSection,
-          start: 'top bottom',
-          end: 'top top',
-          scrub: true,
-        },
-      });
-    }
-
-    // Animate elements on scroll
-    const animatedElements = document.querySelectorAll('.anime');
-    animatedElements.forEach((el) => {
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 80%',
-        onEnter: () => el.classList.add('on'),
-      });
-    });
-
-    // Voice parallax - EXACT Nikon method (clones already exist in HTML)
-    const articles = document.querySelectorAll('#nikon-voice article');
-    
-    const topObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          entry.target.classList.toggle('top', entry.isIntersecting);
-          console.log('TOP Observer:', entry.target.className, 'isIntersecting:', entry.isIntersecting);
-        });
-      },
-      { root: null, rootMargin: '0% 0% -100% 0%', threshold: 0 }
-    );
-
-    const bottomObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          entry.target.classList.toggle('bottom', !entry.isIntersecting);
-        });
-      },
-      { root: null, rootMargin: '-100% 0% 0% 0%', threshold: 0 }
-    );
-
-    const inObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          entry.target.classList.toggle('in', entry.isIntersecting);
-          console.log('IN Observer:', entry.target.className, 'isIntersecting:', entry.isIntersecting);
-        });
-      },
-      { root: null, rootMargin: '-20% 0% 0% 0%', threshold: 0 }
-    );
-
-    articles.forEach((article) => {
-      topObserver.observe(article);
-      bottomObserver.observe(article);
-      inObserver.observe(article);
-
-      const clone = article.querySelector('.clone');
-      const scrollarea = clone?.querySelector('.scrollarea');
+    // Function to initialize all ScrollTrigger animations
+    const initScrollAnimations = () => {
+      // Kill any existing ScrollTriggers first
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
       
-      if (clone) {
-        topObserver.observe(clone);
-        bottomObserver.observe(clone);
-        inObserver.observe(clone);
-      }
-      
-      if (scrollarea) {
-        topObserver.observe(scrollarea);
-        bottomObserver.observe(scrollarea);
-      }
-
-      // Parallax Gallery Animation - Taiki Sato Style
-      const parallaxImages = article.querySelectorAll('.parallax-image');
-      
-      parallaxImages.forEach((image, index) => {
-        const speed = parseInt(image.getAttribute('data-speed') || '50');
+      // Small delay to ensure DOM is ready
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
         
-        // Set z-index based on speed for depth effect
-        gsap.set(image, {
-          zIndex: speed / 10,
-        });
+        // Zoom section pinning - like Nikon reference
+        const zoomSection = zoomSectionRef.current;
+        const zoomInner = zoomInnerRef.current;
         
-        // Different scrub values for varied movement speeds
-        const scrubValue = (index % 3) + 1; // 1, 2, or 3
-        
-        // Parallax scroll animation with varied speeds like Taiki Sato reference
-        gsap.fromTo(image, 
-          { yPercent: speed * 2 },
-          {
-            yPercent: -speed * 2,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: article,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: scrubValue
-            }
-          }
-        );
-      });
-
-      // Activate images on scroll (grayscale to color transition)
-      const handleScroll = () => {
-        const windowHeight = window.innerHeight;
-        
-        parallaxImages.forEach((image) => {
-          const rect = image.getBoundingClientRect();
-          
-          // Activate when image enters middle of viewport
-          if (rect.top < windowHeight * 0.7 && rect.bottom > windowHeight * 0.3) {
-            image.classList.add('is-active');
-          }
-        });
-      };
-      
-      window.addEventListener('scroll', handleScroll);
-      // Initial check
-      handleScroll();
-    });
-
-    // Taiki Sato Works Gallery - Hover Interactions
-    const tsWorksGallery = document.getElementById('ts-works-gallery');
-    if (tsWorksGallery) {
-      const workItems = tsWorksGallery.querySelectorAll('.ts-work-item');
-      
-      workItems.forEach((item) => {
-        const link = item.querySelector('.ts-work-link');
-        
-        link?.addEventListener('mouseenter', () => {
-          item.classList.add('is-hover');
-          // Add opacity class to other items
-          workItems.forEach((otherItem) => {
-            if (otherItem !== item) {
-              otherItem.classList.add('is-opacity');
-            }
+        if (zoomSection && zoomInner) {
+          // Pin the inner content while scrolling through the section
+          ScrollTrigger.create({
+            trigger: zoomSection,
+            start: 'top top',
+            end: 'bottom bottom',
+            pin: zoomInner,
+            pinSpacing: false,
           });
-        });
-        
-        link?.addEventListener('mouseleave', () => {
-          item.classList.remove('is-hover');
-          // Remove opacity class from all items
-          workItems.forEach((otherItem) => {
-            otherItem.classList.remove('is-opacity');
-          });
-        });
-      });
-
-      // Focus-in animation on scroll
-      const focusInElements = tsWorksGallery.querySelectorAll('.ts-focus-in');
-      const focusInObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.setAttribute('data-active', 'true');
-          }
-        });
-      }, { threshold: 0.5 });
-
-      focusInElements.forEach((el) => focusInObserver.observe(el));
-    }
-
-    // Product section - change background to white and text to black
-    const productSection = document.getElementById('nikon-product');
-    const tsWorksGallerySection = document.getElementById('ts-works-gallery');
-    const voiceHeader = document.querySelector('#nikon-voice .header') as HTMLElement;
-    
-    if (productSection) {
-      ScrollTrigger.create({
-        trigger: productSection,
-        start: 'top 80%',
-        end: 'bottom 20%',
-        onEnter: () => {
-          gsap.to([productSection, tsWorksGallerySection, voiceHeader], {
-            backgroundColor: '#fff',
-            color: '#000',
-            duration: 0.8,
-            ease: 'power2.out'
-          });
-        },
-        onLeave: () => {
-          gsap.to(productSection, { backgroundColor: '#282b28', color: '#fff', duration: 0.5 });
-          gsap.to(tsWorksGallerySection, { backgroundColor: '#1a1a1a', color: '#e8e4df', duration: 0.5 });
-          gsap.to(voiceHeader, { backgroundColor: 'transparent', color: '#fff', duration: 0.5 });
-        },
-        onEnterBack: () => {
-          gsap.to([productSection, tsWorksGallerySection, voiceHeader], {
-            backgroundColor: '#fff',
-            color: '#000',
-            duration: 0.8,
-            ease: 'power2.out'
-          });
-        },
-        onLeaveBack: () => {
-          gsap.to(productSection, { backgroundColor: '#282b28', color: '#fff', duration: 0.5 });
-          gsap.to(tsWorksGallerySection, { backgroundColor: '#1a1a1a', color: '#e8e4df', duration: 0.5 });
-          gsap.to(voiceHeader, { backgroundColor: 'transparent', color: '#fff', duration: 0.5 });
         }
-      });
+
+        // About section - pin background and scale
+        const aboutSection = aboutSectionRef.current;
+        const aboutBg = aboutBgRef.current;
+        
+        if (aboutSection && aboutBg) {
+          ScrollTrigger.create({
+            trigger: aboutSection,
+            start: 'top top',
+            end: 'bottom bottom',
+            pin: aboutBg,
+            pinSpacing: false,
+          });
+
+          // Scale the background as you scroll
+          gsap.to(aboutBg.querySelector('.bg-scale'), {
+            scale: 1,
+            scrollTrigger: {
+              trigger: aboutSection,
+              start: 'top bottom',
+              end: 'top top',
+              scrub: true,
+            },
+          });
+        }
+
+        // Animate elements on scroll
+        const animatedElements = document.querySelectorAll('.anime');
+        animatedElements.forEach((el) => {
+          ScrollTrigger.create({
+            trigger: el,
+            start: 'top 80%',
+            onEnter: () => el.classList.add('on'),
+          });
+        });
+
+        // Voice parallax - EXACT Nikon method (clones already exist in HTML)
+        const articles = document.querySelectorAll('#nikon-voice article');
+        
+        const topObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              entry.target.classList.toggle('top', entry.isIntersecting);
+            });
+          },
+          { root: null, rootMargin: '0% 0% -100% 0%', threshold: 0 }
+        );
+
+        const bottomObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              entry.target.classList.toggle('bottom', !entry.isIntersecting);
+            });
+          },
+          { root: null, rootMargin: '-100% 0% 0% 0%', threshold: 0 }
+        );
+
+        const inObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              entry.target.classList.toggle('in', entry.isIntersecting);
+            });
+          },
+          { root: null, rootMargin: '-20% 0% 0% 0%', threshold: 0 }
+        );
+
+        articles.forEach((article) => {
+          topObserver.observe(article);
+          bottomObserver.observe(article);
+          inObserver.observe(article);
+
+          const clone = article.querySelector('.clone');
+          const scrollarea = clone?.querySelector('.scrollarea');
+          
+          if (clone) {
+            topObserver.observe(clone);
+            bottomObserver.observe(clone);
+            inObserver.observe(clone);
+          }
+          
+          if (scrollarea) {
+            topObserver.observe(scrollarea);
+            bottomObserver.observe(scrollarea);
+          }
+
+          // Parallax Gallery Animation - Taiki Sato Style
+          const parallaxImages = article.querySelectorAll('.parallax-image');
+          
+          parallaxImages.forEach((image, index) => {
+            const speed = parseInt(image.getAttribute('data-speed') || '50');
+            
+            // Set z-index based on speed for depth effect
+            gsap.set(image, {
+              zIndex: speed / 10,
+            });
+            
+            // Different scrub values for varied movement speeds
+            const scrubValue = (index % 3) + 1; // 1, 2, or 3
+            
+            // Parallax scroll animation with varied speeds like Taiki Sato reference
+            gsap.fromTo(image, 
+              { yPercent: speed * 2 },
+              {
+                yPercent: -speed * 2,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: article,
+                  start: 'top bottom',
+                  end: 'bottom top',
+                  scrub: scrubValue
+                }
+              }
+            );
+          });
+
+          // Activate images on scroll (grayscale to color transition)
+          const handleScroll = () => {
+            const windowHeight = window.innerHeight;
+            
+            parallaxImages.forEach((image) => {
+              const rect = image.getBoundingClientRect();
+              
+              // Activate when image enters middle of viewport
+              if (rect.top < windowHeight * 0.7 && rect.bottom > windowHeight * 0.3) {
+                image.classList.add('is-active');
+              }
+            });
+          };
+          
+          window.addEventListener('scroll', handleScroll);
+          // Initial check
+          handleScroll();
+        });
+
+        // Taiki Sato Works Gallery - Hover Interactions
+        const tsWorksGallery = document.getElementById('ts-works-gallery');
+        if (tsWorksGallery) {
+          const workItems = tsWorksGallery.querySelectorAll('.ts-work-item');
+          
+          workItems.forEach((item) => {
+            const link = item.querySelector('.ts-work-link');
+            
+            link?.addEventListener('mouseenter', () => {
+              item.classList.add('is-hover');
+              // Add opacity class to other items
+              workItems.forEach((otherItem) => {
+                if (otherItem !== item) {
+                  otherItem.classList.add('is-opacity');
+                }
+              });
+            });
+            
+            link?.addEventListener('mouseleave', () => {
+              item.classList.remove('is-hover');
+              // Remove opacity class from all items
+              workItems.forEach((otherItem) => {
+                otherItem.classList.remove('is-opacity');
+              });
+            });
+          });
+
+          // Focus-in animation on scroll
+          const focusInElements = tsWorksGallery.querySelectorAll('.ts-focus-in');
+          const focusInObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.setAttribute('data-active', 'true');
+              }
+            });
+          }, { threshold: 0.5 });
+
+          focusInElements.forEach((el) => focusInObserver.observe(el));
+
+          // Scroll-based scale animation for work images
+          const workImages = tsWorksGallery.querySelectorAll('.ts-work-image');
+          workImages.forEach((imageContainer) => {
+            const img = imageContainer.querySelector('img');
+            if (img) {
+              // Use GSAP ScrollTrigger for smooth scale animation
+              gsap.fromTo(img,
+                { 
+                  scale: 0.3,
+                  opacity: 0 
+                },
+                {
+                  scale: 1,
+                  opacity: 1,
+                  ease: 'power2.out',
+                  scrollTrigger: {
+                    trigger: imageContainer,
+                    start: 'top 85%',
+                    end: 'top 40%',
+                    scrub: 1,
+                    onEnter: () => imageContainer.classList.add('is-scaled'),
+                  }
+                }
+              );
+            }
+          });
+        }
+
+        // Product section - change background to white and text to black
+        const productSection = document.getElementById('nikon-product');
+        const tsWorksGallerySection = document.getElementById('ts-works-gallery');
+        const voiceHeader = document.querySelector('#nikon-voice .header') as HTMLElement;
+        
+        if (productSection) {
+          ScrollTrigger.create({
+            trigger: productSection,
+            start: 'top 80%',
+            end: 'bottom 20%',
+            onEnter: () => {
+              gsap.to([productSection, tsWorksGallerySection, voiceHeader], {
+                backgroundColor: '#fff',
+                color: '#000',
+                duration: 0.8,
+                ease: 'power2.out'
+              });
+            },
+            onLeave: () => {
+              gsap.to(productSection, { backgroundColor: '#282b28', color: '#fff', duration: 0.5 });
+              gsap.to(tsWorksGallerySection, { backgroundColor: '#1a1a1a', color: '#e8e4df', duration: 0.5 });
+              gsap.to(voiceHeader, { backgroundColor: 'transparent', color: '#fff', duration: 0.5 });
+            },
+            onEnterBack: () => {
+              gsap.to([productSection, tsWorksGallerySection, voiceHeader], {
+                backgroundColor: '#fff',
+                color: '#000',
+                duration: 0.8,
+                ease: 'power2.out'
+              });
+            },
+            onLeaveBack: () => {
+              gsap.to(productSection, { backgroundColor: '#282b28', color: '#fff', duration: 0.5 });
+              gsap.to(tsWorksGallerySection, { backgroundColor: '#1a1a1a', color: '#e8e4df', duration: 0.5 });
+              gsap.to(voiceHeader, { backgroundColor: 'transparent', color: '#fff', duration: 0.5 });
+            }
+          });
+        }
+      }); // end requestAnimationFrame
+    }; // end initScrollAnimations
+
+    // Check if entrance animation has already completed (e.g., on page refresh)
+    const entranceElement = document.querySelector('.entrance');
+    if (!entranceElement || window.getComputedStyle(entranceElement).display === 'none') {
+      // Entrance already done or doesn't exist, init immediately
+      initScrollAnimations();
+    } else {
+      // Wait for entrance animation to complete
+      window.addEventListener('entranceComplete', initScrollAnimations, { once: true });
     }
 
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-      topObserver.disconnect();
-      bottomObserver.disconnect();
-      inObserver.disconnect();
+      window.removeEventListener('entranceComplete', initScrollAnimations);
     };
   }, []);
 

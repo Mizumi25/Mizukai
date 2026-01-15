@@ -8,6 +8,7 @@ import "@/components/Sound/sound.css";
 import { SoundProvider } from '@/components/Sound/SoundProvider'
 import SoundGate from '@/components/Sound/SoundGate'
 import Header from "@/components/Header";
+import Entrance from "@/components/EntraceOne";
 // import LenisWrapper from "@/components/LenisWrapper";
 
 
@@ -38,6 +39,7 @@ export default function RootLayout({
       >
         <SoundProvider>
           <SoundGate>
+            <Entrance />
             <Header />
             {children}
           </SoundGate>

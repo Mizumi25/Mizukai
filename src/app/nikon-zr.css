@@ -207,7 +207,7 @@
   left: 0;
   width: 100vw;
   height: 100%;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0% 70%, transparent 90%);
+  background: linear-gradient(0deg, #131613 0%, rgba(19, 22, 19, 0.95) 10%, rgba(0, 0, 0, 0.5) 40%, rgba(0, 0, 0, 0.3) 70%, transparent 90%);
   content: "";
 }
 
@@ -1356,12 +1356,21 @@
 #ts-works-gallery .ts-work-image {
   order: 1;
   display: block;
+  overflow: hidden;
 }
 
 #ts-works-gallery .ts-work-image img {
   width: 100%;
   height: auto;
   object-fit: contain;
+  transform: scale(0.3);
+  opacity: 0;
+  transition: transform 0.1s ease-out, opacity 0.3s ease-out;
+}
+
+#ts-works-gallery .ts-work-image.is-scaled img {
+  transform: scale(1);
+  opacity: 1;
 }
 
 /* Full screen background on hover */
