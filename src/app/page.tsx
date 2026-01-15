@@ -101,7 +101,7 @@ const Home: React.FC = () => {
           console.log('IN Observer:', entry.target.className, 'isIntersecting:', entry.isIntersecting);
         });
       },
-      { root: null, rootMargin: '-100% 0% 0% 0%', threshold: 0 }
+      { root: null, rootMargin: '-20% 0% 0% 0%', threshold: 0 }
     );
 
     articles.forEach((article) => {

@@ -628,12 +628,12 @@
 #nikon-voice article {
   position: relative;
   padding-top: 100vh;
-  min-height: 400vh; /* Space for parallax effect */
+  min-height: 700vh; /* Space for parallax effect - increased for longer scroll */
 }
 
 /* Make articles overlap - negative margin creates parallax scrolling effect */
 #nikon-voice article:not(:first-of-type) {
-  margin-top: -200vh; /* Pull up to create overlap - adjust this value for more/less overlap */
+  margin-top: -400vh; /* Pull up to create overlap - increased for more overlap */
 }
 
 #nikon-voice article:nth-child(2) {
@@ -754,15 +754,12 @@
 #nikon-voice article .clone.top:not(.in) .head_ttl {
   opacity: 1;
   pointer-events: auto;
-  background: rgba(255, 0, 0, 0.5) !important; /* DEBUG: Bright red to see if it's there */
 }
 
 #nikon-voice article .clone.top:not(.in) .head_ttl h2 {
   opacity: 1;
   filter: blur(0);
   transition: opacity 0.3s ease-in, filter 0.5s ease-in;
-  background: rgba(0, 255, 0, 0.8) !important; /* DEBUG: Bright green on text */
-  padding: 20px;
 }
 
 /* FADE OUT: When clone has BOTH .top AND .in classes */
