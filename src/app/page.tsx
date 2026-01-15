@@ -72,6 +72,56 @@ const Home: React.FC = () => {
       });
     });
 
+    // Voice parallax - EXACT Nikon method (clones already exist in HTML)
+    const articles = document.querySelectorAll('#nikon-voice article');
+    
+    const topObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.target.classList.toggle('top', entry.isIntersecting);
+        });
+      },
+      { root: null, rootMargin: '0% 0% -100% 0%', threshold: 0 }
+    );
+
+    const bottomObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.target.classList.toggle('bottom', !entry.isIntersecting);
+        });
+      },
+      { root: null, rootMargin: '-100% 0% 0% 0%', threshold: 0 }
+    );
+
+    const inObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.target.classList.toggle('in', entry.isIntersecting);
+        });
+      },
+      { root: null, rootMargin: '0% 0% 0% 0%', threshold: 0 }
+    );
+
+    articles.forEach((article) => {
+      topObserver.observe(article);
+      bottomObserver.observe(article);
+      inObserver.observe(article);
+
+      const clone = article.querySelector('.clone');
+      const scrollarea = clone?.querySelector('.scrollarea');
+      
+      if (clone) {
+        topObserver.observe(clone);
+        bottomObserver.observe(clone);
+        inObserver.observe(clone);
+      }
+      
+      if (scrollarea) {
+        topObserver.observe(scrollarea);
+        bottomObserver.observe(scrollarea);
+      }
+    });
+
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
@@ -392,43 +442,1161 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Voice Section */}
+      {/* Voice Section - EXACT Nikon Structure */}
       <section id="nikon-voice">
         <div className="header">
           <div className="inner">
             <h2 className="an">
-              <span className="dot">CREATOR&apos;S VOICE</span>
+              <span className="dot">DEVELOPER&apos;S VOICE</span>
             </h2>
           </div>
         </div>
 
-        {/* Article 1 */}
+        {/* Article 1 - EXACT Nikon structure with article_inner + clone */}
         <article>
           <div className="bg">
-            <Image src={HomePreview} alt="Creator" fill className="object-cover" />
+            <Image src={HomePreview} alt="Developer" fill className="object-cover" />
           </div>
-          <div className="relative z-10 max-w-[1100px] mx-auto px-6 py-40">
-            <div className="head_ttl text-center mb-20">
-              <h2 className="text-3xl md:text-5xl font-semibold">
-                シンプルに<br className="sp" />すごい良い画が撮れた。<br />
-                それだけで<br className="sp" />すごく満足だなと思えた。
-              </h2>
+          
+          {/* Hidden article_inner (Nikon method) */}
+          <div className="article_inner hidden">
+            <div className="head_ttl">
+              <div>
+                <h2>
+                  Creating beautiful<br className="sp" />user experiences<br />
+                  that bring ideas to life
+                </h2>
+              </div>
             </div>
-            <div className="profile anime">
-              <div className="head">
-                <div className="img">
-                  <Image src={Profile} alt="Creator" width={130} height={130} className="rounded-full" />
+
+            <div className="blur">
+              <div className="scrollarea">
+                <div className="head">
+                  <div className="inner">
+                    <div className="contents">
+                      <h3 className="dot an anime">DEVELOPER&apos;S VOICE</h3>
+                      <h2 className="anime">Mizumi みずみ</h2>
+                      <h4 className="sans anime">James Rafty D. Libago</h4>
+
+                      <div className="movie brackets anime btn_movie hover_video">
+                        <div>
+                          <Image src={AboutPreview} alt="movie" width={887} height={537} />
+                          <video src="/videos/Home/DeCodeShowcase.mp4" muted loop playsInline />
+                          <div className="btn_play">
+                            <div className="anime">
+                              <div>
+                                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <h4 className="an">PLAY MOVIE</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="txt">
-                  <h3 className="sans"><b>撮影監督 / 映像作家</b>上野 千蔵</h3>
-                  <ul className="sns">
-                    <li><a href="#">📷</a></li>
-                    <li><a href="#">🏠</a></li>
-                  </ul>
+
+                <div className="body">
+                  <div className="inner">
+                    <div className="contents">
+                      <div className="movie anime btn_movie">
+                        <Image src={WorksPreview} alt="Mizumi" width={1670} height={1080} />
+                        <div className="txt">
+                          <h3 className="anime"></h3>
+                          <div className="btns">
+                            <div className="btn_play small">
+                              <div className="anime">
+                                <div>
+                                  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                  </svg>
+                                  <h4 className="an">PLAY INTERVIEW</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Full Stack Web Developer / Digital Artist</b>Mizumi</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">💻</a></li>
+                              <li><a href="#" target="_blank">🎨</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">A passionate 22-year-old Filipino developer specializing in creating aesthetic minimalist modern UI with exceptional user experiences. Proficient in full stack web development with a strong preference for front-end technologies.</p>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Digital Artist</b>Visual Storytelling</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">🎨</a></li>
+                              <li><a href="#" target="_blank">✏️</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Creating digital illustrations and exploring creative mediums. My artistic background influences my approach to UI design, bringing a unique aesthetic to every project.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="profile-body sans">
-                <p>撮影監督として映画、広告、ミュージックビデオに携わり、Cannes Lionsをはじめ国内外の映像賞を多数受賞。</p>
+
+              <div className="comment inner">
+                <ol>
+                  <li className="act">
+                    <div className="anime" style={{backgroundImage: `url(${HomePreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">1</b>
+                        <h3>Aesthetic minimalist modern UI<br />Creating beautiful user interfaces</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${AboutPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">2</b>
+                        <h3>Front-End Development<br />React, Next.js and TypeScript</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${ServicesPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">3</b>
+                        <h3>Full Stack Solutions<br />From concept to deployment</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${WorksPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">4</b>
+                        <h3>Digital Illustrations<br />Visual art and creative design</h3>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          {/* Clone - This will be shown (Nikon method) */}
+          <div className="clone">
+            <div className="head_ttl">
+              <div>
+                <h2>
+                  Creating beautiful<br className="sp" />user experiences<br />
+                  that bring ideas to life
+                </h2>
+              </div>
+            </div>
+
+            <div className="blur">
+              <div className="scrollarea">
+                <div className="head">
+                  <div className="inner">
+                    <div className="contents">
+                      <h3 className="dot an anime">DEVELOPER&apos;S VOICE</h3>
+                      <h2 className="anime">Mizumi みずみ</h2>
+                      <h4 className="sans anime">James Rafty D. Libago</h4>
+
+                      <div className="movie brackets anime btn_movie hover_video">
+                        <div>
+                          <Image src={AboutPreview} alt="movie" width={887} height={537} />
+                          <video src="/videos/Home/DeCodeShowcase.mp4" muted loop playsInline />
+                          <div className="btn_play">
+                            <div className="anime">
+                              <div>
+                                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <h4 className="an">PLAY MOVIE</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="body">
+                  <div className="inner">
+                    <div className="contents">
+                      <div className="movie anime btn_movie">
+                        <Image src={WorksPreview} alt="Mizumi" width={1670} height={1080} />
+                        <div className="txt">
+                          <h3 className="anime"></h3>
+                          <div className="btns">
+                            <div className="btn_play small">
+                              <div className="anime">
+                                <div>
+                                  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                  </svg>
+                                  <h4 className="an">PLAY INTERVIEW</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Full Stack Web Developer / Digital Artist</b>Mizumi</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">💻</a></li>
+                              <li><a href="#" target="_blank">🎨</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">A passionate 22-year-old Filipino developer specializing in creating aesthetic minimalist modern UI with exceptional user experiences. Proficient in full stack web development with a strong preference for front-end technologies.</p>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Digital Artist</b>Visual Storytelling</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">🎨</a></li>
+                              <li><a href="#" target="_blank">✏️</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Creating digital illustrations and exploring creative mediums. My artistic background influences my approach to UI design, bringing a unique aesthetic to every project.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="comment inner">
+                <ol>
+                  <li className="act">
+                    <div className="anime" style={{backgroundImage: `url(${HomePreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">1</b>
+                        <h3>Aesthetic minimalist modern UI<br />Creating beautiful user interfaces</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${AboutPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">2</b>
+                        <h3>Front-End Development<br />React, Next.js and TypeScript</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${ServicesPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">3</b>
+                        <h3>Full Stack Solutions<br />From concept to deployment</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${WorksPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">4</b>
+                        <h3>Digital Illustrations<br />Visual art and creative design</h3>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        {/* Article 2 - Full Stack Developer */}
+        <article>
+          <div className="bg">
+            <Image src={AboutPreview} alt="Full Stack" fill className="object-cover" />
+          </div>
+          
+          <div className="article_inner hidden">
+            <div className="head_ttl">
+              <div>
+                <h2>
+                  Full stack solutions<br className="sp" />from concept<br />
+                  to deployment
+                </h2>
+              </div>
+            </div>
+
+            <div className="blur">
+              <div className="scrollarea">
+                <div className="head">
+                  <div className="inner">
+                    <div className="contents">
+                      <h3 className="dot an anime">FULL STACK DEVELOPER</h3>
+                      <h2 className="anime">Mizumi みずみ</h2>
+                      <h4 className="sans anime">James Rafty D. Libago</h4>
+
+                      <div className="movie brackets anime btn_movie hover_video">
+                        <div>
+                          <Image src={ServicesPreview} alt="movie" width={887} height={537} />
+                          <video src="/videos/Home/LogoIntro.mp4" muted loop playsInline />
+                          <div className="btn_play">
+                            <div className="anime">
+                              <div>
+                                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <h4 className="an">PLAY MOVIE</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="body">
+                  <div className="inner">
+                    <div className="contents">
+                      <div className="movie anime btn_movie">
+                        <Image src={ServicesPreview} alt="Mizumi" width={1670} height={1080} />
+                        <div className="txt">
+                          <h3 className="anime"></h3>
+                          <div className="btns">
+                            <div className="btn_play small">
+                              <div className="anime">
+                                <div>
+                                  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                  </svg>
+                                  <h4 className="an">PLAY INTERVIEW</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Full Stack Developer</b>Complete Solutions</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">💻</a></li>
+                              <li><a href="#" target="_blank">🚀</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Building complete web applications from database design to front-end implementation with modern technologies and best practices.</p>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Backend Specialist</b>Server Architecture</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">⚙️</a></li>
+                              <li><a href="#" target="_blank">🔧</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Experienced in server-side development, API design, and database management for scalable web applications.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="comment inner">
+                <ol>
+                  <li className="act">
+                    <div className="anime" style={{backgroundImage: `url(${AboutPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">1</b>
+                        <h3>Backend Development<br />Server architecture and APIs</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${ServicesPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">2</b>
+                        <h3>Database Design<br />Efficient data management</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${WorksPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">3</b>
+                        <h3>Deployment<br />CI/CD and cloud services</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${HomePreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">4</b>
+                        <h3>Performance<br />Optimization and scaling</h3>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <div className="clone">
+            <div className="head_ttl">
+              <div>
+                <h2>
+                  Full stack solutions<br className="sp" />from concept<br />
+                  to deployment
+                </h2>
+              </div>
+            </div>
+
+            <div className="blur">
+              <div className="scrollarea">
+                <div className="head">
+                  <div className="inner">
+                    <div className="contents">
+                      <h3 className="dot an anime">FULL STACK DEVELOPER</h3>
+                      <h2 className="anime">Mizumi みずみ</h2>
+                      <h4 className="sans anime">James Rafty D. Libago</h4>
+
+                      <div className="movie brackets anime btn_movie hover_video">
+                        <div>
+                          <Image src={ServicesPreview} alt="movie" width={887} height={537} />
+                          <video src="/videos/Home/LogoIntro.mp4" muted loop playsInline />
+                          <div className="btn_play">
+                            <div className="anime">
+                              <div>
+                                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <h4 className="an">PLAY MOVIE</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="body">
+                  <div className="inner">
+                    <div className="contents">
+                      <div className="movie anime btn_movie">
+                        <Image src={ServicesPreview} alt="Mizumi" width={1670} height={1080} />
+                        <div className="txt">
+                          <h3 className="anime"></h3>
+                          <div className="btns">
+                            <div className="btn_play small">
+                              <div className="anime">
+                                <div>
+                                  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                  </svg>
+                                  <h4 className="an">PLAY INTERVIEW</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Full Stack Developer</b>Complete Solutions</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">💻</a></li>
+                              <li><a href="#" target="_blank">🚀</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Building complete web applications from database design to front-end implementation with modern technologies and best practices.</p>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Backend Specialist</b>Server Architecture</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">⚙️</a></li>
+                              <li><a href="#" target="_blank">🔧</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Experienced in server-side development, API design, and database management for scalable web applications.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="comment inner">
+                <ol>
+                  <li className="act">
+                    <div className="anime" style={{backgroundImage: `url(${AboutPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">1</b>
+                        <h3>Backend Development<br />Server architecture and APIs</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${ServicesPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">2</b>
+                        <h3>Database Design<br />Efficient data management</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${WorksPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">3</b>
+                        <h3>Deployment<br />CI/CD and cloud services</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${HomePreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">4</b>
+                        <h3>Performance<br />Optimization and scaling</h3>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        {/* Article 3 - Digital Artist */}
+        <article>
+          <div className="bg">
+            <Image src={ServicesPreview} alt="Digital Art" fill className="object-cover" />
+          </div>
+          
+          <div className="article_inner hidden">
+            <div className="head_ttl">
+              <div>
+                <h2>
+                  Creating visual art<br className="sp" />and illustrations<br />
+                  that inspire
+                </h2>
+              </div>
+            </div>
+
+            <div className="blur">
+              <div className="scrollarea">
+                <div className="head">
+                  <div className="inner">
+                    <div className="contents">
+                      <h3 className="dot an anime">DIGITAL ARTIST</h3>
+                      <h2 className="anime">Mizumi みずみ</h2>
+                      <h4 className="sans anime">James Rafty D. Libago</h4>
+
+                      <div className="movie brackets anime btn_movie hover_video">
+                        <div>
+                          <Image src={WorksPreview} alt="movie" width={887} height={537} />
+                          <video src="/videos/Home/DeCodeShowcase.mp4" muted loop playsInline />
+                          <div className="btn_play">
+                            <div className="anime">
+                              <div>
+                                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <h4 className="an">PLAY MOVIE</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="body">
+                  <div className="inner">
+                    <div className="contents">
+                      <div className="movie anime btn_movie">
+                        <Image src={WorksPreview} alt="Mizumi" width={1670} height={1080} />
+                        <div className="txt">
+                          <h3 className="anime"></h3>
+                          <div className="btns">
+                            <div className="btn_play small">
+                              <div className="anime">
+                                <div>
+                                  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                  </svg>
+                                  <h4 className="an">PLAY INTERVIEW</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Digital Artist</b>Visual Storytelling</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">🎨</a></li>
+                              <li><a href="#" target="_blank">✏️</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Creating digital illustrations and exploring creative mediums. My artistic background influences my UI design approach.</p>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Illustrator</b>Creative Design</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">🖌️</a></li>
+                              <li><a href="#" target="_blank">🎭</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Skilled in Adobe Photoshop and digital illustration techniques for web and print media.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="comment inner">
+                <ol>
+                  <li className="act">
+                    <div className="anime" style={{backgroundImage: `url(${WorksPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">1</b>
+                        <h3>Digital Illustrations<br />Visual art and creative design</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${HomePreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">2</b>
+                        <h3>Photoshop<br />Professional editing and design</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${AboutPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">3</b>
+                        <h3>Creative Direction<br />Visual storytelling approach</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${ServicesPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">4</b>
+                        <h3>Art Integration<br />Blending art with UI design</h3>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <div className="clone">
+            <div className="head_ttl">
+              <div>
+                <h2>
+                  Creating visual art<br className="sp" />and illustrations<br />
+                  that inspire
+                </h2>
+              </div>
+            </div>
+
+            <div className="blur">
+              <div className="scrollarea">
+                <div className="head">
+                  <div className="inner">
+                    <div className="contents">
+                      <h3 className="dot an anime">DIGITAL ARTIST</h3>
+                      <h2 className="anime">Mizumi みずみ</h2>
+                      <h4 className="sans anime">James Rafty D. Libago</h4>
+
+                      <div className="movie brackets anime btn_movie hover_video">
+                        <div>
+                          <Image src={WorksPreview} alt="movie" width={887} height={537} />
+                          <video src="/videos/Home/DeCodeShowcase.mp4" muted loop playsInline />
+                          <div className="btn_play">
+                            <div className="anime">
+                              <div>
+                                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <h4 className="an">PLAY MOVIE</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="body">
+                  <div className="inner">
+                    <div className="contents">
+                      <div className="movie anime btn_movie">
+                        <Image src={WorksPreview} alt="Mizumi" width={1670} height={1080} />
+                        <div className="txt">
+                          <h3 className="anime"></h3>
+                          <div className="btns">
+                            <div className="btn_play small">
+                              <div className="anime">
+                                <div>
+                                  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                  </svg>
+                                  <h4 className="an">PLAY INTERVIEW</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Digital Artist</b>Visual Storytelling</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">🎨</a></li>
+                              <li><a href="#" target="_blank">✏️</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Creating digital illustrations and exploring creative mediums. My artistic background influences my UI design approach.</p>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>Illustrator</b>Creative Design</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">🖌️</a></li>
+                              <li><a href="#" target="_blank">🎭</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Skilled in Adobe Photoshop and digital illustration techniques for web and print media.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="comment inner">
+                <ol>
+                  <li className="act">
+                    <div className="anime" style={{backgroundImage: `url(${WorksPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">1</b>
+                        <h3>Digital Illustrations<br />Visual art and creative design</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${HomePreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">2</b>
+                        <h3>Photoshop<br />Professional editing and design</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${AboutPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">3</b>
+                        <h3>Creative Direction<br />Visual storytelling approach</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${ServicesPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">4</b>
+                        <h3>Art Integration<br />Blending art with UI design</h3>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        {/* Article 4 - UI/UX Designer */}
+        <article>
+          <div className="bg">
+            <Image src={WorksPreview} alt="UI/UX" fill className="object-cover" />
+          </div>
+          
+          <div className="article_inner hidden">
+            <div className="head_ttl">
+              <div>
+                <h2>
+                  Designing experiences<br className="sp" />that users love<br />
+                  and remember
+                </h2>
+              </div>
+            </div>
+
+            <div className="blur">
+              <div className="scrollarea">
+                <div className="head">
+                  <div className="inner">
+                    <div className="contents">
+                      <h3 className="dot an anime">UI/UX DESIGNER</h3>
+                      <h2 className="anime">Mizumi みずみ</h2>
+                      <h4 className="sans anime">James Rafty D. Libago</h4>
+
+                      <div className="movie brackets anime btn_movie hover_video">
+                        <div>
+                          <Image src={HomePreview} alt="movie" width={887} height={537} />
+                          <video src="/videos/Home/LogoIntro.mp4" muted loop playsInline />
+                          <div className="btn_play">
+                            <div className="anime">
+                              <div>
+                                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <h4 className="an">PLAY MOVIE</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="body">
+                  <div className="inner">
+                    <div className="contents">
+                      <div className="movie anime btn_movie">
+                        <Image src={AboutPreview} alt="Mizumi" width={1670} height={1080} />
+                        <div className="txt">
+                          <h3 className="anime"></h3>
+                          <div className="btns">
+                            <div className="btn_play small">
+                              <div className="anime">
+                                <div>
+                                  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                  </svg>
+                                  <h4 className="an">PLAY INTERVIEW</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>UI/UX Designer</b>User-Centered Design</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">🎯</a></li>
+                              <li><a href="#" target="_blank">📱</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Creating intuitive and engaging user experiences through thoughtful minimalist design with aesthetic appeal.</p>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>UX Researcher</b>User Psychology</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">🔍</a></li>
+                              <li><a href="#" target="_blank">📊</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Understanding user behavior and needs to create interfaces that provide exceptional usability and satisfaction.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="comment inner">
+                <ol>
+                  <li className="act">
+                    <div className="anime" style={{backgroundImage: `url(${AboutPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">1</b>
+                        <h3>User Experience UX<br />Intuitive and accessible design</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${ServicesPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">2</b>
+                        <h3>Minimalist Design<br />Clean and purposeful interfaces</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${HomePreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">3</b>
+                        <h3>User Research<br />Understanding behavior patterns</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${WorksPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">4</b>
+                        <h3>Interaction Design<br />Engaging user flows</h3>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <div className="clone">
+            <div className="head_ttl">
+              <div>
+                <h2>
+                  Designing experiences<br className="sp" />that users love<br />
+                  and remember
+                </h2>
+              </div>
+            </div>
+
+            <div className="blur">
+              <div className="scrollarea">
+                <div className="head">
+                  <div className="inner">
+                    <div className="contents">
+                      <h3 className="dot an anime">UI/UX DESIGNER</h3>
+                      <h2 className="anime">Mizumi みずみ</h2>
+                      <h4 className="sans anime">James Rafty D. Libago</h4>
+
+                      <div className="movie brackets anime btn_movie hover_video">
+                        <div>
+                          <Image src={HomePreview} alt="movie" width={887} height={537} />
+                          <video src="/videos/Home/LogoIntro.mp4" muted loop playsInline />
+                          <div className="btn_play">
+                            <div className="anime">
+                              <div>
+                                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                  <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <h4 className="an">PLAY MOVIE</h4>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="body">
+                  <div className="inner">
+                    <div className="contents">
+                      <div className="movie anime btn_movie">
+                        <Image src={AboutPreview} alt="Mizumi" width={1670} height={1080} />
+                        <div className="txt">
+                          <h3 className="anime"></h3>
+                          <div className="btns">
+                            <div className="btn_play small">
+                              <div className="anime">
+                                <div>
+                                  <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
+                                    <path d="M8 5v14l11-7z"/>
+                                  </svg>
+                                  <h4 className="an">PLAY INTERVIEW</h4>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>UI/UX Designer</b>User-Centered Design</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">🎯</a></li>
+                              <li><a href="#" target="_blank">📱</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Creating intuitive and engaging user experiences through thoughtful minimalist design with aesthetic appeal.</p>
+                        </div>
+                      </div>
+
+                      <div className="profile">
+                        <div className="head">
+                          <div className="img anime">
+                            <Image src={Profile} alt="Mizumi" width={130} height={130} />
+                          </div>
+                          <div className="txt">
+                            <h3 className="sans anime"><b>UX Researcher</b>User Psychology</h3>
+                            <ul className="sns anime">
+                              <li><a href="#" target="_blank">🔍</a></li>
+                              <li><a href="#" target="_blank">📊</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="profile_body sans">
+                          <p className="anime">Understanding user behavior and needs to create interfaces that provide exceptional usability and satisfaction.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="comment inner">
+                <ol>
+                  <li className="act">
+                    <div className="anime" style={{backgroundImage: `url(${AboutPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">1</b>
+                        <h3>User Experience UX<br />Intuitive and accessible design</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${ServicesPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">2</b>
+                        <h3>Minimalist Design<br />Clean and purposeful interfaces</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${HomePreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">3</b>
+                        <h3>User Research<br />Understanding behavior patterns</h3>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="anime" style={{backgroundImage: `url(${WorksPreview.src})`}}>
+                      <div className="txt">
+                        <b className="an">4</b>
+                        <h3>Interaction Design<br />Engaging user flows</h3>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
               </div>
             </div>
           </div>

@@ -581,9 +581,12 @@
 }
 
 /* Voice/Creator section */
+/* Voice Section - EXACT Nikon Reference Parallax */
 #nikon-voice {
   position: relative;
   background-color: #131613;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 #nikon-voice .header {
@@ -616,23 +619,397 @@
   }
 }
 
+#nikon-voice .header h2 span {
+  display: inline-block;
+  line-height: 1;
+  padding-left: 0.25em;
+}
+
+/* Article structure */
 #nikon-voice article {
   position: relative;
   padding-top: 200vh;
 }
 
+#nikon-voice article:nth-child(2) {
+  z-index: 1;
+}
+
+#nikon-voice article:nth-child(3) {
+  z-index: 2;
+}
+
+#nikon-voice article:nth-child(4) {
+  z-index: 3;
+}
+
+#nikon-voice article:nth-child(5) {
+  z-index: 4;
+}
+
+#nikon-voice article:nth-child(6) {
+  z-index: 5;
+}
+
+/* Background positioning - KEY parallax effect */
 #nikon-voice article .bg {
   position: absolute;
   top: 0;
+  bottom: auto;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 0;
+}
+
+#nikon-voice article.top .bg {
+  position: fixed;
+  top: 0;
+  bottom: auto;
+}
+
+#nikon-voice article.bottom .bg {
+  position: absolute;
+  top: auto;
+  bottom: 0;
 }
 
 #nikon-voice article .bg img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Article content structure */
+#nikon-voice article .article_inner {
+  position: relative;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#nikon-voice article .clone {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 200vh;
+}
+
+#nikon-voice article.top .clone {
+  position: fixed;
+  top: 0;
+}
+
+#nikon-voice article.top.bottom .clone {
+  position: absolute;
+  top: auto;
+  bottom: 0;
+}
+
+/* Head title fade in/out */
+#nikon-voice article .head_ttl {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#nikon-voice article .head_ttl h2 {
+  text-align: center;
+  font-size: 4rem;
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 0.1s ease-in, filter 0.1s ease-in;
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .head_ttl h2 {
+    font-size: 3rem;
+  }
+}
+
+#nikon-voice article.top .clone .head_ttl {
+  position: fixed;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#nikon-voice article.top .clone .head_ttl h2 {
+  opacity: 1;
+  filter: blur(0);
+  transition: opacity 0.3s ease-in, filter 0.5s ease-in;
+}
+
+#nikon-voice article.top .clone.in .head_ttl h2 {
+  transition: opacity 0.5s ease-in;
+  opacity: 0;
+}
+
+/* Blur backdrop effect */
+#nikon-voice article .blur {
+  position: relative;
+}
+
+#nikon-voice article .clone.in .blur::before {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: calc(100% - 100vh);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  content: '';
+  z-index: 2;
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .clone.in .blur::before {
+    height: calc(100% - 200vh);
+  }
+}
+
+/* Scrollarea - content area */
+#nikon-voice article .scrollarea {
+  position: relative;
+  padding-top: 100vh;
+  z-index: 3;
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .scrollarea {
+    padding-top: 200vh;
+  }
+}
+
+#nikon-voice article .head {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  will-change: top, bottom;
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .head {
+    top: 100vh;
+  }
+}
+
+#nikon-voice article .head .inner {
+  position: relative;
+  min-height: 100vh;
+}
+
+#nikon-voice article .head .contents {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40%;
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .head .contents {
+    width: calc(100% - 20px);
+  }
+}
+
+@media (min-width: 768px) {
+  #nikon-voice article .scrollarea.top .head {
+    position: fixed;
+    top: 0;
+    bottom: auto;
+  }
+
+  #nikon-voice article .scrollarea.bottom .head {
+    position: absolute;
+    top: auto;
+    bottom: 0;
+  }
+}
+
+/* Body content */
+#nikon-voice article .body {
+  padding: 180px 0 250px;
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .body {
+    padding: 100px 0 150px;
+  }
+}
+
+#nikon-voice article .body .contents {
+  position: relative;
+  margin-left: 45%;
+  z-index: 1;
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .body .contents {
+    margin-left: 0;
+  }
+}
+
+/* Comment section */
+#nikon-voice article .comment {
+  position: relative;
+  padding-bottom: 250px;
+  z-index: 3;
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .comment {
+    padding: 0 0 40vh;
+  }
+}
+
+#nikon-voice article .comment ol {
+  display: flex;
+  width: 100%;
+  aspect-ratio: 2.5142857143/1;
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .comment ol {
+    display: block;
+    aspect-ratio: auto;
+  }
+}
+
+#nikon-voice article .comment li {
+  position: relative;
+  width: 9.75%;
+  height: 100%;
+  will-change: width, aspect-ratio, height;
+  transition: all 0.55s cubic-bezier(0.19, 1, 0.22, 1), filter 0.3s ease-out;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .comment li {
+    width: 100%;
+    height: 80vw;
+  }
+}
+
+#nikon-voice article .comment li:hover {
+  width: 11.5%;
+}
+
+@media (min-width: 768px) {
+  #nikon-voice article .comment li:hover {
+    filter: brightness(1.4);
+  }
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .comment li:hover {
+    width: 100%;
+  }
+}
+
+#nikon-voice article .comment li > div {
+  box-sizing: border-box;
+  display: flex;
+  align-items: end;
+  background-position: center center;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+}
+
+@media (max-width: 1100px) {
+  #nikon-voice article .comment li > div {
+    padding: 32px 20px;
+  }
+}
+
+#nikon-voice article .comment li .txt {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  max-width: 100%;
+}
+
+#nikon-voice article .comment li .txt b {
+  font-size: 18rem;
+  line-height: 0.62;
+  color: transparent;
+  -webkit-text-stroke: 1px #fff;
+  text-stroke: 1px #fff;
+  transition: all 0.4s;
+}
+
+@media (max-width: 1100px) {
+  #nikon-voice article .comment li .txt b {
+    font-size: 11rem;
+  }
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .comment li .txt b {
+    color: #fff;
+    -webkit-text-stroke: none;
+    text-stroke: none;
+  }
+}
+
+#nikon-voice article .comment li .txt h3 {
+  font-size: 2.8rem;
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+@media (max-width: 1100px) {
+  #nikon-voice article .comment li .txt h3 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .comment li .txt h3 {
+    opacity: 1;
+  }
+}
+
+#nikon-voice article .comment li.act {
+  width: 70.75%;
+}
+
+@media (max-width: 767px) {
+  #nikon-voice article .comment li.act {
+    width: 100%;
+    height: 80vw;
+    aspect-ratio: auto;
+  }
+}
+
+#nikon-voice article .comment li.act:hover {
+  filter: brightness(1);
+}
+
+#nikon-voice article .comment li.act > div {
+  aspect-ratio: 16/9;
+}
+
+#nikon-voice article .comment li.act b {
+  color: #fff;
+  -webkit-text-stroke: 0px #fff;
+  text-stroke: 0px #fff;
+}
+
+#nikon-voice article .comment li.act h3 {
+  opacity: 1;
+  transition: all 0.4s 0.3s;
 }
 
 /* Pickup section */
