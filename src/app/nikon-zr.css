@@ -624,10 +624,16 @@
   padding-left: 0.25em;
 }
 
-/* Article structure */
+/* Article structure - articles should STACK on top of each other, not flow vertically */
 #nikon-voice article {
   position: relative;
   padding-top: 200vh;
+  min-height: 500vh; /* Increased to give space for title + content scroll */
+}
+
+/* Make articles stack - but give enough space for content to show */
+#nikon-voice article:not(:first-of-type) {
+  margin-top: -300vh; /* Pull up but not too much - leave space for previous article's content */
 }
 
 #nikon-voice article:nth-child(2) {
@@ -765,17 +771,20 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s ease-in;
+  display: none !important; /* TEMPORARY: Hide content to test title behavior */
 }
 
 /* Show scrollarea content when .in class */
 #nikon-voice article .clone.in .scrollarea {
   opacity: 1;
   pointer-events: auto;
+  display: none !important; /* TEMPORARY: Hide content to test title behavior */
 }
 
-/* Blur container - darkens background when scrolling into content */
+/* TEMPORARY: Hide blur container and all content inside */
 #nikon-voice article .blur {
   position: relative;
+  display: none !important;
 }
 
 #nikon-voice article .clone.in .blur::before {
