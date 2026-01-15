@@ -99,6 +99,30 @@ const Home: React.FC = () => {
         entries.forEach((entry) => {
           entry.target.classList.toggle('in', entry.isIntersecting);
           console.log('IN Observer:', entry.target.className, 'isIntersecting:', entry.isIntersecting);
+          
+          // GSAP handles fade in/out - overrides CSS !important
+          if (entry.target.classList.contains('clone')) {
+            const headTtl = entry.target.querySelector('.head_ttl h2');
+            if (headTtl) {
+              if (entry.isIntersecting) {
+                // FADE OUT: When scrolling into content
+                gsap.to(headTtl, {
+                  opacity: 0,
+                  filter: 'blur(10px)',
+                  duration: 0.5,
+                  ease: 'power2.in'
+                });
+              } else {
+                // FADE IN: When scrolling back up
+                gsap.to(headTtl, {
+                  opacity: 1,
+                  filter: 'blur(0px)',
+                  duration: 0.5,
+                  ease: 'power2.out'
+                });
+              }
+            }
+          }
         });
       },
       { root: null, rootMargin: '0% 0% 0% 0%', threshold: 0 }

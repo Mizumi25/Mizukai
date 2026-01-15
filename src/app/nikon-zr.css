@@ -755,7 +755,6 @@
 #nikon-voice article .clone.top .head_ttl {
   opacity: 1 !important;
   pointer-events: auto;
-  background: rgba(255, 0, 0, 0.1); /* DEBUG: red tint to see if element is there */
 }
 
 #nikon-voice article.top .clone .head_ttl h2,
@@ -763,21 +762,9 @@
   opacity: 1 !important;
   filter: blur(0) !important;
   transition: opacity 0.3s ease-in, filter 0.5s ease-in;
-  background: rgba(0, 255, 0, 0.3); /* DEBUG: green background on text */
 }
 
-/* When scrolling in (.in class): title fades out */
-#nikon-voice article.top .clone.in .head_ttl,
-#nikon-voice article .clone.top.in .head_ttl {
-  opacity: 0;
-}
-
-#nikon-voice article.top .clone.in .head_ttl h2,
-#nikon-voice article .clone.top.in .head_ttl h2 {
-  opacity: 0;
-  filter: blur(10px);
-  transition: opacity 0.5s ease-in, filter 0.5s ease-in;
-}
+/* FADE OUT: Handled by GSAP - no CSS needed, GSAP will override the !important */
 
 /* Hide scrollarea content UNTIL .in class is added */
 #nikon-voice article .clone .scrollarea {
