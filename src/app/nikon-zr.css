@@ -369,7 +369,6 @@
   position: relative;
   background-color: #282b28;
   padding: 160px 0 60px;
-  z-index: 10;
 }
 
 @media (max-width: 767px) {
@@ -585,7 +584,7 @@
 #nikon-voice {
   position: relative;
   background-color: #131613;
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
 }
 
@@ -661,6 +660,7 @@
   height: 100vh;
   overflow: hidden;
   z-index: 0;
+  transition: filter 0.5s ease-out;
 }
 
 #nikon-voice article.top .bg {
@@ -673,6 +673,11 @@
   position: absolute;
   top: auto;
   bottom: 0;
+}
+
+/* Blur the BACKGROUND IMAGE when clone.in */
+#nikon-voice article .clone.in ~ .bg {
+  filter: blur(12px);
 }
 
 #nikon-voice article .bg img {
@@ -692,12 +697,14 @@
   position: absolute;
   left: 0;
   width: 100%;
-  top: 200vh;
+  top: 0;
 }
 
 #nikon-voice article.top .clone {
   position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
 }
 
 #nikon-voice article.top.bottom .clone {
@@ -706,7 +713,7 @@
   bottom: 0;
 }
 
-/* Head title fade in/out */
+/* Head title fade in/out - appears FIRST before content */
 #nikon-voice article .head_ttl {
   position: absolute;
   top: 0;
@@ -734,6 +741,7 @@
   }
 }
 
+/* When article is top: title becomes visible */
 #nikon-voice article.top .clone .head_ttl {
   position: fixed;
   opacity: 1;
@@ -746,12 +754,26 @@
   transition: opacity 0.3s ease-in, filter 0.5s ease-in;
 }
 
+/* When scrolling in (.in class): title fades out */
 #nikon-voice article.top .clone.in .head_ttl h2 {
   transition: opacity 0.5s ease-in;
   opacity: 0;
 }
 
-/* Blur backdrop effect */
+/* Hide scrollarea content UNTIL .in class is added */
+#nikon-voice article .clone .scrollarea {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-in;
+}
+
+/* Show scrollarea content when .in class */
+#nikon-voice article .clone.in .scrollarea {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Blur container - darkens background when scrolling into content */
 #nikon-voice article .blur {
   position: relative;
 }
@@ -763,10 +785,10 @@
   left: 0;
   width: 100vw;
   height: calc(100% - 100vh);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  background: rgba(19, 22, 19, 0.3);
   content: '';
-  z-index: 2;
+  z-index: 1;
+  pointer-events: none;
 }
 
 @media (max-width: 767px) {
@@ -775,10 +797,16 @@
   }
 }
 
+/* Content should be above */
 /* Scrollarea - content area */
 #nikon-voice article .scrollarea {
   position: relative;
   padding-top: 100vh;
+  z-index: 3;
+}
+
+#nikon-voice article .comment {
+  position: relative;
   z-index: 3;
 }
 
