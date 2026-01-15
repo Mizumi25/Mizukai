@@ -666,7 +666,14 @@
   height: 100vh;
   overflow: hidden;
   z-index: 0;
-  transition: filter 0.5s ease-out;
+  transition: filter 0.8s ease-out;
+}
+
+#nikon-voice article .bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.8s ease-out, transform 0.8s ease-out;
 }
 
 #nikon-voice article.top .bg {
@@ -681,15 +688,16 @@
   bottom: 0;
 }
 
-/* Blur the BACKGROUND IMAGE when clone.in */
-#nikon-voice article .clone.in ~ .bg {
-  filter: blur(12px);
+/* Blur the BACKGROUND IMAGE when h2 title appears (article has .top class) */
+#nikon-voice article.top .bg img {
+  filter: blur(8px);
+  transform: scale(1.05);
 }
 
-#nikon-voice article .bg img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* Remove blur when clone.in (content appears) - optional: keep blur or remove */
+#nikon-voice article.top:has(.clone.in) .bg img {
+  filter: blur(12px);
+  transform: scale(1.08);
 }
 
 /* Article content structure */
@@ -778,14 +786,14 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s ease-in;
-  display: none !important; /* TEMPORARY: Hide content to test title behavior */
+  display: none !important; /* TEMPORARY: Hide content */
 }
 
 /* Show scrollarea content when .in class */
 #nikon-voice article .clone.in .scrollarea {
   opacity: 1;
   pointer-events: auto;
-  display: none !important; /* TEMPORARY: Hide content to test title behavior */
+  display: none !important; /* TEMPORARY: Hide content */
 }
 
 /* TEMPORARY: Hide blur container and all content inside */
@@ -898,6 +906,665 @@
 @media (max-width: 767px) {
   #nikon-voice article .body .contents {
     margin-left: 0;
+  }
+}
+
+/* Parallax Gallery - Taiki Sato Style */
+#nikon-voice article .parallax-gallery {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.8s ease;
+  display: flex;
+  justify-content: space-between;
+  padding: 0;
+}
+
+/* Left and right columns for parallax images */
+#nikon-voice article .parallax-gallery .parallax-col-left,
+#nikon-voice article .parallax-gallery .parallax-col-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  position: relative;
+}
+
+#nikon-voice article .parallax-gallery .parallax-col-right {
+  align-items: flex-end;
+}
+
+/* Show gallery when article has .top class (h2 is visible) */
+#nikon-voice article.top .parallax-gallery {
+  opacity: 1;
+}
+
+/* Hide gallery when clone has .in class (content appears) */
+#nikon-voice article:has(.clone.in) .parallax-gallery {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#nikon-voice article .parallax-image {
+  position: absolute;
+  overflow: hidden;
+  transition: filter 0.5s ease;
+  will-change: transform;
+}
+
+/* Parallax Image Base Styles */
+#nikon-voice article .parallax-image {
+  border-radius: 4px;
+}
+
+#nikon-voice article .parallax-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%);
+  transition: filter 1s ease;
+}
+
+#nikon-voice article .parallax-image.is-active img {
+  filter: grayscale(0);
+}
+
+#nikon-voice article .parallax-image .bg-layer {
+  position: absolute;
+  bottom: -50%;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  background: rgba(107, 107, 107, 0.7);
+  transform-origin: bottom;
+  transition: all 1s ease;
+  z-index: 1;
+}
+
+#nikon-voice article .parallax-image:nth-child(odd) .bg-layer {
+  transform: skewY(-10deg);
+}
+
+#nikon-voice article .parallax-image:nth-child(even) .bg-layer {
+  transform: skewY(10deg);
+}
+
+#nikon-voice article .parallax-image.is-active .bg-layer {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+/* ============================================
+   Article 1 - Scattered positioning
+   ============================================ */
+/* Left column images */
+#nikon-voice article:nth-of-type(1) .parallax-image:nth-child(1) {
+  left: 5%;
+  top: 0;
+  width: 11.5rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(1) .parallax-image:nth-child(2) {
+  left: 2%;
+  top: 28rem;
+  width: 7rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(1) .parallax-image:nth-child(3) {
+  left: 8%;
+  top: 45rem;
+  width: 11.5rem;
+  height: auto;
+}
+
+/* Right column images */
+#nikon-voice article:nth-of-type(1) .parallax-image:nth-child(4) {
+  right: 5%;
+  left: auto;
+  top: 8rem;
+  width: 9.25rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(1) .parallax-image:nth-child(5) {
+  right: 8%;
+  left: auto;
+  top: 28rem;
+  width: 7rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(1) .parallax-image:nth-child(6) {
+  right: 3%;
+  left: auto;
+  top: 42rem;
+  width: 10.25rem;
+  height: auto;
+}
+
+/* ============================================
+   Article 2 - Different pattern
+   ============================================ */
+#nikon-voice article:nth-of-type(2) .parallax-image:nth-child(1) {
+  left: 3%;
+  top: 5rem;
+  width: 13.75rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(2) .parallax-image:nth-child(2) {
+  left: 6%;
+  top: 32rem;
+  width: 8.75rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(2) .parallax-image:nth-child(3) {
+  left: 2%;
+  top: 50rem;
+  width: 11rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(2) .parallax-image:nth-child(4) {
+  right: 7%;
+  left: auto;
+  top: 3rem;
+  width: 10rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(2) .parallax-image:nth-child(5) {
+  right: 4%;
+  left: auto;
+  top: 25rem;
+  width: 15rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(2) .parallax-image:nth-child(6) {
+  right: 8%;
+  left: auto;
+  top: 48rem;
+  width: 7.5rem;
+  height: auto;
+}
+
+/* ============================================
+   Article 3 - Different pattern
+   ============================================ */
+#nikon-voice article:nth-of-type(3) .parallax-image:nth-child(1) {
+  left: 6%;
+  top: 2rem;
+  width: 10.5rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(3) .parallax-image:nth-child(2) {
+  left: 3%;
+  top: 30rem;
+  width: 7.5rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(3) .parallax-image:nth-child(3) {
+  left: 8%;
+  top: 48rem;
+  width: 13rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(3) .parallax-image:nth-child(4) {
+  right: 5%;
+  left: auto;
+  top: 10rem;
+  width: 9rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(3) .parallax-image:nth-child(5) {
+  right: 3%;
+  left: auto;
+  top: 33rem;
+  width: 13.75rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(3) .parallax-image:nth-child(6) {
+  right: 7%;
+  left: auto;
+  top: 52rem;
+  width: 8rem;
+  height: auto;
+}
+
+/* ============================================
+   Article 4 - Different pattern
+   ============================================ */
+#nikon-voice article:nth-of-type(4) .parallax-image:nth-child(1) {
+  left: 4%;
+  top: 8rem;
+  width: 12rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(4) .parallax-image:nth-child(2) {
+  left: 7%;
+  top: 35rem;
+  width: 8rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(4) .parallax-image:nth-child(3) {
+  left: 3%;
+  top: 52rem;
+  width: 10rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(4) .parallax-image:nth-child(4) {
+  right: 6%;
+  left: auto;
+  top: 5rem;
+  width: 11rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(4) .parallax-image:nth-child(5) {
+  right: 4%;
+  left: auto;
+  top: 30rem;
+  width: 14rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(4) .parallax-image:nth-child(6) {
+  right: 8%;
+  left: auto;
+  top: 50rem;
+  width: 9rem;
+  height: auto;
+}
+
+/* Mobile responsive positioning */
+@media (max-width: 767px) {
+  #nikon-voice article .parallax-image {
+    display: none; /* Hide on mobile for cleaner experience */
+  }
+}
+
+/* ============================================
+   Taiki Sato Works Gallery Section
+   ============================================ */
+#ts-works-gallery {
+  position: relative;
+  padding: 6rem 0 17.5rem;
+  color: currentColor;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #1a1a1a 100%);
+  color: #e8e4df;
+}
+
+/* Header */
+#ts-works-gallery .ts-works-header {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20%;
+}
+
+#ts-works-gallery .ts-works-header h2 {
+  display: flex;
+}
+
+#ts-works-gallery .ts-works-header a {
+  writing-mode: vertical-rl;
+  display: grid;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.3s ease;
+}
+
+#ts-works-gallery .ts-works-header a:hover {
+  opacity: 0.7;
+}
+
+#ts-works-gallery .ts-works-subtitle {
+  font-size: 1.125rem;
+  line-height: 1;
+  font-weight: 500;
+}
+
+#ts-works-gallery .ts-works-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 500;
+}
+
+#ts-works-gallery .ts-works-title span:nth-child(n+2) {
+  margin-top: 2.625rem;
+}
+
+/* Works List */
+#ts-works-gallery .ts-works-list {
+  list-style: none;
+  padding: 0;
+  margin: 2.25rem 0 0 0;
+}
+
+#ts-works-gallery .ts-work-item {
+  position: relative;
+}
+
+#ts-works-gallery .ts-work-item:not(:first-child) .ts-work-link {
+  padding-top: 3.5rem;
+}
+
+#ts-works-gallery .ts-work-item:not(:last-child) .ts-work-link {
+  padding-bottom: 2.25rem;
+}
+
+#ts-works-gallery .ts-work-link {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-top: 1px solid rgba(192, 192, 192, 0.5);
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.3s ease;
+}
+
+#ts-works-gallery .ts-work-item.is-opacity .ts-work-link {
+  opacity: 0.5;
+}
+
+#ts-works-gallery .ts-work-item.is-hover .ts-work-link {
+  opacity: 1;
+}
+
+/* Mobile meta */
+#ts-works-gallery .ts-work-meta {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  transition: opacity 0.3s ease;
+}
+
+#ts-works-gallery .ts-work-num {
+  font-family: serif;
+}
+
+#ts-works-gallery .ts-work-year {
+  font-family: serif;
+}
+
+/* Desktop meta - hidden on mobile */
+#ts-works-gallery .ts-work-meta-desktop {
+  display: none;
+  justify-content: space-between;
+}
+
+/* Work info */
+#ts-works-gallery .ts-work-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
+  order: 2;
+  transition: opacity 0.3s ease;
+}
+
+#ts-works-gallery .ts-work-name {
+  font-weight: 500;
+  font-size: 1.4rem;
+  margin: 0;
+  transition: opacity 0.3s ease;
+}
+
+#ts-works-gallery .ts-work-type {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0 0;
+  font-family: serif;
+  transition: opacity 0.3s ease;
+}
+
+#ts-works-gallery .ts-work-tags {
+  list-style: none;
+  padding: 0;
+  margin: 1.75rem 0 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  color: rgba(128, 128, 128, 1);
+  line-height: 1;
+  font-size: 0.875rem;
+  transition: opacity 0.3s ease;
+}
+
+/* Work image thumbnail */
+#ts-works-gallery .ts-work-image {
+  order: 1;
+  display: block;
+}
+
+#ts-works-gallery .ts-work-image img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Full screen background on hover */
+#ts-works-gallery .ts-work-bg {
+  pointer-events: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+#ts-works-gallery .ts-work-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#ts-works-gallery .ts-work-item.is-hover .ts-work-bg {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Footer */
+#ts-works-gallery .ts-works-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6rem;
+}
+
+#ts-works-gallery .ts-works-all-label {
+  writing-mode: vertical-rl;
+  font-size: 1.875rem;
+  font-weight: 500;
+  line-height: 1;
+  margin: 0;
+}
+
+#ts-works-gallery .ts-works-line {
+  display: block;
+  width: 1px;
+  height: 4rem;
+  background: currentColor;
+  margin: 1rem 0;
+}
+
+#ts-works-gallery .ts-works-all-link {
+  font-family: serif;
+  font-size: 3.75rem;
+  line-height: 1;
+  margin: 2rem 0;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.3s ease;
+}
+
+#ts-works-gallery .ts-works-all-link:hover {
+  opacity: 0.7;
+}
+
+#ts-works-gallery .ts-more-btn {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 1px solid rgba(192, 192, 192, 0.5);
+  padding: 1.25rem 2.5rem;
+  font-family: serif;
+  line-height: 1;
+  color: currentColor;
+  text-decoration: none;
+  transition: all 0.6s ease;
+}
+
+#ts-works-gallery .ts-more-btn:hover {
+  border-color: currentColor;
+}
+
+#ts-works-gallery .ts-more-bg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: currentColor;
+  transition: all 0.6s ease;
+  z-index: 0;
+}
+
+#ts-works-gallery .ts-more-btn:hover .ts-more-bg {
+  width: 100%;
+  height: 100%;
+}
+
+#ts-works-gallery .ts-more-text {
+  position: relative;
+  z-index: 1;
+}
+
+#ts-works-gallery .ts-more-btn:hover .ts-more-text {
+  color: #1a1a1a;
+}
+
+/* Focus in animation */
+#ts-works-gallery .ts-focus-in[data-active="true"] {
+  animation: tsFocusIn 1s ease forwards;
+}
+
+@keyframes tsFocusIn {
+  0% {
+    opacity: 0;
+    filter: blur(12px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+  #ts-works-gallery .ts-work-meta {
+    display: none;
+  }
+  
+  #ts-works-gallery .ts-work-meta-desktop {
+    display: flex;
+  }
+  
+  #ts-works-gallery .ts-work-link {
+    flex-direction: row;
+    gap: 4rem;
+    border: none;
+    padding-left: 10%;
+  }
+  
+  #ts-works-gallery .ts-work-info {
+    order: 1;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(192, 192, 192, 0.5);
+  }
+  
+  #ts-works-gallery .ts-work-name {
+    font-size: 1.75rem;
+    margin-top: 4rem;
+  }
+  
+  #ts-works-gallery .ts-work-tags {
+    flex-direction: column;
+    margin-top: auto;
+  }
+  
+  #ts-works-gallery .ts-work-image {
+    order: 2;
+    width: 75rem;
+    max-width: 60%;
+  }
+  
+  #ts-works-gallery .ts-works-all-label {
+    font-size: 2rem;
+  }
+  
+  #ts-works-gallery .ts-works-line {
+    height: 4rem;
+    margin: 1.5rem 0;
+  }
+  
+  #ts-works-gallery .ts-works-all-link {
+    font-size: 6.5rem;
+    margin: 2.5rem 0;
+  }
+  
+  #ts-works-gallery .ts-more-btn {
+    padding: 1.5rem 3rem;
+    font-size: 1.125rem;
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 767px) {
+  #ts-works-gallery {
+    padding: 3rem 1.5rem 6rem;
+  }
+  
+  #ts-works-gallery .ts-works-header {
+    padding-right: 0;
+    justify-content: flex-start;
+  }
+  
+  #ts-works-gallery .ts-works-title {
+    font-size: 1.5rem;
+  }
+  
+  #ts-works-gallery .ts-works-all-link {
+    font-size: 2.5rem;
   }
 }
 

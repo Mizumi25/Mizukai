@@ -122,7 +122,95 @@ const Home: React.FC = () => {
         topObserver.observe(scrollarea);
         bottomObserver.observe(scrollarea);
       }
+
+      // Parallax Gallery Animation - Taiki Sato Style
+      const parallaxImages = article.querySelectorAll('.parallax-image');
+      
+      parallaxImages.forEach((image, index) => {
+        const speed = parseInt(image.getAttribute('data-speed') || '50');
+        
+        // Set z-index based on speed for depth effect
+        gsap.set(image, {
+          zIndex: speed / 10,
+        });
+        
+        // Different scrub values for varied movement speeds
+        const scrubValue = (index % 3) + 1; // 1, 2, or 3
+        
+        // Parallax scroll animation with varied speeds like Taiki Sato reference
+        gsap.fromTo(image, 
+          { yPercent: speed * 2 },
+          {
+            yPercent: -speed * 2,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: article,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: scrubValue
+            }
+          }
+        );
+      });
+
+      // Activate images on scroll (grayscale to color transition)
+      const handleScroll = () => {
+        const windowHeight = window.innerHeight;
+        
+        parallaxImages.forEach((image) => {
+          const rect = image.getBoundingClientRect();
+          
+          // Activate when image enters middle of viewport
+          if (rect.top < windowHeight * 0.7 && rect.bottom > windowHeight * 0.3) {
+            image.classList.add('is-active');
+          }
+        });
+      };
+      
+      window.addEventListener('scroll', handleScroll);
+      // Initial check
+      handleScroll();
     });
+
+    // Taiki Sato Works Gallery - Hover Interactions
+    const tsWorksGallery = document.getElementById('ts-works-gallery');
+    if (tsWorksGallery) {
+      const workItems = tsWorksGallery.querySelectorAll('.ts-work-item');
+      
+      workItems.forEach((item) => {
+        const link = item.querySelector('.ts-work-link');
+        
+        link?.addEventListener('mouseenter', () => {
+          item.classList.add('is-hover');
+          // Add opacity class to other items
+          workItems.forEach((otherItem) => {
+            if (otherItem !== item) {
+              otherItem.classList.add('is-opacity');
+            }
+          });
+        });
+        
+        link?.addEventListener('mouseleave', () => {
+          item.classList.remove('is-hover');
+          // Remove opacity class from all items
+          workItems.forEach((otherItem) => {
+            otherItem.classList.remove('is-opacity');
+          });
+        });
+      });
+
+      // Focus-in animation on scroll
+      const focusInElements = tsWorksGallery.querySelectorAll('.ts-focus-in');
+      const focusInObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.setAttribute('data-active', 'true');
+          }
+        });
+      }, { threshold: 0.5 });
+
+      focusInElements.forEach((el) => focusInObserver.observe(el));
+    }
 
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
@@ -291,95 +379,183 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Spec Section */}
-      <section id="nikon-spec">
-        <div className="inner">
-          <h2 className="dot an anime">SPEC</h2>
-          <h3 className="ttl anime">
-            シネマルックを<br />RAWでも撮って出しでも。
-          </h3>
-          <ul className="specs">
-            <li className="spec brackets anime">
-              <div>
-                <h4>R3D NE<br className="sp" /> 内部収録</h4>
-                <p>REDと同じ<br className="sp" />カラーサイエンスで<br />シネマのような<br className="sp" />色と階調を実現</p>
+      {/* Works Gallery Section - Taiki Sato Style */}
+      <section id="ts-works-gallery">
+        <div className="ts-works-header">
+          <h2 className="ts-focus-in">
+            <a href="/works">
+              <span className="ts-works-subtitle">（制作実績）</span>
+              <span className="ts-works-title">
+                <span>機能と情緒</span>
+                <span>作品への想い</span>
+              </span>
+            </a>
+          </h2>
+        </div>
+        
+        <ul className="ts-works-list">
+          {/* Work Item 1 */}
+          <li className="ts-work-item">
+            <a href="/works/gameDev" className="ts-work-link">
+              <div className="ts-work-meta">
+                <span className="ts-work-num">(一)</span>
+                <span className="ts-work-year">2024</span>
               </div>
-            </li>
-            <li className="spec brackets anime">
-              <div>
-                <h4>N-RAW /<br className="sp" /> Apple ProRes RAW HQ<br />内部収録</h4>
-                <p>映像制作をより<br className="sp" />自由に変える<br />プロ仕様の内部記録</p>
+              <div className="ts-work-info">
+                <div className="ts-work-meta-desktop">
+                  <span className="ts-work-num">(一)</span>
+                  <span className="ts-work-year">2024</span>
+                </div>
+                <h3 className="ts-work-name">Game Development</h3>
+                <ul className="ts-work-type">
+                  <li>PRIVATE WORKS</li>
+                </ul>
+                <ul className="ts-work-tags">
+                  <li>ART DIRECTION</li>
+                  <li>GAME DESIGN</li>
+                  <li>DEVELOPMENT</li>
+                </ul>
               </div>
-            </li>
-            <li className="spec brackets anime">
-              <div>
-                <h4>ベースISO感度<br />ISO 800 / 6400</h4>
-                <p>2種類のベースISO感度で<br />暗所もハイライトも自在</p>
-              </div>
-            </li>
-            <li className="spec brackets anime">
-              <div>
-                <h4>LUTを撮影画面に適用</h4>
-                <p>現場で色や<br className="sp" />コントラストを確認し<br />完成イメージを<br className="sp" />描きながら撮影</p>
-              </div>
-            </li>
-            <li className="spec brackets anime">
-              <div>
-                <h4>多彩な<br className="sp" />フォーマット</h4>
-                <p>8bitから12bitまで<br className="sp" />幅広い記録形式を備え<br />柔軟なワークフローに<br className="sp" />対応</p>
-              </div>
-            </li>
-            <li className="spec brackets anime">
-              <div>
-                <h4>RED監修<br className="sp" />イメージング<br className="sp" />レシピ</h4>
-                <p>9種類のプリセットで<br className="sp" />誰でも<br className="pc" />ワンタッチで<br className="sp" />映画のようなカットに</p>
-              </div>
-            </li>
-          </ul>
+              <picture className="ts-work-image">
+                <Image src="/gameDev/appIcons/img1.jpg" alt="Game Development" width={1200} height={800} />
+              </picture>
+            </a>
+            <picture className="ts-work-bg">
+              <Image src="/gameDev/appIcons/img1.jpg" alt="Game Development" width={1920} height={1080} />
+            </picture>
+          </li>
 
-          {/* Buttons */}
-          <div className="flex flex-col md:flex-row gap-7 mt-12">
-            <div className="relative flex-1 cursor-pointer group anime">
-              <div className="relative overflow-hidden rounded-lg">
-                <Image src={ServicesPreview} alt="Short Film" className="w-full object-cover aspect-square" />
-                <video 
-                  className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  src="/videos/Home/DeCodeShowcase.mp4"
-                  muted
-                  loop
-                  playsInline
-                  onMouseEnter={(e) => e.currentTarget.play()}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.pause();
-                    e.currentTarget.currentTime = 0;
-                  }}
-                />
+          {/* Work Item 2 */}
+          <li className="ts-work-item">
+            <a href="/works/music" className="ts-work-link">
+              <div className="ts-work-meta">
+                <span className="ts-work-num">(二)</span>
+                <span className="ts-work-year">2024</span>
               </div>
-              <div className="mt-4">
-                <h3 className="dot an text-2xl md:text-3xl">SHORT FILM<span className="font-serif text-base ml-2">ショートフィルム</span></h3>
+              <div className="ts-work-info">
+                <div className="ts-work-meta-desktop">
+                  <span className="ts-work-num">(二)</span>
+                  <span className="ts-work-year">2024</span>
+                </div>
+                <h3 className="ts-work-name">Music Production</h3>
+                <ul className="ts-work-type">
+                  <li>PRIVATE WORKS</li>
+                </ul>
+                <ul className="ts-work-tags">
+                  <li>COMPOSITION</li>
+                  <li>SOUND DESIGN</li>
+                </ul>
               </div>
-            </div>
-            <div className="relative flex-1 cursor-pointer group anime">
-              <div className="relative overflow-hidden rounded-lg">
-                <Image src={WorksPreview} alt="Behind the Scene" className="w-full object-cover aspect-square" />
-                <video 
-                  className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  src="/videos/Home/LogoIntro.mp4"
-                  muted
-                  loop
-                  playsInline
-                  onMouseEnter={(e) => e.currentTarget.play()}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.pause();
-                    e.currentTarget.currentTime = 0;
-                  }}
-                />
+              <picture className="ts-work-image">
+                <Image src="/musics/musicThumbnails/img1.jpg" alt="Music Production" width={1200} height={800} />
+              </picture>
+            </a>
+            <picture className="ts-work-bg">
+              <Image src="/musics/musicThumbnails/img1.jpg" alt="Music Production" width={1920} height={1080} />
+            </picture>
+          </li>
+
+          {/* Work Item 3 */}
+          <li className="ts-work-item">
+            <a href="/works/portraits" className="ts-work-link">
+              <div className="ts-work-meta">
+                <span className="ts-work-num">(三)</span>
+                <span className="ts-work-year">2023</span>
               </div>
-              <div className="mt-4">
-                <h3 className="dot an text-2xl md:text-3xl">BEHIND THE SCENE<span className="font-serif text-base ml-2">舞台裏</span></h3>
+              <div className="ts-work-info">
+                <div className="ts-work-meta-desktop">
+                  <span className="ts-work-num">(三)</span>
+                  <span className="ts-work-year">2023</span>
+                </div>
+                <h3 className="ts-work-name">Portrait Photography</h3>
+                <ul className="ts-work-type">
+                  <li>CLIENT WORKS</li>
+                </ul>
+                <ul className="ts-work-tags">
+                  <li>PHOTOGRAPHY</li>
+                  <li>RETOUCHING</li>
+                </ul>
               </div>
-            </div>
-          </div>
+              <picture className="ts-work-image">
+                <Image src="/stories/storyCovers/img1.jpg" alt="Portrait Photography" width={1200} height={800} />
+              </picture>
+            </a>
+            <picture className="ts-work-bg">
+              <Image src="/stories/storyCovers/img1.jpg" alt="Portrait Photography" width={1920} height={1080} />
+            </picture>
+          </li>
+
+          {/* Work Item 4 */}
+          <li className="ts-work-item">
+            <a href="/works/videoProductions" className="ts-work-link">
+              <div className="ts-work-meta">
+                <span className="ts-work-num">(四)</span>
+                <span className="ts-work-year">2024</span>
+              </div>
+              <div className="ts-work-info">
+                <div className="ts-work-meta-desktop">
+                  <span className="ts-work-num">(四)</span>
+                  <span className="ts-work-year">2024</span>
+                </div>
+                <h3 className="ts-work-name">Video Productions</h3>
+                <ul className="ts-work-type">
+                  <li>CLIENT WORKS</li>
+                </ul>
+                <ul className="ts-work-tags">
+                  <li>CINEMATOGRAPHY</li>
+                  <li>EDITING</li>
+                  <li>COLOR GRADING</li>
+                </ul>
+              </div>
+              <picture className="ts-work-image">
+                <Image src="/gameDev/appIcons/img10.jpg" alt="Video Productions" width={1200} height={800} />
+              </picture>
+            </a>
+            <picture className="ts-work-bg">
+              <Image src="/gameDev/appIcons/img10.jpg" alt="Video Productions" width={1920} height={1080} />
+            </picture>
+          </li>
+
+          {/* Work Item 5 */}
+          <li className="ts-work-item">
+            <a href="/works/story" className="ts-work-link">
+              <div className="ts-work-meta">
+                <span className="ts-work-num">(五)</span>
+                <span className="ts-work-year">2024</span>
+              </div>
+              <div className="ts-work-info">
+                <div className="ts-work-meta-desktop">
+                  <span className="ts-work-num">(五)</span>
+                  <span className="ts-work-year">2024</span>
+                </div>
+                <h3 className="ts-work-name">Story Writing</h3>
+                <ul className="ts-work-type">
+                  <li>PRIVATE WORKS</li>
+                </ul>
+                <ul className="ts-work-tags">
+                  <li>STORYTELLING</li>
+                  <li>CREATIVE WRITING</li>
+                </ul>
+              </div>
+              <picture className="ts-work-image">
+                <Image src="/stories/storyCovers/img5.jpg" alt="Story Writing" width={1200} height={800} />
+              </picture>
+            </a>
+            <picture className="ts-work-bg">
+              <Image src="/stories/storyCovers/img5.jpg" alt="Story Writing" width={1920} height={1080} />
+            </picture>
+          </li>
+        </ul>
+
+        {/* All Works Link */}
+        <div className="ts-works-footer">
+          <p className="ts-works-all-label">全作品</p>
+          <span className="ts-works-line"></span>
+          <a href="/works" className="ts-works-all-link">ALL WORKS</a>
+          <a href="/works" className="ts-more-btn">
+            <span className="ts-more-bg"></span>
+            <span className="ts-more-text">MORE</span>
+          </a>
         </div>
       </section>
 
@@ -461,6 +637,34 @@ const Home: React.FC = () => {
         <article>
           <div className="bg">
             <Image src={HomePreview} alt="Developer" fill className="object-cover" />
+          </div>
+
+          {/* Parallax Gallery - Taiki Sato Style */}
+          <div className="parallax-gallery">
+            <div className="parallax-image" data-speed="50">
+              <Image src="/gameDev/appIcons/img1.jpg" alt="Gallery 1" width={320} height={420} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="80">
+              <Image src="/gameDev/appIcons/img2.jpg" alt="Gallery 2" width={280} height={380} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="60">
+              <Image src="/gameDev/appIcons/img3.jpg" alt="Gallery 3" width={300} height={400} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="70">
+              <Image src="/gameDev/appIcons/img4.jpg" alt="Gallery 4" width={310} height={410} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="90">
+              <Image src="/gameDev/appIcons/img5.jpg" alt="Gallery 5" width={290} height={390} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="55">
+              <Image src="/gameDev/appIcons/img6.jpg" alt="Gallery 6" width={330} height={430} />
+              <div className="bg-layer"></div>
+            </div>
           </div>
           
           {/* Hidden article_inner (Nikon method) */}
@@ -751,6 +955,34 @@ const Home: React.FC = () => {
           <div className="bg">
             <Image src={AboutPreview} alt="Full Stack" fill className="object-cover" />
           </div>
+
+          {/* Parallax Gallery - Taiki Sato Style */}
+          <div className="parallax-gallery">
+            <div className="parallax-image" data-speed="55">
+              <Image src="/gameDev/appIcons/img7.jpg" alt="Gallery 1" width={310} height={410} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="85">
+              <Image src="/gameDev/appIcons/img8.jpg" alt="Gallery 2" width={290} height={390} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="65">
+              <Image src="/gameDev/appIcons/img9.jpg" alt="Gallery 3" width={320} height={420} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="75">
+              <Image src="/gameDev/appIcons/img10.jpg" alt="Gallery 4" width={300} height={400} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="95">
+              <Image src="/gameDev/appIcons/img11.jpg" alt="Gallery 5" width={280} height={380} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="60">
+              <Image src="/gameDev/appIcons/img12.jpg" alt="Gallery 6" width={330} height={430} />
+              <div className="bg-layer"></div>
+            </div>
+          </div>
           
           <div className="article_inner hidden">
             <div className="head_ttl">
@@ -1038,6 +1270,35 @@ const Home: React.FC = () => {
           <div className="bg">
             <Image src={ServicesPreview} alt="Digital Art" fill className="object-cover" />
           </div>
+
+          {/* Parallax Gallery */}
+          {/* Parallax Gallery - Taiki Sato Style */}
+          <div className="parallax-gallery">
+            <div className="parallax-image" data-speed="60">
+              <Image src="/gameDev/appIcons/img13.jpg" alt="Gallery 1" width={300} height={400} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="90">
+              <Image src="/gameDev/appIcons/img14.jpg" alt="Gallery 2" width={320} height={420} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="70">
+              <Image src="/gameDev/appIcons/img15.jpg" alt="Gallery 3" width={290} height={390} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="80">
+              <Image src="/gameDev/appIcons/img1.jpg" alt="Gallery 4" width={310} height={410} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="100">
+              <Image src="/gameDev/appIcons/img2.jpg" alt="Gallery 5" width={330} height={430} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="65">
+              <Image src="/gameDev/appIcons/img3.jpg" alt="Gallery 6" width={280} height={380} />
+              <div className="bg-layer"></div>
+            </div>
+          </div>
           
           <div className="article_inner hidden">
             <div className="head_ttl">
@@ -1324,6 +1585,35 @@ const Home: React.FC = () => {
         <article>
           <div className="bg">
             <Image src={WorksPreview} alt="UI/UX" fill className="object-cover" />
+          </div>
+
+          {/* Parallax Gallery */}
+          {/* Parallax Gallery - Taiki Sato Style */}
+          <div className="parallax-gallery">
+            <div className="parallax-image" data-speed="65">
+              <Image src="/gameDev/appIcons/img4.jpg" alt="Gallery 1" width={310} height={410} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="95">
+              <Image src="/gameDev/appIcons/img5.jpg" alt="Gallery 2" width={280} height={380} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="75">
+              <Image src="/gameDev/appIcons/img6.jpg" alt="Gallery 3" width={300} height={400} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="85">
+              <Image src="/gameDev/appIcons/img7.jpg" alt="Gallery 4" width={320} height={420} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="105">
+              <Image src="/gameDev/appIcons/img8.jpg" alt="Gallery 5" width={290} height={390} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="70">
+              <Image src="/gameDev/appIcons/img9.jpg" alt="Gallery 6" width={330} height={430} />
+              <div className="bg-layer"></div>
+            </div>
           </div>
           
           <div className="article_inner hidden">
