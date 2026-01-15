@@ -319,11 +319,8 @@ const Home: React.FC = () => {
       {/* Main Visual Section */}
       <section id="nikon-mv">
         <div className="inner">
-          <h1 className="title">
-            <span className="text-white text-2xl md:text-4xl font-light tracking-[0.3em]">PORTFOLIO</span>
-          </h1>
           <h2 className="tagline">
-            <span className="text-white text-3xl md:text-5xl font-serif">その先が見たいんだ。</span>
+            <span className="text-white text-3xl md:text-5xl font-serif">James Rafty D. Libago</span>
           </h2>
           <h2 className="logo">
             <span className="text-white text-xl md:text-2xl tracking-widest an">MIZUMI</span>
@@ -346,7 +343,7 @@ const Home: React.FC = () => {
         <div className="inner">
           <div className="txt">
             <h2 className="tagline anime">
-              <span className="text-white text-3xl md:text-4xl font-serif">その先が見たいんだ。</span>
+              <span className="text-white text-3xl md:text-4xl font-serif">James Rafty D. Libago</span>
             </h2>
             <p className="anime">
               この手を引いて走り出したら<br />

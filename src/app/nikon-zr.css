@@ -479,6 +479,7 @@
   position: relative;
   background-color: #282b28;
   padding: 0 0 260px;
+  z-index: 10;
 }
 
 @media (max-width: 767px) {
@@ -586,6 +587,7 @@
   background-color: #131613;
   overflow-x: clip;
   width: 100%;
+  z-index: 10;
 }
 
 #nikon-voice .header {
@@ -1209,6 +1211,7 @@
   padding: 6rem 0 17.5rem;
   background-color: #1a1a1a;
   color: #e8e4df;
+  z-index: 10;
 }
 
 /* Header */
