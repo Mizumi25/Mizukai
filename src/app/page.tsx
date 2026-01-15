@@ -212,6 +212,45 @@ const Home: React.FC = () => {
       focusInElements.forEach((el) => focusInObserver.observe(el));
     }
 
+    // Product section - change background to white and text to black
+    const productSection = document.getElementById('nikon-product');
+    const tsWorksGallerySection = document.getElementById('ts-works-gallery');
+    const voiceHeader = document.querySelector('#nikon-voice .header') as HTMLElement;
+    
+    if (productSection) {
+      ScrollTrigger.create({
+        trigger: productSection,
+        start: 'top 80%',
+        end: 'bottom 20%',
+        onEnter: () => {
+          gsap.to([productSection, tsWorksGallerySection, voiceHeader], {
+            backgroundColor: '#fff',
+            color: '#000',
+            duration: 0.8,
+            ease: 'power2.out'
+          });
+        },
+        onLeave: () => {
+          gsap.to(productSection, { backgroundColor: '#282b28', color: '#fff', duration: 0.5 });
+          gsap.to(tsWorksGallerySection, { backgroundColor: '#1a1a1a', color: '#e8e4df', duration: 0.5 });
+          gsap.to(voiceHeader, { backgroundColor: 'transparent', color: '#fff', duration: 0.5 });
+        },
+        onEnterBack: () => {
+          gsap.to([productSection, tsWorksGallerySection, voiceHeader], {
+            backgroundColor: '#fff',
+            color: '#000',
+            duration: 0.8,
+            ease: 'power2.out'
+          });
+        },
+        onLeaveBack: () => {
+          gsap.to(productSection, { backgroundColor: '#282b28', color: '#fff', duration: 0.5 });
+          gsap.to(tsWorksGallerySection, { backgroundColor: '#1a1a1a', color: '#e8e4df', duration: 0.5 });
+          gsap.to(voiceHeader, { backgroundColor: 'transparent', color: '#fff', duration: 0.5 });
+        }
+      });
+    }
+
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
       topObserver.disconnect();

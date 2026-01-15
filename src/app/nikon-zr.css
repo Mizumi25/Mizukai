@@ -1207,8 +1207,7 @@
 #ts-works-gallery {
   position: relative;
   padding: 6rem 0 17.5rem;
-  color: currentColor;
-  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #1a1a1a 100%);
+  background-color: #1a1a1a;
   color: #e8e4df;
 }
 
