@@ -624,16 +624,16 @@
   padding-left: 0.25em;
 }
 
-/* Article structure - articles should STACK on top of each other, not flow vertically */
+/* Article structure - articles should STACK on top of each other with parallax overlap */
 #nikon-voice article {
   position: relative;
   padding-top: 100vh;
   min-height: 400vh; /* Space for parallax effect */
 }
 
-/* Make articles stack properly - each article should start when previous ends */
+/* Make articles overlap - negative margin creates parallax scrolling effect */
 #nikon-voice article:not(:first-of-type) {
-  margin-top: 0; /* No negative margin - let them stack naturally */
+  margin-top: -200vh; /* Pull up to create overlap - adjust this value for more/less overlap */
 }
 
 #nikon-voice article:nth-child(2) {
@@ -750,21 +750,31 @@
   }
 }
 
-/* When article OR clone is top: title becomes visible */
-#nikon-voice article.top .clone .head_ttl,
-#nikon-voice article .clone.top .head_ttl {
-  opacity: 1 !important;
+/* FADE IN: When clone has .top class (but NOT .in) - title becomes visible */
+#nikon-voice article .clone.top:not(.in) .head_ttl {
+  opacity: 1;
   pointer-events: auto;
+  background: rgba(255, 0, 0, 0.5) !important; /* DEBUG: Bright red to see if it's there */
 }
 
-#nikon-voice article.top .clone .head_ttl h2,
-#nikon-voice article .clone.top .head_ttl h2 {
-  opacity: 1 !important;
-  filter: blur(0) !important;
+#nikon-voice article .clone.top:not(.in) .head_ttl h2 {
+  opacity: 1;
+  filter: blur(0);
   transition: opacity 0.3s ease-in, filter 0.5s ease-in;
+  background: rgba(0, 255, 0, 0.8) !important; /* DEBUG: Bright green on text */
+  padding: 20px;
 }
 
-/* FADE OUT: Handled by GSAP - no CSS needed, GSAP will override the !important */
+/* FADE OUT: When clone has BOTH .top AND .in classes */
+#nikon-voice article .clone.top.in .head_ttl {
+  opacity: 0;
+}
+
+#nikon-voice article .clone.top.in .head_ttl h2 {
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 0.5s ease-in, filter 0.5s ease-in;
+}
 
 /* Hide scrollarea content UNTIL .in class is added */
 #nikon-voice article .clone .scrollarea {
