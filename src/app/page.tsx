@@ -79,6 +79,7 @@ const Home: React.FC = () => {
       (entries) => {
         entries.forEach((entry) => {
           entry.target.classList.toggle('top', entry.isIntersecting);
+          console.log('TOP Observer:', entry.target.className, 'isIntersecting:', entry.isIntersecting);
         });
       },
       { root: null, rootMargin: '0% 0% -100% 0%', threshold: 0 }
@@ -97,6 +98,7 @@ const Home: React.FC = () => {
       (entries) => {
         entries.forEach((entry) => {
           entry.target.classList.toggle('in', entry.isIntersecting);
+          console.log('IN Observer:', entry.target.className, 'isIntersecting:', entry.isIntersecting);
         });
       },
       { root: null, rootMargin: '0% 0% 0% 0%', threshold: 0 }

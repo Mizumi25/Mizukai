@@ -627,13 +627,13 @@
 /* Article structure - articles should STACK on top of each other, not flow vertically */
 #nikon-voice article {
   position: relative;
-  padding-top: 200vh;
-  min-height: 500vh; /* Increased to give space for title + content scroll */
+  padding-top: 100vh;
+  min-height: 400vh; /* Space for parallax effect */
 }
 
-/* Make articles stack - but give enough space for content to show */
+/* Make articles stack properly - each article should start when previous ends */
 #nikon-voice article:not(:first-of-type) {
-  margin-top: -300vh; /* Pull up but not too much - leave space for previous article's content */
+  margin-top: 0; /* No negative margin - let them stack naturally */
 }
 
 #nikon-voice article:nth-child(2) {
@@ -720,17 +720,18 @@
 }
 
 /* Head title fade in/out - appears FIRST before content */
-#nikon-voice article .head_ttl {
-  position: absolute;
+#nikon-voice article .clone .head_ttl {
+  position: fixed; /* Always fixed, not absolute */
   top: 0;
-  width: 100%;
+  left: 0;
+  width: 100vw;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  z-index: 10;
+  z-index: 1500; /* Above content but below header nav (2000) */
 }
 
 #nikon-voice article .head_ttl h2 {
@@ -738,7 +739,9 @@
   font-size: 4rem;
   opacity: 0;
   filter: blur(10px);
-  transition: opacity 0.1s ease-in, filter 0.1s ease-in;
+  transition: opacity 0.3s ease-in, filter 0.5s ease-in;
+  color: #fff;
+  z-index: 20;
 }
 
 @media (max-width: 767px) {
@@ -747,23 +750,33 @@
   }
 }
 
-/* When article is top: title becomes visible */
-#nikon-voice article.top .clone .head_ttl {
-  position: fixed;
-  opacity: 1;
+/* When article OR clone is top: title becomes visible */
+#nikon-voice article.top .clone .head_ttl,
+#nikon-voice article .clone.top .head_ttl {
+  opacity: 1 !important;
   pointer-events: auto;
+  background: rgba(255, 0, 0, 0.1); /* DEBUG: red tint to see if element is there */
 }
 
-#nikon-voice article.top .clone .head_ttl h2 {
-  opacity: 1;
-  filter: blur(0);
+#nikon-voice article.top .clone .head_ttl h2,
+#nikon-voice article .clone.top .head_ttl h2 {
+  opacity: 1 !important;
+  filter: blur(0) !important;
   transition: opacity 0.3s ease-in, filter 0.5s ease-in;
+  background: rgba(0, 255, 0, 0.3); /* DEBUG: green background on text */
 }
 
 /* When scrolling in (.in class): title fades out */
-#nikon-voice article.top .clone.in .head_ttl h2 {
-  transition: opacity 0.5s ease-in;
+#nikon-voice article.top .clone.in .head_ttl,
+#nikon-voice article .clone.top.in .head_ttl {
   opacity: 0;
+}
+
+#nikon-voice article.top .clone.in .head_ttl h2,
+#nikon-voice article .clone.top.in .head_ttl h2 {
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 0.5s ease-in, filter 0.5s ease-in;
 }
 
 /* Hide scrollarea content UNTIL .in class is added */
