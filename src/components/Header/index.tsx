@@ -45,40 +45,6 @@ const Header: React.FC = () => {
 
     window.addEventListener('entranceComplete', handleEntranceComplete);
 
-    // Remove header from DOM after scrolling 100vh from top
-    const handleScroll = () => {
-      if (headerNav) {
-        const scrollY = window.scrollY;
-        const vh = window.innerHeight;
-        
-        if (scrollY > vh) {
-          // Scrolled past 100vh - remove from DOM
-          gsap.to(headerNav, {
-            opacity: 0,
-            y: -20,
-            duration: 0.3,
-            ease: "power2.out",
-            onComplete: () => {
-              if (headerNav.parentElement) {
-                (headerNav as HTMLElement).style.display = 'none';
-              }
-            }
-          });
-        } else {
-          // Within first 100vh - restore to DOM
-          (headerNav as HTMLElement).style.display = '';
-          gsap.to(headerNav, {
-            opacity: 1,
-            y: 0,
-            duration: 0.3,
-            ease: "power2.out",
-          });
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
     let isOpen = false;
     let isAnimating = false;
 
@@ -282,7 +248,6 @@ const Header: React.FC = () => {
     // Cleanup event listeners
     return () => {
       window.removeEventListener('entranceComplete', handleEntranceComplete);
-      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 

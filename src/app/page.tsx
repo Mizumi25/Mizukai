@@ -218,13 +218,13 @@ const Home: React.FC = () => {
 
           focusInElements.forEach((el) => focusInObserver.observe(el));
 
-          // Scroll-based scale animation for work images
+          // Scroll-based scale animation for work images and videos
           const workImages = tsWorksGallery.querySelectorAll('.ts-work-image');
           workImages.forEach((imageContainer) => {
-            const img = imageContainer.querySelector('img');
-            if (img) {
+            const media = imageContainer.querySelector('img') || imageContainer.querySelector('video');
+            if (media) {
               // Use GSAP ScrollTrigger for smooth scale animation
-              gsap.fromTo(img,
+              gsap.fromTo(media,
                 { 
                   scale: 0.3,
                   opacity: 0 
@@ -372,7 +372,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* About Section - PINNED BACKGROUND */}
+      {/* About Section - PINNED BACKGROUND - Project Showcases */}
       <section id="nikon-about" ref={aboutSectionRef}>
         <div className="bg" ref={aboutBgRef}>
           <div className="bg-scale" style={{ transform: 'scale(0)' }}>
@@ -387,69 +387,122 @@ const Home: React.FC = () => {
         </div>
         <div className="inner">
           <div className="txt">
+            {/* DeCode - Frontend Visual Builder (Latest/Most Impressive) */}
             <h2 className="ttl anime">
-              シネマカメラの<br />新しい選択肢
+              DeCode
             </h2>
-            <p className="anime">
-              映画の世界で磨きあげられた<br />
-              REDが生み出す、シネマルックな色。<br />
-              豊かな階調と、自然な肌を描き出す力。
+            <p className="anime decode-subtitle">
+              Frontend Visual Builder
             </p>
             <p className="anime">
-              そこで出会うのは<br />
-              Nikonの光学技術と信頼。<br />
-              ワンオペを支える自在さ、現場に応える頼もしさ。
+              A frontend visual builder with real-time code generation.<br />
+              Features real-time collaboration with team roles<br />
+              and workspace-based projects.
             </p>
             <p className="anime">
-              二つの力が重なったとき<br />
-              シネマカメラは新しい姿へと進化する。
+              Supports visual-to-code and code-to-visual workflows,<br />
+              with full media query support for responsive design.
             </p>
-            <p className="anime">
-              REDのルックを。<br />
-              Nikonの技術で。
-            </p>
-            <p className="anime">
-              これまでにない自由と<br />
-              軽やかさをまとって。
-            </p>
-            <p className="anime">
-              さあ、シネマカメラの<br />
-              次の景色を見にいこう。
+            <p className="anime decode-tech-stack">
+              Built with Inertia.js & React
             </p>
 
-            {/* Concept Film */}
+            {/* DeCode Video Showcase */}
             <div className="movie anime brackets mt-16 cursor-pointer group">
               <div className="relative overflow-hidden">
-                <Image 
-                  src={AboutPreview} 
-                  alt="Concept Film" 
-                  className="w-full object-cover"
-                />
                 <video 
-                  className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  className="w-full object-cover"
                   src="/videos/Home/DeCodeShowcase.mp4"
-                  muted
+                  autoPlay
                   loop
+                  muted
                   playsInline
-                  onMouseEnter={(e) => e.currentTarget.play()}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.pause();
-                    e.currentTarget.currentTime = 0;
-                  }}
                 />
-                <div className="btn-play">
-                  <div>
-                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="white">
-                      <path d="M8 5v14l11-7z"/>
-                    </svg>
-                    <span className="text-white text-xs mt-1 block an">PLAY MOVIE</span>
-                  </div>
-                </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex justify-between items-end">
                   <div>
                     <h3 className="dot an text-3xl md:text-5xl">
-                      CONCEPT FILM
-                      <span className="block text-base mt-2 font-serif">コンセプトフィルム</span>
+                      DeCode
+                      <span className="block text-base mt-2 font-serif">Visual Code Builder</span>
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* OJTMoni - Internship Monitoring System */}
+            <h2 className="ttl anime mt-24">
+              OJTMoni
+            </h2>
+            <p className="anime decode-subtitle">
+              Internship Monitoring System
+            </p>
+            <p className="anime">
+              An internship monitoring website with geofencing capabilities.<br />
+              Features location-based attendance tracking<br />
+              and comprehensive scheduling system.
+            </p>
+            <p className="anime">
+              Streamlines internship management for both<br />
+              students and coordinators with real-time monitoring.
+            </p>
+            <p className="anime decode-tech-stack">
+              Built with Livewire & Volt
+            </p>
+
+            {/* OJTMoni Video Showcase */}
+            <div className="movie anime brackets mt-16 cursor-pointer group">
+              <div className="relative overflow-hidden">
+                <video 
+                  className="w-full object-cover"
+                  src="/videos/Home/ojtmoni.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                />
+                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex justify-between items-end">
+                  <div>
+                    <h3 className="dot an text-3xl md:text-5xl">
+                      OJTMoni
+                      <span className="block text-base mt-2 font-serif">Internship Monitoring System</span>
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Byte - MERN E-commerce (First Project) */}
+            <h2 className="ttl anime mt-24">
+              Byte
+            </h2>
+            <p className="anime decode-subtitle">
+              E-Commerce Platform
+            </p>
+            <p className="anime">
+              A full-featured e-commerce platform for computer peripherals.<br />
+              Complete with user authentication, product catalog,<br />
+              shopping cart, and checkout functionality.
+            </p>
+            <p className="anime decode-tech-stack">
+              Built with MERN Stack (MongoDB, Express, React, Node.js)
+            </p>
+
+            {/* Byte Video Showcase */}
+            <div className="movie anime brackets mt-16 cursor-pointer group">
+              <div className="relative overflow-hidden">
+                <video 
+                  className="w-full object-cover"
+                  src="/videos/InShot_20240509_195843430.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                />
+                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex justify-between items-end">
+                  <div>
+                    <h3 className="dot an text-3xl md:text-5xl">
+                      Byte
+                      <span className="block text-base mt-2 font-serif">Peripherals E-Commerce</span>
                     </h3>
                   </div>
                 </div>
@@ -488,20 +541,20 @@ const Home: React.FC = () => {
                 </div>
                 <h3 className="ts-work-name">Game Development</h3>
                 <ul className="ts-work-type">
-                  <li>PRIVATE WORKS</li>
+                  <li>IN PROGRESS</li>
                 </ul>
                 <ul className="ts-work-tags">
-                  <li>ART DIRECTION</li>
-                  <li>GAME DESIGN</li>
-                  <li>DEVELOPMENT</li>
+                  <li>GODOT</li>
+                  <li>GSCRIPT</li>
+                  <li>SPRITE ART</li>
                 </ul>
               </div>
               <picture className="ts-work-image">
-                <Image src="/gameDev/appIcons/img1.jpg" alt="Game Development" width={1200} height={800} />
+                <Image src="/images/Home/game1.jpg" alt="Game Development" width={1200} height={800} />
               </picture>
             </a>
             <picture className="ts-work-bg">
-              <Image src="/gameDev/appIcons/img1.jpg" alt="Game Development" width={1920} height={1080} />
+              <Image src="/images/Home/game1.jpg" alt="Game Development" width={1920} height={1080} />
             </picture>
           </li>
 
@@ -624,6 +677,48 @@ const Home: React.FC = () => {
             <picture className="ts-work-bg">
               <Image src="/stories/storyCovers/img5.jpg" alt="Story Writing" width={1920} height={1080} />
             </picture>
+          </li>
+
+          {/* Work Item 6 - Tailwind Responsive (School Project) */}
+          <li className="ts-work-item ts-work-item-video">
+            <a href="#" className="ts-work-link">
+              <div className="ts-work-meta">
+                <span className="ts-work-num">(六)</span>
+                <span className="ts-work-year">2023</span>
+              </div>
+              <div className="ts-work-info">
+                <div className="ts-work-meta-desktop">
+                  <span className="ts-work-num">(六)</span>
+                  <span className="ts-work-year">2023</span>
+                </div>
+                <h3 className="ts-work-name">Tailwind Responsive</h3>
+                <ul className="ts-work-type">
+                  <li>SCHOOL PROJECT</li>
+                </ul>
+                <ul className="ts-work-tags">
+                  <li>TAILWIND CSS</li>
+                  <li>RESPONSIVE DESIGN</li>
+                </ul>
+              </div>
+              <div className="ts-work-image">
+                <video 
+                  src="/videos/Home/tailwind.mp4" 
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline
+                />
+              </div>
+            </a>
+            <div className="ts-work-bg">
+              <video 
+                src="/videos/Home/tailwind.mp4" 
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+              />
+            </div>
           </li>
         </ul>
 

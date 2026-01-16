@@ -258,6 +258,9 @@
   max-width: 100vw;
   height: 100vh;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #nikon-zoom.top .inner {
@@ -280,6 +283,85 @@
 @media (max-width: 767px) {
   #nikon-zoom .logo {
     min-width: 250px;
+  }
+}
+
+/* DeCode Showcase Styles */
+.decode-showcase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1100px;
+  padding: 0 1.5rem;
+  margin: 0 auto;
+}
+
+.decode-video-container {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.decode-video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.decode-info {
+  text-align: center;
+  max-width: 600px;
+}
+
+.decode-title {
+  font-size: 2.5rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: #fff;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.decode-description {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1rem;
+}
+
+.decode-tech {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.1em;
+}
+
+@media (min-width: 768px) {
+  .decode-showcase {
+    flex-direction: row;
+    gap: 3rem;
+    padding: 0 3rem;
+  }
+
+  .decode-video-container {
+    flex: 1;
+    max-width: 60%;
+  }
+
+  .decode-info {
+    flex: 1;
+    text-align: left;
+  }
+
+  .decode-title {
+    font-size: 3rem;
+  }
+
+  .decode-description {
+    font-size: 1.1rem;
   }
 }
 
@@ -346,6 +428,21 @@
   #nikon-about p {
     font-size: 1.6rem;
   }
+}
+
+#nikon-about .decode-subtitle {
+  font-size: 1.4rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 2rem;
+}
+
+#nikon-about .decode-tech-stack {
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  margin-top: 2rem;
 }
 
 #nikon-about p + p {
@@ -1371,6 +1468,14 @@
   transition: transform 0.1s ease-out, opacity 0.3s ease-out;
 }
 
+#ts-works-gallery .ts-work-image video {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  transform: scale(1);
+  opacity: 1;
+}
+
 #ts-works-gallery .ts-work-image.is-scaled img {
   transform: scale(1);
   opacity: 1;
@@ -1390,7 +1495,8 @@
   transition: all 0.3s ease;
 }
 
-#ts-works-gallery .ts-work-bg img {
+#ts-works-gallery .ts-work-bg img,
+#ts-works-gallery .ts-work-bg video {
   width: 100%;
   height: 100%;
   object-fit: cover;
