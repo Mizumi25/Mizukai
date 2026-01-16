@@ -220,39 +220,26 @@ const Home: React.FC = () => {
           focusInElements.forEach((el) => focusInObserver.observe(el));
 
           // Scroll-based scale animation for work images and videos
-          // Symmetric animation: scale up on enter, stay full in center, scale down on exit
+          // Scale up when scrolling down past them, scale down only when scrolling back up
           const workImages = tsWorksGallery.querySelectorAll('.ts-work-image');
           workImages.forEach((imageContainer) => {
             const media = imageContainer.querySelector('img') || imageContainer.querySelector('video');
             if (media) {
-              // Create a timeline for symmetric scaling animation
-              const tl = gsap.timeline({
-                scrollTrigger: {
-                  trigger: imageContainer,
-                  start: 'top 95%',      // Start when image enters viewport
-                  end: 'bottom 5%',      // End when image leaves viewport
-                  scrub: 1,
-                  onEnter: () => imageContainer.classList.add('is-scaled'),
-                  onLeave: () => imageContainer.classList.remove('is-scaled'),
-                  onEnterBack: () => imageContainer.classList.add('is-scaled'),
-                  onLeaveBack: () => imageContainer.classList.remove('is-scaled'),
-                }
-              });
-
-              // Scale up from 0.3 to 1 (first 40% of scroll journey)
-              tl.fromTo(media,
+              gsap.fromTo(media,
                 { scale: 0.3, opacity: 0 },
-                { scale: 1, opacity: 1, ease: 'power2.out', duration: 0.4 }
-              );
-              
-              // Stay at full scale (middle 20% of scroll journey)
-              tl.to(media,
-                { scale: 1, opacity: 1, duration: 0.2 }
-              );
-              
-              // Scale down from 1 to 0.3 (last 40% of scroll journey)
-              tl.to(media,
-                { scale: 0.3, opacity: 0, ease: 'power2.in', duration: 0.4 }
+                {
+                  scale: 1,
+                  opacity: 1,
+                  ease: 'power2.out',
+                  scrollTrigger: {
+                    trigger: imageContainer,
+                    start: 'top 85%',
+                    end: 'top 40%',
+                    scrub: 1,
+                    onEnter: () => imageContainer.classList.add('is-scaled'),
+                    onLeaveBack: () => imageContainer.classList.remove('is-scaled'),
+                  }
+                }
               );
             }
           });
@@ -1131,10 +1118,10 @@ const Home: React.FC = () => {
         {/* Article 2 - Full Stack Developer */}
         <article>
           <div className="bg">
-            <Image src={AboutPreview} alt="Full Stack" fill className="object-cover" />
+            <Image src="/images/Home/Article2Bg.jpg" alt="Full Stack" fill className="object-cover" />
           </div>
 
-          {/* Parallax Gallery - Taiki Sato Style */}
+          {/* Parallax Gallery - 4 images + 2 dark placeholders */}
           <div className="parallax-gallery">
             <div className="parallax-image" data-speed="55">
               <Image src="/images/Home/Article2Par1.jpg" alt="Portfolio Hero" width={310} height={410} />
@@ -1145,19 +1132,19 @@ const Home: React.FC = () => {
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="65">
-              <Image src="/gameDev/appIcons/img9.jpg" alt="Gallery 3" width={320} height={420} />
+              <Image src="/images/Home/Article2Par3.png" alt="Gallery 3" width={320} height={420} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="75">
-              <Image src="/gameDev/appIcons/img10.jpg" alt="Gallery 4" width={300} height={400} />
+              <Image src="/images/Home/Article2Par4.jpg" alt="Gallery 4" width={300} height={400} />
               <div className="bg-layer"></div>
             </div>
-            <div className="parallax-image" data-speed="95">
-              <Image src="/gameDev/appIcons/img11.jpg" alt="Gallery 5" width={280} height={380} />
+            <div className="parallax-image placeholder" data-speed="95">
+              <div className="dark-placeholder" style={{width: '280px', height: '380px', backgroundColor: '#1a1a1a', borderRadius: '4px'}}></div>
               <div className="bg-layer"></div>
             </div>
-            <div className="parallax-image" data-speed="60">
-              <Image src="/gameDev/appIcons/img12.jpg" alt="Gallery 6" width={330} height={430} />
+            <div className="parallax-image placeholder" data-speed="60">
+              <div className="dark-placeholder" style={{width: '330px', height: '430px', backgroundColor: '#1a1a1a', borderRadius: '4px'}}></div>
               <div className="bg-layer"></div>
             </div>
           </div>
