@@ -338,16 +338,6 @@ const Home: React.FC = () => {
             <span className="text-white text-xl md:text-2xl tracking-widest an">MIZUMI</span>
           </h2>
         </div>
-        <div id="nikon-news">
-          <ul>
-            <li>
-              <time className="an" dateTime="2024-01-01">2024.01.01</time>
-              <h3 className="sans">
-                <a href="#works">Welcome to my portfolio</a>
-              </h3>
-            </li>
-          </ul>
-        </div>
       </section>
 
       {/* Lead Section */}
@@ -544,12 +534,12 @@ const Home: React.FC = () => {
             <a href="/works/gameDev" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(一)</span>
-                <span className="ts-work-year">2024</span>
+                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(一)</span>
-                  <span className="ts-work-year">2024</span>
+                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Game Development</h3>
                 <ul className="ts-work-type">
@@ -575,12 +565,12 @@ const Home: React.FC = () => {
             <a href="/works/music" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(二)</span>
-                <span className="ts-work-year">2024</span>
+                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(二)</span>
-                  <span className="ts-work-year">2024</span>
+                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Music Production</h3>
                 <ul className="ts-work-type">
@@ -605,12 +595,12 @@ const Home: React.FC = () => {
             <a href="/works/portraits" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(三)</span>
-                <span className="ts-work-year">2023</span>
+                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(三)</span>
-                  <span className="ts-work-year">2023</span>
+                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Portrait Photography</h3>
                 <ul className="ts-work-type">
@@ -635,12 +625,12 @@ const Home: React.FC = () => {
             <a href="/works/videoProductions" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(四)</span>
-                <span className="ts-work-year">2024</span>
+                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(四)</span>
-                  <span className="ts-work-year">2024</span>
+                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Video Productions</h3>
                 <ul className="ts-work-type">
@@ -666,12 +656,12 @@ const Home: React.FC = () => {
             <a href="/works/story" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(五)</span>
-                <span className="ts-work-year">2024</span>
+                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(五)</span>
-                  <span className="ts-work-year">2024</span>
+                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Story Writing</h3>
                 <ul className="ts-work-type">
@@ -696,12 +686,12 @@ const Home: React.FC = () => {
             <a href="#" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(六)</span>
-                <span className="ts-work-year">2023</span>
+                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(六)</span>
-                  <span className="ts-work-year">2023</span>
+                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Tailwind Responsive</h3>
                 <ul className="ts-work-type">
@@ -746,63 +736,64 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Product Section */}
+      {/* About Me Section */}
       <section id="nikon-product">
         <div className="inner">
           <div className="flex">
             <div className="img">
               <Image 
                 src={Profile} 
-                alt="Product" 
+                alt="James Rafty D. Libago" 
                 className="anime w-full"
               />
             </div>
             <div className="txt">
-              <h2 className="dot an anime">PRODUCT</h2>
+              <h2 className="dot an anime">ABOUT ME</h2>
               <h3 className="ttl anime">
-                ワンオペを極めた<br />シネマカメラ
+                James Rafty D. Libago<br />
+                <span className="text-lg font-light">じぇーむず らふてぃ りばご</span>
               </h3>
               <ul>
                 <li className="anime">
                   <div>
-                    <h5 className="sans">高解像・高輝度・広色域</h5>
-                    <h4>4.0型 大画面モニター</h4>
+                    <h5 className="sans">ねんれい</h5>
+                    <h4>22 Years Old</h4>
                   </div>
                 </li>
                 <li className="anime">
                   <div>
-                    <h5 className="sans">軽快に持ち出せる軽量設計</h5>
-                    <h4>約630g</h4>
+                    <h5 className="sans">えをかく</h5>
+                    <h4>I Like to Paint</h4>
                   </div>
                 </li>
                 <li className="anime">
                   <div>
-                    <h5 className="sans">AI技術で多彩なシーンに対応</h5>
-                    <h4>優れたAF・9種類の被写体検出</h4>
+                    <h5 className="sans">げーむをする</h5>
+                    <h4>I Play Games</h4>
                   </div>
                 </li>
                 <li className="anime">
                   <div>
-                    <h5 className="sans">手持ちでも安定した撮影</h5>
-                    <h4>ボディー内5軸手ブレ補正</h4>
+                    <h5 className="sans">ぎたーをひく</h5>
+                    <h4>I Play Guitar</h4>
                   </div>
                 </li>
                 <li className="anime">
                   <div>
-                    <h5 className="sans">長回しの撮影でも熱停止しにくく</h5>
-                    <h4>ファンレス放熱設計</h4>
+                    <h5 className="sans">うたう</h5>
+                    <h4>I Sing</h4>
                   </div>
                 </li>
                 <li className="anime">
                   <div>
-                    <h5 className="sans">音割れしにくく幅広い音域を</h5>
-                    <h4>32bit float録音対応</h4>
+                    <h5 className="sans">でざいん</h5>
+                    <h4>I Design</h4>
                   </div>
                 </li>
               </ul>
               <div className="mt-8">
-                <a href="#" className="btn-link anime">
-                  <span>製品詳細</span>
+                <a href="#contact" className="btn-link anime">
+                  <span>れんらくさき / Contact</span>
                 </a>
               </div>
             </div>
@@ -1455,34 +1446,41 @@ const Home: React.FC = () => {
         {/* Article 3 - Digital Artist */}
         <article>
           <div className="bg">
-            <Image src={ServicesPreview} alt="Digital Art" fill className="object-cover" />
+            <Image src="/images/Home/Article3Bg.png" alt="Digital Art" fill className="object-cover" />
           </div>
 
-          {/* Parallax Gallery */}
-          {/* Parallax Gallery - Taiki Sato Style */}
+          {/* Parallax Gallery - 8 images */}
           <div className="parallax-gallery">
             <div className="parallax-image" data-speed="60">
-              <Image src="/gameDev/appIcons/img13.jpg" alt="Gallery 1" width={300} height={400} />
+              <Image src="/images/Home/Article3Par1.png" alt="Gallery 1" width={300} height={400} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="90">
-              <Image src="/gameDev/appIcons/img14.jpg" alt="Gallery 2" width={320} height={420} />
+              <Image src="/images/Home/Article3Par2.png" alt="Gallery 2" width={320} height={420} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="70">
-              <Image src="/gameDev/appIcons/img15.jpg" alt="Gallery 3" width={290} height={390} />
+              <Image src="/images/Home/Article3Par3.png" alt="Gallery 3" width={290} height={390} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="80">
-              <Image src="/gameDev/appIcons/img1.jpg" alt="Gallery 4" width={310} height={410} />
+              <Image src="/images/Home/Article3Par4.png" alt="Gallery 4" width={310} height={410} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="100">
-              <Image src="/gameDev/appIcons/img2.jpg" alt="Gallery 5" width={330} height={430} />
+              <Image src="/images/Home/Article3Par5.jpg" alt="Gallery 5" width={330} height={430} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="65">
-              <Image src="/gameDev/appIcons/img3.jpg" alt="Gallery 6" width={280} height={380} />
+              <Image src="/images/Home/Article3Par6.png" alt="Gallery 6" width={280} height={380} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="75">
+              <Image src="/images/Home/Article3Par7.png" alt="Gallery 7" width={300} height={400} />
+              <div className="bg-layer"></div>
+            </div>
+            <div className="parallax-image" data-speed="85">
+              <Image src="/images/Home/Article3Par8.png" alt="Gallery 8" width={310} height={410} />
               <div className="bg-layer"></div>
             </div>
           </div>
@@ -1771,34 +1769,34 @@ const Home: React.FC = () => {
         {/* Article 4 - UI/UX Designer */}
         <article>
           <div className="bg">
-            <Image src={WorksPreview} alt="UI/UX" fill className="object-cover" />
+            <Image src="/images/Home/Article4Bg.png" alt="UI/UX" fill className="object-cover" />
           </div>
 
           {/* Parallax Gallery */}
           {/* Parallax Gallery - Taiki Sato Style */}
           <div className="parallax-gallery">
             <div className="parallax-image" data-speed="65">
-              <Image src="/gameDev/appIcons/img4.jpg" alt="Gallery 1" width={310} height={410} />
+              <Image src="/images/Home/Article4Par1.png" alt="Gallery 1" width={310} height={410} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="95">
-              <Image src="/gameDev/appIcons/img5.jpg" alt="Gallery 2" width={280} height={380} />
+              <Image src="/images/Home/Article4Par2.png" alt="Gallery 2" width={280} height={380} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="75">
-              <Image src="/gameDev/appIcons/img6.jpg" alt="Gallery 3" width={300} height={400} />
+              <Image src="/images/Home/Article4Par3.png" alt="Gallery 3" width={300} height={400} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="85">
-              <Image src="/gameDev/appIcons/img7.jpg" alt="Gallery 4" width={320} height={420} />
+              <Image src="/images/Home/Article4Par4.png" alt="Gallery 4" width={320} height={420} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="105">
-              <Image src="/gameDev/appIcons/img8.jpg" alt="Gallery 5" width={290} height={390} />
+              <Image src="/images/Home/Article4Par5.png" alt="Gallery 5" width={290} height={390} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="70">
-              <Image src="/gameDev/appIcons/img9.jpg" alt="Gallery 6" width={330} height={430} />
+              <Image src="/images/Home/Article4Par6.png" alt="Gallery 6" width={330} height={430} />
               <div className="bg-layer"></div>
             </div>
           </div>
@@ -2144,7 +2142,7 @@ const Home: React.FC = () => {
             </li>
           </ul>
           <div className="copy sans mt-16">
-            © 2024 Mizumi Kaito. All Rights Reserved.
+            © 2025 Mizumi Kaito. All Rights Reserved.
           </div>
         </div>
       </footer>

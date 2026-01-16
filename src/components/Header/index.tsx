@@ -254,7 +254,7 @@ const Header: React.FC = () => {
   return (
     <>
       <div className="header">
-      <nav className="fixed w-screen px-10 py-10 flex justify-between items-center z-[2000]">
+      <nav className="fixed w-screen px-10 py-10 flex justify-between items-center z-[2000] bg-[rgba(19,22,19,0.6)] backdrop-blur-[10px]">
         <div className="logo">
           <a href="#" className="font-semibold">Mizumi</a>
         </div>

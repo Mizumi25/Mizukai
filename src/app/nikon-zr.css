@@ -5,19 +5,19 @@
   position: relative;
   background-color: #131613;
   color: #fff;
-  font-family: "Noto Serif JP", serif;
+  font-family: serif;
   font-size: 1.6rem;
   line-height: 1.8;
   letter-spacing: 0.05em;
 }
 
 .nikon-page .an {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: serif;
   font-weight: 400;
 }
 
 .nikon-page .sans {
-  font-family: "Noto Sans JP", sans-serif;
+  font-family: serif;
 }
 
 /* Inner container */
@@ -278,6 +278,7 @@
   transform: translate(-50%, -50%);
   width: 39vw;
   max-width: 562px;
+  text-align: center;
 }
 
 @media (max-width: 767px) {
@@ -707,7 +708,7 @@
 
 @media (max-width: 767px) {
   #nikon-voice .header h2 {
-    font-size: 8rem;
+    font-size: 12vw;
   }
 }
 
@@ -766,6 +767,33 @@
   overflow: hidden;
   z-index: 0;
   transition: filter 0.8s ease-out;
+}
+
+/* Dark overlay + gradient blending for article backgrounds */
+#nikon-voice article .bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(19, 22, 19, 0.1); /* 10% darker overlay */
+  z-index: 1;
+  pointer-events: none;
+}
+
+#nikon-voice article .bg::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(to bottom, #131613 0%, transparent 15%),
+    linear-gradient(to top, #131613 0%, transparent 15%);
+  z-index: 2;
+  pointer-events: none;
 }
 
 #nikon-voice article .bg img {
@@ -1245,6 +1273,21 @@
   height: auto;
 }
 
+#nikon-voice article:nth-of-type(3) .parallax-image:nth-child(7) {
+  left: 4%;
+  top: 62rem;
+  width: 16rem;
+  height: auto;
+}
+
+#nikon-voice article:nth-of-type(3) .parallax-image:nth-child(8) {
+  right: 5%;
+  left: auto;
+  top: 68rem;
+  width: 15rem;
+  height: auto;
+}
+
 /* ============================================
    Article 4 - Different pattern
    ============================================ */
@@ -1296,7 +1339,60 @@
 /* Mobile responsive positioning */
 @media (max-width: 767px) {
   #nikon-voice article .parallax-image {
-    display: none; /* Hide on mobile for cleaner experience */
+    display: block;
+  }
+  
+  /* Smaller sizes for mobile */
+  #nikon-voice article .parallax-image:nth-child(1) {
+    width: 8rem !important;
+    top: 2rem !important;
+    left: 3% !important;
+  }
+  
+  #nikon-voice article .parallax-image:nth-child(2) {
+    width: 6rem !important;
+    top: 14rem !important;
+    left: 2% !important;
+  }
+  
+  #nikon-voice article .parallax-image:nth-child(3) {
+    width: 7rem !important;
+    top: 24rem !important;
+    left: 5% !important;
+  }
+  
+  #nikon-voice article .parallax-image:nth-child(4) {
+    width: 7rem !important;
+    top: 4rem !important;
+    right: 3% !important;
+    left: auto !important;
+  }
+  
+  #nikon-voice article .parallax-image:nth-child(5) {
+    width: 6rem !important;
+    top: 16rem !important;
+    right: 2% !important;
+    left: auto !important;
+  }
+  
+  #nikon-voice article .parallax-image:nth-child(6) {
+    width: 8rem !important;
+    top: 26rem !important;
+    right: 4% !important;
+    left: auto !important;
+  }
+  
+  #nikon-voice article .parallax-image:nth-child(7) {
+    width: 7rem !important;
+    top: 34rem !important;
+    left: 4% !important;
+  }
+  
+  #nikon-voice article .parallax-image:nth-child(8) {
+    width: 7rem !important;
+    top: 36rem !important;
+    right: 3% !important;
+    left: auto !important;
   }
 }
 

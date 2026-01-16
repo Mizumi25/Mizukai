@@ -97,7 +97,7 @@ a,
   font-weight: 700;
   letter-spacing: 0.12em;
   color: inherit;
-  font-family: var(--font-sans);
+  font-family: serif;
 }
 
 .vertical-hiragana {
@@ -105,7 +105,7 @@ a,
   font-weight: 500;
   color: inherit;
   opacity: 0.85;
-  font-family: var(--font-mono);
+  font-family: serif;
   letter-spacing: 0.06em;
 }
 
