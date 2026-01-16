@@ -242,7 +242,7 @@ const Entrance: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div className="tags-overlay">
           <div className="tag tag-1"><p>Full Stack</p></div>
           <div className="tag tag-2"><p>Digital Artist</p></div>
-          <div className="tag tag-3"><p>James Rafty Libago</p></div>
+          <div className="tag tag-3"><p>James Rafty D. Libago</p></div>
         </div>
       </div>
       

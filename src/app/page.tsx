@@ -8,6 +8,7 @@ import './nikon-zr.css';
 
 // Import images
 import HomePreview from '../../public/nav/home-preview.jpg';
+import ImageScale from '../../public/images/Home/ImageScale.png';
 import AboutPreview from '../../public/nav/about-preview.jpg';
 import ServicesPreview from '../../public/nav/services-preview.jpg';
 import WorksPreview from '../../public/nav/works-preview.jpg';
@@ -219,28 +220,39 @@ const Home: React.FC = () => {
           focusInElements.forEach((el) => focusInObserver.observe(el));
 
           // Scroll-based scale animation for work images and videos
+          // Symmetric animation: scale up on enter, stay full in center, scale down on exit
           const workImages = tsWorksGallery.querySelectorAll('.ts-work-image');
           workImages.forEach((imageContainer) => {
             const media = imageContainer.querySelector('img') || imageContainer.querySelector('video');
             if (media) {
-              // Use GSAP ScrollTrigger for smooth scale animation
-              gsap.fromTo(media,
-                { 
-                  scale: 0.3,
-                  opacity: 0 
-                },
-                {
-                  scale: 1,
-                  opacity: 1,
-                  ease: 'power2.out',
-                  scrollTrigger: {
-                    trigger: imageContainer,
-                    start: 'top 85%',
-                    end: 'top 40%',
-                    scrub: 1,
-                    onEnter: () => imageContainer.classList.add('is-scaled'),
-                  }
+              // Create a timeline for symmetric scaling animation
+              const tl = gsap.timeline({
+                scrollTrigger: {
+                  trigger: imageContainer,
+                  start: 'top 95%',      // Start when image enters viewport
+                  end: 'bottom 5%',      // End when image leaves viewport
+                  scrub: 1,
+                  onEnter: () => imageContainer.classList.add('is-scaled'),
+                  onLeave: () => imageContainer.classList.remove('is-scaled'),
+                  onEnterBack: () => imageContainer.classList.add('is-scaled'),
+                  onLeaveBack: () => imageContainer.classList.remove('is-scaled'),
                 }
+              });
+
+              // Scale up from 0.3 to 1 (first 40% of scroll journey)
+              tl.fromTo(media,
+                { scale: 0.3, opacity: 0 },
+                { scale: 1, opacity: 1, ease: 'power2.out', duration: 0.4 }
+              );
+              
+              // Stay at full scale (middle 20% of scroll journey)
+              tl.to(media,
+                { scale: 1, opacity: 1, duration: 0.2 }
+              );
+              
+              // Scale down from 1 to 0.3 (last 40% of scroll journey)
+              tl.to(media,
+                { scale: 0.3, opacity: 0, ease: 'power2.in', duration: 0.4 }
               );
             }
           });
@@ -377,7 +389,7 @@ const Home: React.FC = () => {
         <div className="bg" ref={aboutBgRef}>
           <div className="bg-scale" style={{ transform: 'scale(0)' }}>
             <Image 
-              src={HomePreview} 
+              src={ImageScale} 
               alt="Background" 
               fill
               className="object-cover"
@@ -803,7 +815,7 @@ const Home: React.FC = () => {
         <div className="header">
           <div className="inner">
             <h2 className="an">
-              <span className="dot">DEVELOPER&apos;S VOICE</span>
+              <span className="dot">COMPILATION</span>
             </h2>
           </div>
         </div>
@@ -858,7 +870,7 @@ const Home: React.FC = () => {
                 <div className="head">
                   <div className="inner">
                     <div className="contents">
-                      <h3 className="dot an anime">DEVELOPER&apos;S VOICE</h3>
+                      <h3 className="dot an anime">COMPILATION</h3>
                       <h2 className="anime">Mizumi みずみ</h2>
                       <h4 className="sans anime">James Rafty D. Libago</h4>
 
@@ -999,7 +1011,7 @@ const Home: React.FC = () => {
                 <div className="head">
                   <div className="inner">
                     <div className="contents">
-                      <h3 className="dot an anime">DEVELOPER&apos;S VOICE</h3>
+                      <h3 className="dot an anime">COMPILATION</h3>
                       <h2 className="anime">Mizumi みずみ</h2>
                       <h4 className="sans anime">James Rafty D. Libago</h4>
 
@@ -1134,7 +1146,7 @@ const Home: React.FC = () => {
           {/* Parallax Gallery - Taiki Sato Style */}
           <div className="parallax-gallery">
             <div className="parallax-image" data-speed="55">
-              <Image src="/gameDev/appIcons/img7.jpg" alt="Gallery 1" width={310} height={410} />
+              <Image src="/images/Home/Article2Par1.jpg" alt="Portfolio Hero" width={310} height={410} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="85">

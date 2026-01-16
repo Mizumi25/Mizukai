@@ -1066,7 +1066,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(100%);
+  filter: grayscale(0);
   transition: filter 1s ease;
 }
 
@@ -1106,21 +1106,21 @@
 #nikon-voice article:nth-of-type(1) .parallax-image:nth-child(1) {
   left: 5%;
   top: 0;
-  width: 11.5rem;
+  width: 18rem;
   height: auto;
 }
 
 #nikon-voice article:nth-of-type(1) .parallax-image:nth-child(2) {
   left: 2%;
   top: 28rem;
-  width: 7rem;
+  width: 12rem;
   height: auto;
 }
 
 #nikon-voice article:nth-of-type(1) .parallax-image:nth-child(3) {
   left: 8%;
   top: 45rem;
-  width: 11.5rem;
+  width: 18rem;
   height: auto;
 }
 
@@ -1129,7 +1129,7 @@
   right: 5%;
   left: auto;
   top: 8rem;
-  width: 9.25rem;
+  width: 15rem;
   height: auto;
 }
 
@@ -1137,7 +1137,7 @@
   right: 8%;
   left: auto;
   top: 28rem;
-  width: 7rem;
+  width: 12rem;
   height: auto;
 }
 
@@ -1145,7 +1145,7 @@
   right: 3%;
   left: auto;
   top: 42rem;
-  width: 10.25rem;
+  width: 16rem;
   height: auto;
 }
 
@@ -1155,21 +1155,21 @@
 #nikon-voice article:nth-of-type(2) .parallax-image:nth-child(1) {
   left: 3%;
   top: 5rem;
-  width: 13.75rem;
+  width: 20rem;
   height: auto;
 }
 
 #nikon-voice article:nth-of-type(2) .parallax-image:nth-child(2) {
   left: 6%;
   top: 32rem;
-  width: 8.75rem;
+  width: 14rem;
   height: auto;
 }
 
 #nikon-voice article:nth-of-type(2) .parallax-image:nth-child(3) {
   left: 2%;
   top: 50rem;
-  width: 11rem;
+  width: 17rem;
   height: auto;
 }
 
@@ -1177,7 +1177,7 @@
   right: 7%;
   left: auto;
   top: 3rem;
-  width: 10rem;
+  width: 16rem;
   height: auto;
 }
 
@@ -1185,7 +1185,7 @@
   right: 4%;
   left: auto;
   top: 25rem;
-  width: 15rem;
+  width: 22rem;
   height: auto;
 }
 
@@ -1193,7 +1193,7 @@
   right: 8%;
   left: auto;
   top: 48rem;
-  width: 7.5rem;
+  width: 13rem;
   height: auto;
 }
 
@@ -1203,21 +1203,21 @@
 #nikon-voice article:nth-of-type(3) .parallax-image:nth-child(1) {
   left: 6%;
   top: 2rem;
-  width: 10.5rem;
+  width: 17rem;
   height: auto;
 }
 
 #nikon-voice article:nth-of-type(3) .parallax-image:nth-child(2) {
   left: 3%;
   top: 30rem;
-  width: 7.5rem;
+  width: 13rem;
   height: auto;
 }
 
 #nikon-voice article:nth-of-type(3) .parallax-image:nth-child(3) {
   left: 8%;
   top: 48rem;
-  width: 13rem;
+  width: 19rem;
   height: auto;
 }
 
@@ -1225,7 +1225,7 @@
   right: 5%;
   left: auto;
   top: 10rem;
-  width: 9rem;
+  width: 15rem;
   height: auto;
 }
 
@@ -1233,7 +1233,7 @@
   right: 3%;
   left: auto;
   top: 33rem;
-  width: 13.75rem;
+  width: 20rem;
   height: auto;
 }
 
@@ -1241,7 +1241,7 @@
   right: 7%;
   left: auto;
   top: 52rem;
-  width: 8rem;
+  width: 14rem;
   height: auto;
 }
 
@@ -1251,21 +1251,21 @@
 #nikon-voice article:nth-of-type(4) .parallax-image:nth-child(1) {
   left: 4%;
   top: 8rem;
-  width: 12rem;
+  width: 18rem;
   height: auto;
 }
 
 #nikon-voice article:nth-of-type(4) .parallax-image:nth-child(2) {
   left: 7%;
   top: 35rem;
-  width: 8rem;
+  width: 14rem;
   height: auto;
 }
 
 #nikon-voice article:nth-of-type(4) .parallax-image:nth-child(3) {
   left: 3%;
   top: 52rem;
-  width: 10rem;
+  width: 16rem;
   height: auto;
 }
 
@@ -1273,7 +1273,7 @@
   right: 6%;
   left: auto;
   top: 5rem;
-  width: 11rem;
+  width: 17rem;
   height: auto;
 }
 
@@ -1281,7 +1281,7 @@
   right: 4%;
   left: auto;
   top: 30rem;
-  width: 14rem;
+  width: 21rem;
   height: auto;
 }
 
@@ -1289,7 +1289,7 @@
   right: 8%;
   left: auto;
   top: 50rem;
-  width: 9rem;
+  width: 15rem;
   height: auto;
 }
 
