@@ -823,33 +823,33 @@ const Home: React.FC = () => {
         {/* Article 1 - EXACT Nikon structure with article_inner + clone */}
         <article>
           <div className="bg">
-            <Image src={HomePreview} alt="Developer" fill className="object-cover" />
+            <Image src="/images/Home/Article1Bg.png" alt="Developer" fill className="object-cover" />
           </div>
 
           {/* Parallax Gallery - Taiki Sato Style */}
           <div className="parallax-gallery">
             <div className="parallax-image" data-speed="50">
-              <Image src="/gameDev/appIcons/img1.jpg" alt="Gallery 1" width={320} height={420} />
+              <Image src="/images/Home/Article1Par1.png" alt="Gallery 1" width={320} height={420} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="80">
-              <Image src="/gameDev/appIcons/img2.jpg" alt="Gallery 2" width={280} height={380} />
+              <Image src="/images/Home/Article1Par2.png" alt="Gallery 2" width={280} height={380} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="60">
-              <Image src="/gameDev/appIcons/img3.jpg" alt="Gallery 3" width={300} height={400} />
+              <Image src="/images/Home/Article1Par3.png" alt="Gallery 3" width={300} height={400} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="70">
-              <Image src="/gameDev/appIcons/img4.jpg" alt="Gallery 4" width={310} height={410} />
+              <Image src="/images/Home/Article1Par4.png" alt="Gallery 4" width={310} height={410} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="90">
-              <Image src="/gameDev/appIcons/img5.jpg" alt="Gallery 5" width={290} height={390} />
+              <Image src="/images/Home/Article1Par5.png" alt="Gallery 5" width={290} height={390} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="55">
-              <Image src="/gameDev/appIcons/img6.jpg" alt="Gallery 6" width={330} height={430} />
+              <Image src="/images/Home/Article1Par6.png" alt="Gallery 6" width={330} height={430} />
               <div className="bg-layer"></div>
             </div>
           </div>
@@ -1150,7 +1150,7 @@ const Home: React.FC = () => {
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="85">
-              <Image src="/gameDev/appIcons/img8.jpg" alt="Gallery 2" width={290} height={390} />
+              <Image src="/images/Home/Article2Par2.png" alt="Gallery 2" width={290} height={390} />
               <div className="bg-layer"></div>
             </div>
             <div className="parallax-image" data-speed="65">
