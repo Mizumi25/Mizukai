@@ -188,6 +188,11 @@
   transform: translate(-50%, -50%);
 }
 
+#nikon-mv .tagline span,
+#nikon-mv .logo span {
+  color: #000 !important;
+}
+
 #nikon-mv .logo {
   position: absolute;
   bottom: 50px;
@@ -198,7 +203,7 @@
 /* Lead section */
 #nikon-lead {
   position: relative;
-  padding: 600px 0 300px;
+  padding: 600px 0 450px;
 }
 
 #nikon-lead::before {

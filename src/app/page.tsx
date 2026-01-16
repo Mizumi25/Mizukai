@@ -223,7 +223,7 @@ const Home: React.FC = () => {
           // Scale up when scrolling down past them, scale down only when scrolling back up
           const workImages = tsWorksGallery.querySelectorAll('.ts-work-image');
           workImages.forEach((imageContainer) => {
-            const media = imageContainer.querySelector('img') || imageContainer.querySelector('video');
+            const media = imageContainer.querySelector('img') || imageContainer.querySelector('video') || imageContainer.querySelector('div');
             if (media) {
               gsap.fromTo(media,
                 { scale: 0.3, opacity: 0 },
@@ -283,6 +283,65 @@ const Home: React.FC = () => {
             }
           });
         }
+
+        // Header visibility and color control based on sections
+        const nav = document.querySelector('nav');
+        
+        // Start with black header
+        document.body.classList.add('header-dark');
+        
+        // nikon-about section (dark gradient with name/Japanese text) - header turns white
+        const nikonAboutSection = document.getElementById('nikon-about');
+        if (nikonAboutSection && nav) {
+          ScrollTrigger.create({
+            trigger: nikonAboutSection,
+            start: 'top 60%',
+            end: 'bottom 50%',
+            onEnter: () => document.body.classList.remove('header-dark'),
+            onLeave: () => document.body.classList.add('header-dark'),
+            onEnterBack: () => document.body.classList.remove('header-dark'),
+            onLeaveBack: () => document.body.classList.add('header-dark'),
+          });
+        }
+        
+        // About Me section - header text turns black
+        const aboutMeSection = document.getElementById('nikon-product');
+        if (aboutMeSection && nav) {
+          ScrollTrigger.create({
+            trigger: aboutMeSection,
+            start: 'top 50%',
+            end: 'bottom 50%',
+            onEnter: () => document.body.classList.add('header-dark'),
+            onLeave: () => document.body.classList.remove('header-dark'),
+            onEnterBack: () => document.body.classList.add('header-dark'),
+            onLeaveBack: () => document.body.classList.remove('header-dark'),
+          });
+        }
+        
+        // Voice/Compilation section - header disappears
+        const voiceSection = document.getElementById('nikon-voice');
+        if (voiceSection && nav) {
+          ScrollTrigger.create({
+            trigger: voiceSection,
+            start: 'top 50%',
+            end: 'bottom 50%',
+            onEnter: () => document.body.classList.add('header-hidden'),
+            onLeave: () => document.body.classList.remove('header-hidden'),
+            onEnterBack: () => document.body.classList.add('header-hidden'),
+            onLeaveBack: () => document.body.classList.remove('header-hidden'),
+          });
+        }
+        
+        // Old Works (pickup) section - header reappears
+        const oldWorksSection = document.getElementById('nikon-pickup');
+        if (oldWorksSection && nav) {
+          ScrollTrigger.create({
+            trigger: oldWorksSection,
+            start: 'top 80%',
+            onEnter: () => document.body.classList.remove('header-hidden'),
+            onLeaveBack: () => document.body.classList.add('header-hidden'),
+          });
+        }
       }); // end requestAnimationFrame
     }; // end initScrollAnimations
 
@@ -319,10 +378,10 @@ const Home: React.FC = () => {
       <section id="nikon-mv">
         <div className="inner">
           <h2 className="tagline">
-            <span className="text-white text-3xl md:text-5xl font-serif">James Rafty D. Libago</span>
+            <span className="text-black text-3xl md:text-5xl font-serif whitespace-nowrap">James Rafty D. Libago</span>
           </h2>
           <h2 className="logo">
-            <span className="text-white text-xl md:text-2xl tracking-widest an">MIZUMI</span>
+            <span className="text-black text-xl md:text-2xl tracking-widest an">Portfolio - Work in Progress</span>
           </h2>
         </div>
       </section>
@@ -332,20 +391,23 @@ const Home: React.FC = () => {
         <div className="inner">
           <div className="txt">
             <h2 className="tagline anime">
-              <span className="text-white text-3xl md:text-4xl font-serif">James Rafty D. Libago</span>
+              <span className="text-black text-3xl md:text-4xl font-serif whitespace-nowrap">James Rafty D. Libago</span>
             </h2>
             <p className="anime">
-              この手を引いて走り出したら<br />
-              きみとぼくはどこまで行けるだろう
+              As you strode deeper and deeper into the unknown<br />
+              <span className="text-sm opacity-70">しらないみちを ふかく ふかく すすむとき</span>
             </p>
             <p className="anime">
-              知らない道をあえて選んで<br />
-              見たことない世界に飛び込んで<br />
-              ふたり一緒ならきっと楽しい
+              Through paths no map could trace<br />
+              <span className="text-sm opacity-70">ちずにない みちを とおって</span>
             </p>
             <p className="anime">
-              ぼくはこの手を引いて走り出す<br />
-              次の景色をきみと見たい
+              You built a world to call your own<br />
+              <span className="text-sm opacity-70">じぶんだけの せかいを つくった</span>
+            </p>
+            <p className="anime">
+              And found your rightful place<br />
+              <span className="text-sm opacity-70">そして じぶんの いばしょを みつけた</span>
             </p>
           </div>
         </div>
@@ -393,7 +455,7 @@ const Home: React.FC = () => {
               with full media query support for responsive design.
             </p>
             <p className="anime decode-tech-stack">
-              Built with Inertia.js & React
+              Built with Inertia.js, React & Tailwind CSS
             </p>
 
             {/* DeCode Video Showcase */}
@@ -435,7 +497,7 @@ const Home: React.FC = () => {
               students and coordinators with real-time monitoring.
             </p>
             <p className="anime decode-tech-stack">
-              Built with Livewire & Volt
+              Built with Livewire, Volt & Tailwind CSS
             </p>
 
             {/* OJTMoni Video Showcase */}
@@ -454,6 +516,44 @@ const Home: React.FC = () => {
                     <h3 className="dot an text-3xl md:text-5xl">
                       OJTMoni
                       <span className="block text-base mt-2 font-serif">Internship Monitoring System</span>
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Car Wash Reservation - Booking System */}
+            <h2 className="ttl anime mt-24">
+              Car Wash Reservation
+            </h2>
+            <p className="anime decode-subtitle">
+              Booking & Scheduling System
+            </p>
+            <p className="anime">
+              A booking scheduling system designed to avoid conflicts<br />
+              and manage reservations efficiently.<br />
+              Features time slot management and booking validation.
+            </p>
+            <p className="anime">
+              Streamlines car wash appointments with<br />
+              conflict-free scheduling and easy management.
+            </p>
+            <p className="anime decode-tech-stack">
+              Built with Laravel, Filament & Tailwind CSS
+            </p>
+
+            {/* Car Wash Reservation Video Showcase */}
+            <div className="movie anime brackets mt-16 cursor-pointer group">
+              <div className="relative overflow-hidden" style={{backgroundColor: '#0a0a0a', aspectRatio: '16/9'}}>
+                {/* Dark placeholder - video coming soon */}
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-gray-600 text-sm">Video Coming Soon</span>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex justify-between items-end">
+                  <div>
+                    <h3 className="dot an text-3xl md:text-5xl">
+                      Car Wash
+                      <span className="block text-base mt-2 font-serif">Reservation System</span>
                     </h3>
                   </div>
                 </div>
@@ -521,12 +621,10 @@ const Home: React.FC = () => {
             <a href="/works/gameDev" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(一)</span>
-                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(一)</span>
-                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Game Development</h3>
                 <ul className="ts-work-type">
@@ -552,12 +650,10 @@ const Home: React.FC = () => {
             <a href="/works/music" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(二)</span>
-                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(二)</span>
-                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Music Production</h3>
                 <ul className="ts-work-type">
@@ -569,11 +665,13 @@ const Home: React.FC = () => {
                 </ul>
               </div>
               <picture className="ts-work-image">
-                <Image src="/musics/musicThumbnails/img1.jpg" alt="Music Production" width={1200} height={800} />
+                <div style={{width: '100%', height: '100%', minHeight: '300px', backgroundColor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <span style={{color: '#333', fontSize: '1.2rem'}}>Coming Soon</span>
+                </div>
               </picture>
             </a>
             <picture className="ts-work-bg">
-              <Image src="/musics/musicThumbnails/img1.jpg" alt="Music Production" width={1920} height={1080} />
+              <div style={{width: '100%', height: '100%', backgroundColor: '#0a0a0a'}}></div>
             </picture>
           </li>
 
@@ -582,12 +680,10 @@ const Home: React.FC = () => {
             <a href="/works/portraits" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(三)</span>
-                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(三)</span>
-                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Portrait Photography</h3>
                 <ul className="ts-work-type">
@@ -599,11 +695,13 @@ const Home: React.FC = () => {
                 </ul>
               </div>
               <picture className="ts-work-image">
-                <Image src="/stories/storyCovers/img1.jpg" alt="Portrait Photography" width={1200} height={800} />
+                <div style={{width: '100%', height: '100%', minHeight: '300px', backgroundColor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <span style={{color: '#333', fontSize: '1.2rem'}}>Coming Soon</span>
+                </div>
               </picture>
             </a>
             <picture className="ts-work-bg">
-              <Image src="/stories/storyCovers/img1.jpg" alt="Portrait Photography" width={1920} height={1080} />
+              <div style={{width: '100%', height: '100%', backgroundColor: '#0a0a0a'}}></div>
             </picture>
           </li>
 
@@ -612,12 +710,10 @@ const Home: React.FC = () => {
             <a href="/works/videoProductions" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(四)</span>
-                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(四)</span>
-                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Video Productions</h3>
                 <ul className="ts-work-type">
@@ -630,11 +726,13 @@ const Home: React.FC = () => {
                 </ul>
               </div>
               <picture className="ts-work-image">
-                <Image src="/gameDev/appIcons/img10.jpg" alt="Video Productions" width={1200} height={800} />
+                <div style={{width: '100%', height: '100%', minHeight: '300px', backgroundColor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <span style={{color: '#333', fontSize: '1.2rem'}}>Coming Soon</span>
+                </div>
               </picture>
             </a>
             <picture className="ts-work-bg">
-              <Image src="/gameDev/appIcons/img10.jpg" alt="Video Productions" width={1920} height={1080} />
+              <div style={{width: '100%', height: '100%', backgroundColor: '#0a0a0a'}}></div>
             </picture>
           </li>
 
@@ -643,12 +741,10 @@ const Home: React.FC = () => {
             <a href="/works/story" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(五)</span>
-                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(五)</span>
-                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Story Writing</h3>
                 <ul className="ts-work-type">
@@ -660,11 +756,13 @@ const Home: React.FC = () => {
                 </ul>
               </div>
               <picture className="ts-work-image">
-                <Image src="/stories/storyCovers/img5.jpg" alt="Story Writing" width={1200} height={800} />
+                <div style={{width: '100%', height: '100%', minHeight: '300px', backgroundColor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <span style={{color: '#333', fontSize: '1.2rem'}}>Coming Soon</span>
+                </div>
               </picture>
             </a>
             <picture className="ts-work-bg">
-              <Image src="/stories/storyCovers/img5.jpg" alt="Story Writing" width={1920} height={1080} />
+              <div style={{width: '100%', height: '100%', backgroundColor: '#0a0a0a'}}></div>
             </picture>
           </li>
 
@@ -673,12 +771,10 @@ const Home: React.FC = () => {
             <a href="#" className="ts-work-link">
               <div className="ts-work-meta">
                 <span className="ts-work-num">(六)</span>
-                <span className="ts-work-year">2025</span>
               </div>
               <div className="ts-work-info">
                 <div className="ts-work-meta-desktop">
                   <span className="ts-work-num">(六)</span>
-                  <span className="ts-work-year">2025</span>
                 </div>
                 <h3 className="ts-work-name">Tailwind Responsive</h3>
                 <ul className="ts-work-type">
@@ -690,23 +786,13 @@ const Home: React.FC = () => {
                 </ul>
               </div>
               <div className="ts-work-image">
-                <video 
-                  src="/videos/Home/tailwind.mp4" 
-                  autoPlay 
-                  loop 
-                  muted 
-                  playsInline
-                />
+                <div style={{width: '100%', height: '100%', minHeight: '300px', backgroundColor: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <span style={{color: '#333', fontSize: '1.2rem'}}>Coming Soon</span>
+                </div>
               </div>
             </a>
             <div className="ts-work-bg">
-              <video 
-                src="/videos/Home/tailwind.mp4" 
-                autoPlay 
-                loop 
-                muted 
-                playsInline
-              />
+              <div style={{width: '100%', height: '100%', backgroundColor: '#0a0a0a'}}></div>
             </div>
           </li>
         </ul>
@@ -2070,39 +2156,39 @@ const Home: React.FC = () => {
         </article>
       </section>
 
-      {/* Pickup Section */}
+      {/* Old Works Section */}
       <section id="nikon-pickup">
         <div className="inner">
-          <h2 className="dot an anime">PICK UP</h2>
+          <h2 className="dot an anime">OLD WORKS</h2>
           <ul className="links">
             <li className="anime">
               <a href="#">
-                <Image src={HomePreview} alt="Pickup 1" className="rounded-lg" />
+                <Image src="/images/Home/old1.jpg" alt="Old Work 1" width={400} height={300} className="rounded-lg" />
               </a>
             </li>
             <li className="anime">
               <a href="#">
-                <Image src={AboutPreview} alt="Pickup 2" className="rounded-lg" />
+                <Image src="/images/Home/old2.jpg" alt="Old Work 2" width={400} height={300} className="rounded-lg" />
               </a>
             </li>
             <li className="anime">
               <a href="#">
-                <Image src={ServicesPreview} alt="Pickup 3" className="rounded-lg" />
+                <Image src="/images/Home/old3.jpg" alt="Old Work 3" width={400} height={300} className="rounded-lg" />
               </a>
             </li>
             <li className="anime">
               <a href="#">
-                <Image src={WorksPreview} alt="Pickup 4" className="rounded-lg" />
+                <Image src="/images/Home/old4.jpg" alt="Old Work 4" width={400} height={300} className="rounded-lg" />
               </a>
             </li>
             <li className="anime">
               <a href="#">
-                <Image src={HomePreview} alt="Pickup 5" className="rounded-lg" />
+                <Image src="/images/Home/old5.jpg" alt="Old Work 5" width={400} height={300} className="rounded-lg" />
               </a>
             </li>
             <li className="anime">
               <a href="#">
-                <Image src={AboutPreview} alt="Pickup 6" className="rounded-lg" />
+                <Image src="/images/Home/old6.jpg" alt="Old Work 6" width={400} height={300} className="rounded-lg" />
               </a>
             </li>
           </ul>
@@ -2114,22 +2200,50 @@ const Home: React.FC = () => {
         <div className="inner">
           <ul className="sns">
             <li>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+              <a href="mailto:Mizumikaitoart@gmail.com" target="_blank" rel="noopener noreferrer" title="Email">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://twitter.com/mizu_kai25" target="_blank" rel="noopener noreferrer" title="Twitter">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                 </svg>
               </a>
             </li>
             <li>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+              <a href="https://facebook.com/Mizukai25" target="_blank" rel="noopener noreferrer" title="Facebook">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
               </a>
             </li>
+            <li>
+              <a href="https://instagram.com/Mizukai025" target="_blank" rel="noopener noreferrer" title="Instagram">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/Mizumi25" target="_blank" rel="noopener noreferrer" title="GitHub">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://youtube.com/@mizumikaito" target="_blank" rel="noopener noreferrer" title="YouTube">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+              </a>
+            </li>
           </ul>
           <div className="copy sans mt-16">
-            © 2025 Mizumi Kaito. All Rights Reserved.
+            © 2025 Mizumi Kaito.
           </div>
         </div>
       </footer>

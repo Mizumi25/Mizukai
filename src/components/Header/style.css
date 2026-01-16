@@ -186,6 +186,37 @@ body.menu-open {
   overflow: hidden;
 }
 
+body.menu-open nav {
+  background: transparent !important;
+  backdrop-filter: none !important;
+}
+
+body.menu-open nav * {
+  color: #000 !important;
+}
+
+/* Header text default white */
+nav {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+nav * {
+  color: #fff !important;
+  transition: color 0.3s ease;
+}
+
+/* Header text black when in About Me section */
+body.header-dark nav * {
+  color: #000 !important;
+}
+
+/* Header hidden when in Voice/Compilation section */
+body.header-hidden nav {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-100%);
+}
+
 /* Container animation properties */
 .container-wrapper {
   /* Avoid clipping the main scroll container; it can break ScrollTrigger pin/fixed positioning */
