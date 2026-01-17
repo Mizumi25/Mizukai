@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import './nikon-zr.css';
+import './mizumi-zr.css';
 import MediaModal, { MediaItem } from '@/components/MediaModal';
 
 // Import images
@@ -171,7 +171,7 @@ const Home: React.FC = () => {
         });
 
         // Voice parallax - EXACT Nikon method (clones already exist in HTML)
-        const articles = document.querySelectorAll('#nikon-voice article');
+        const articles = document.querySelectorAll('#mizumi-voice article');
         
         const topObserver = new IntersectionObserver(
           (entries) => {
@@ -334,9 +334,9 @@ const Home: React.FC = () => {
         }
 
         // Product section - change background to white and text to black
-        const productSection = document.getElementById('nikon-product');
+        const productSection = document.getElementById('mizumi-product');
         const tsWorksGallerySection = document.getElementById('ts-works-gallery');
-        const voiceHeader = document.querySelector('#nikon-voice .header') as HTMLElement;
+        const voiceHeader = document.querySelector('#mizumi-voice .header') as HTMLElement;
         
         if (productSection) {
           ScrollTrigger.create({
@@ -378,11 +378,11 @@ const Home: React.FC = () => {
         // Start with black header
         document.body.classList.add('header-dark');
         
-        // nikon-about section (dark gradient with name/Japanese text) - header turns white
-        const nikonAboutSection = document.getElementById('nikon-about');
-        if (nikonAboutSection && nav) {
+        // mizumi-about section (dark gradient with name/Japanese text) - header turns white
+        const mizumiAboutSection = document.getElementById('mizumi-about');
+        if (mizumiAboutSection && nav) {
           ScrollTrigger.create({
-            trigger: nikonAboutSection,
+            trigger: mizumiAboutSection,
             start: 'top 60%',
             end: 'bottom 50%',
             onEnter: () => document.body.classList.remove('header-dark'),
@@ -393,7 +393,7 @@ const Home: React.FC = () => {
         }
         
         // About Me section - header text turns black
-        const aboutMeSection = document.getElementById('nikon-product');
+        const aboutMeSection = document.getElementById('mizumi-product');
         if (aboutMeSection && nav) {
           ScrollTrigger.create({
             trigger: aboutMeSection,
@@ -407,7 +407,7 @@ const Home: React.FC = () => {
         }
         
         // Voice/Compilation section - header disappears
-        const voiceSection = document.getElementById('nikon-voice');
+        const voiceSection = document.getElementById('mizumi-voice');
         if (voiceSection && nav) {
           ScrollTrigger.create({
             trigger: voiceSection,
@@ -421,7 +421,7 @@ const Home: React.FC = () => {
         }
         
         // Old Works (pickup) section - header reappears
-        const oldWorksSection = document.getElementById('nikon-pickup');
+        const oldWorksSection = document.getElementById('mizumi-pickup');
         if (oldWorksSection && nav) {
           ScrollTrigger.create({
             trigger: oldWorksSection,
@@ -450,9 +450,9 @@ const Home: React.FC = () => {
   }, []);
 
   return (
-    <div className="nikon-page">
+    <div className="mizumi-page">
       {/* Background Video */}
-      <div id="nikon-bg-video">
+      <div id="mizumi-bg-video">
         <video
           autoPlay
           loop
@@ -463,7 +463,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Main Visual Section */}
-      <section id="nikon-mv">
+      <section id="mizumi-mv">
         <div className="inner">
           <h2 className="tagline">
             <span className="text-black text-3xl md:text-5xl font-serif whitespace-nowrap">James Rafty D. Libago</span>
@@ -475,7 +475,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Lead Section */}
-      <section id="nikon-lead">
+      <section id="mizumi-lead">
         <div className="inner">
           <div className="txt">
             <h2 className="tagline anime">
@@ -502,7 +502,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Zoom Section - PINNED */}
-      <section id="nikon-zoom" ref={zoomSectionRef}>
+      <section id="mizumi-zoom" ref={zoomSectionRef}>
         <div className="inner" ref={zoomInnerRef}>
           <h2 className="logo">
             <span className="text-white text-4xl md:text-6xl tracking-[0.15em] font-light pc">PORTFOLIO</span>
@@ -512,7 +512,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* About Section - PINNED BACKGROUND - Project Showcases */}
-      <section id="nikon-about" ref={aboutSectionRef}>
+      <section id="mizumi-about" ref={aboutSectionRef}>
         <div className="bg" ref={aboutBgRef}>
           <div className="bg-scale" style={{ transform: 'scale(0)' }}>
             <Image 
@@ -931,7 +931,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* About Me Section */}
-      <section id="nikon-product">
+      <section id="mizumi-product">
         <div className="inner">
           <div className="flex">
             <div className="img">
@@ -996,7 +996,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Voice Section - EXACT Nikon Structure */}
-      <section id="nikon-voice">
+      <section id="mizumi-voice">
         <div className="header">
           <div className="inner">
             <h2 className="an">
@@ -2278,7 +2278,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Old Works Section */}
-      <section id="nikon-pickup">
+      <section id="mizumi-pickup">
         <div className="inner">
           <h2 className="dot an anime">OLD WORKS</h2>
           <ul className="links">
@@ -2317,7 +2317,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer id="nikon-footer">
+      <footer id="mizumi-footer">
         <div className="inner">
           <ul className="sns">
             <li>
