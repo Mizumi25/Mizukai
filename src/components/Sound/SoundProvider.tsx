@@ -18,6 +18,7 @@ const STORAGE_KEY = 'mizukai_sound_preference';
 export function SoundProvider({ children }: { children: React.ReactNode }) {
   const [loaded, setLoaded] = useState(false);
   const [preference, setPreferenceState] = useState<SoundPreference>('unknown');
+  const [entranceComplete, setEntranceComplete] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Load stored preference once - ALWAYS START WITH 'unknown' to show gate
@@ -25,6 +26,18 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     // Always start with 'unknown' so sound gate shows every time
     setPreferenceState('unknown');
     setLoaded(true);
+  }, []);
+
+  // Listen for entrance animation complete
+  useEffect(() => {
+    const handleEntranceComplete = () => {
+      setEntranceComplete(true);
+    };
+
+    window.addEventListener('entranceComplete', handleEntranceComplete);
+    return () => {
+      window.removeEventListener('entranceComplete', handleEntranceComplete);
+    };
   }, []);
 
   // Create audio element once.
@@ -41,22 +54,22 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Apply preference -> play/pause.
+  // Apply preference -> play/pause (only after entrance completes)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (preference === 'on') {
+    if (preference === 'on' && entranceComplete) {
       audio.muted = false;
       audio.volume = 0.8;
       audio.play().catch(() => {
         // Autoplay can still be blocked; user can tap the floating button.
       });
-    } else {
+    } else if (preference === 'off') {
       audio.pause();
       audio.currentTime = 0;
     }
-  }, [preference]);
+  }, [preference, entranceComplete]);
 
   const setPreference = useCallback((p: Exclude<SoundPreference, 'unknown'>) => {
     setPreferenceState(p);

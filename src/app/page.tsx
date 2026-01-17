@@ -391,7 +391,7 @@ const Home: React.FC = () => {
         <div className="inner">
           <div className="txt">
             <h2 className="tagline anime">
-              <span className="text-black text-3xl md:text-4xl font-serif whitespace-nowrap">James Rafty D. Libago</span>
+              <span className="text-white text-3xl md:text-4xl font-serif whitespace-nowrap">James Rafty D. Libago</span>
             </h2>
             <p className="anime">
               As you strode deeper and deeper into the unknown<br />
