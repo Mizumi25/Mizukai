@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './nikon-zr.css';
+import MediaModal, { MediaItem } from '@/components/MediaModal';
 
 // Import images
 import HomePreview from '../../public/nav/home-preview.jpg';
@@ -16,11 +17,98 @@ import Profile from '../../public/images/profile.jpg';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Define media items for the About section (project showcases)
+const projectMedia: MediaItem[] = [
+  {
+    type: 'video',
+    src: '/videos/Home/DeCodeShowcase.mp4',
+    title: 'DeCode',
+    subtitle: 'Frontend Visual Builder',
+  },
+  {
+    type: 'video',
+    src: '/videos/Home/ojtmoni.mp4',
+    title: 'OJTMoni',
+    subtitle: 'Internship Monitoring System',
+  },
+  {
+    type: 'video',
+    src: '/videos/InShot_20240509_195843430.mp4',
+    title: 'Byte',
+    subtitle: 'Peripherals E-Commerce',
+  },
+];
+
+// Define media items for Works gallery
+const worksMedia: MediaItem[] = [
+  {
+    type: 'image',
+    src: '/images/Home/game1.jpg',
+    alt: 'Game Development',
+    title: 'Game Development',
+    subtitle: 'Godot & GScript',
+  },
+  {
+    type: 'image',
+    src: '/images/Home/Article1Bg.png',
+    alt: 'Portfolio Work',
+    title: 'Portfolio',
+    subtitle: 'Compilation Gallery',
+  },
+  {
+    type: 'image',
+    src: '/images/Home/Article2Bg.jpg',
+    alt: 'Portfolio Work 2',
+    title: 'Portfolio',
+    subtitle: 'Compilation Gallery',
+  },
+  {
+    type: 'image',
+    src: '/images/Home/Article3Bg.png',
+    alt: 'Portfolio Work 3',
+    title: 'Portfolio',
+    subtitle: 'Compilation Gallery',
+  },
+  {
+    type: 'image',
+    src: '/images/Home/Article4Bg.png',
+    alt: 'Portfolio Work 4',
+    title: 'Portfolio',
+    subtitle: 'Compilation Gallery',
+  },
+];
+
 const Home: React.FC = () => {
   const zoomSectionRef = useRef<HTMLElement>(null);
   const zoomInnerRef = useRef<HTMLDivElement>(null);
   const aboutSectionRef = useRef<HTMLElement>(null);
   const aboutBgRef = useRef<HTMLDivElement>(null);
+  
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentMedia, setCurrentMedia] = useState<MediaItem | null>(null);
+  const [currentMediaList, setCurrentMediaList] = useState<MediaItem[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Modal handlers
+  const openModal = useCallback((media: MediaItem, mediaList: MediaItem[] = [], index: number = 0) => {
+    setCurrentMedia(media);
+    setCurrentMediaList(mediaList);
+    setCurrentIndex(index);
+    setIsModalOpen(true);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+    setCurrentMedia(null);
+  }, []);
+
+  const handleNavigate = useCallback((index: number) => {
+    if (currentMediaList[index]) {
+      setCurrentIndex(index);
+      setCurrentMedia(currentMediaList[index]);
+    }
+  }, [currentMediaList]);
 
   useEffect(() => {
     // Function to initialize all ScrollTrigger animations
@@ -459,7 +547,10 @@ const Home: React.FC = () => {
             </p>
 
             {/* DeCode Video Showcase */}
-            <div className="movie anime brackets mt-16 cursor-pointer group">
+            <div 
+              className="movie anime brackets mt-16 cursor-pointer group"
+              onClick={() => openModal(projectMedia[0], projectMedia, 0)}
+            >
               <div className="relative overflow-hidden">
                 <video 
                   className="w-full object-cover"
@@ -475,6 +566,14 @@ const Home: React.FC = () => {
                       DeCode
                       <span className="block text-base mt-2 font-serif">Visual Code Builder</span>
                     </h3>
+                  </div>
+                  {/* Play button indicator */}
+                  <div className="btn_play opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <svg className="w-6 h-6 md:w-8 md:h-8 ml-1" viewBox="0 0 24 24" fill="white">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -501,7 +600,10 @@ const Home: React.FC = () => {
             </p>
 
             {/* OJTMoni Video Showcase */}
-            <div className="movie anime brackets mt-16 cursor-pointer group">
+            <div 
+              className="movie anime brackets mt-16 cursor-pointer group"
+              onClick={() => openModal(projectMedia[1], projectMedia, 1)}
+            >
               <div className="relative overflow-hidden">
                 <video 
                   className="w-full object-cover"
@@ -517,6 +619,14 @@ const Home: React.FC = () => {
                       OJTMoni
                       <span className="block text-base mt-2 font-serif">Internship Monitoring System</span>
                     </h3>
+                  </div>
+                  {/* Play button indicator */}
+                  <div className="btn_play opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <svg className="w-6 h-6 md:w-8 md:h-8 ml-1" viewBox="0 0 24 24" fill="white">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -577,7 +687,10 @@ const Home: React.FC = () => {
             </p>
 
             {/* Byte Video Showcase */}
-            <div className="movie anime brackets mt-16 cursor-pointer group">
+            <div 
+              className="movie anime brackets mt-16 cursor-pointer group"
+              onClick={() => openModal(projectMedia[2], projectMedia, 2)}
+            >
               <div className="relative overflow-hidden">
                 <video 
                   className="w-full object-cover"
@@ -593,6 +706,14 @@ const Home: React.FC = () => {
                       Byte
                       <span className="block text-base mt-2 font-serif">Peripherals E-Commerce</span>
                     </h3>
+                  </div>
+                  {/* Play button indicator */}
+                  <div className="btn_play opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <svg className="w-6 h-6 md:w-8 md:h-8 ml-1" viewBox="0 0 24 24" fill="white">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2247,6 +2368,16 @@ const Home: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Media Modal */}
+      <MediaModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        media={currentMedia}
+        allMedia={currentMediaList}
+        currentIndex={currentIndex}
+        onNavigate={handleNavigate}
+      />
     </div>
   );
 };
