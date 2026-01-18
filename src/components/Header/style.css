@@ -125,19 +125,40 @@ a,
 }
 
 /* Menu preview image specific styles */
-.menu-preview-img img {
+/* .menu-preview-img img {
   position: absolute;
   will-change: transform, opacity;
   top: 0;
   left: 0;
-}
+}*/
 
 /* Ensure Next.js Image component fills container */
-.menu-preview-img > span {
+/* .menu-preview-img > span {
   display: block !important;
   width: 100% !important;
   height: 100% !important;
 }
+*/
+
+
+.menu-preview-placeholder {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  background: #f4c2d7;
+  transition: background-color 0.4s ease, transform 0.4s ease;
+  will-change: transform, opacity;
+}
+
+
+.menu-preview-placeholder::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+}
+
 
 /* Clip path for menu items */
 .clip-polygon {
