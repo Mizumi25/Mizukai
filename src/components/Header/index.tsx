@@ -171,33 +171,75 @@ const Header: React.FC = () => {
       else closeMenu();
     });
 
-    menuLinks.forEach((link) => {
-      link.addEventListener("mouseover", () => {
-        if (!isOpen || isAnimating) return;
-        const imgSrc = link.getAttribute("data-img");
-        if (!imgSrc) return;
+//    menuLinks.forEach((link) => {
+//      link.addEventListener("mouseover", () => {
+//        if (!isOpen || isAnimating) return;
+//        const imgSrc = link.getAttribute("data-img");
+ //       if (!imgSrc) return;
 
-        const newPreviewImg = document.createElement("img");
-        newPreviewImg.src = imgSrc;
-        newPreviewImg.style.opacity = "0";
-        newPreviewImg.style.transform = "scale(1.25) rotate(10deg)";
-        newPreviewImg.style.position = "absolute";
-        newPreviewImg.style.width = "100%";
-        newPreviewImg.style.height = "100%";
-        newPreviewImg.style.objectFit = "cover";
+ //       const newPreviewImg = document.createElement("img");
+//        newPreviewImg.src = imgSrc;
+//      newPreviewImg.style.opacity = "0";
+//        newPreviewImg.style.transform = "scale(1.25) rotate(10deg)";
+//        newPreviewImg.style.position = "absolute";
+ //       newPreviewImg.style.width = "100%";
+//        newPreviewImg.style.height = "100%";
+//        newPreviewImg.style.objectFit = "cover";
 
-        menuPreviewImg.appendChild(newPreviewImg);
-        cleanupPreviewImages();
+//        menuPreviewImg.appendChild(newPreviewImg);
+//        cleanupPreviewImages();
 
-        gsap.to(newPreviewImg, {
-          opacity: 1,
-          scale: 1,
-          rotation: 0,
-          duration: 0.75,
-          ease: "power2.out",
-        });
-      });
-    });
+//        gsap.to(newPreviewImg, {
+//          opacity: 1,
+ //         scale: 1,
+//          rotation: 0,
+//          duration: 0.75,
+//          ease: "power2.out",
+//        });
+//      });
+//    });
+
+
+
+menuLinks.forEach((link) => {
+  link.addEventListener("mouseover", () => {
+    if (!isOpen || isAnimating || !menuPreviewImg) return;
+
+    // Remove previous placeholders
+    menuPreviewImg.innerHTML = "";
+
+    const placeholder = document.createElement("div");
+    placeholder.className = "menu-preview-placeholder";
+
+    // Soft minimalist palette
+    const colors = [
+      "#F4C2D7", // soft pink
+      "#E6E6FA", // lavender
+      "#FFF1DC", // cream
+      "#E8F0F2", // soft blue-gray
+    ];
+
+    placeholder.style.background =
+      colors[Math.floor(Math.random() * colors.length)];
+
+    menuPreviewImg.appendChild(placeholder);
+
+    gsap.fromTo(
+      placeholder,
+      { opacity: 0, scale: 1.15, rotate: 6 },
+      {
+        opacity: 1,
+        scale: 1,
+        rotate: 0,
+        duration: 0.7,
+        ease: "power2.out",
+      }
+    );
+  });
+});
+
+
+    
 
     function animateMenuToggle(isOpening: boolean) {
       const open = document.querySelector("p#menu-open");
@@ -274,13 +316,15 @@ const Header: React.FC = () => {
           <div className="menu-items w-full px-10 py-10 flex gap-10"> 
             <div className="col-lg flex-[3] flex justify-center items-center">
               <div className="menu-preview-img relative w-[45%] h-96 overflow-hidden rounded-lg">
-                <Image 
+              /*  <Image 
                   src="/nav/home-preview.jpg" 
                   width={400} 
                   height={400} 
                   alt="Profile preview" 
                   className="absolute top-0 left-0 w-full h-full object-cover"
-                />
+                /> */
+
+                <div className="menu-preview-placeholder"></div>
               </div>
             </div>
             <div className="col-sm flex-[2] px-0 py-10 flex flex-col gap-10">
