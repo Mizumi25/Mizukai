@@ -305,7 +305,7 @@ menuLinks.forEach((link) => {
           <p id="menu-close" className="absolute origin-top-left">Close</p>
           {/* Vertical text on left side of menu */}
           <div className="vertical-text ts-focus-in" data-active="true">
-            <span className="vertical-mizumi">Mizumi</span>
+            <span className="vertical-mizumi">かいと</span>
             <span className="vertical-hiragana">みずみ</span>
           </div>
         </div>
