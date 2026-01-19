@@ -497,6 +497,9 @@ const Home: React.FC = () => {
               And found your rightful place<br />
               <span className="text-sm opacity-70">そして じぶんの いばしょを みつけた</span>
             </p>
+            <p className="anime" >
+              Most of my projects, including full-stack systems, were built primarily on my phone. Working under this constraint taught me to optimize every step of development
+            </p>
           </div>
         </div>
       </section>
