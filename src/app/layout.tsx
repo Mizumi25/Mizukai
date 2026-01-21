@@ -1,6 +1,3 @@
-
-
-
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -9,8 +6,6 @@ import { SoundProvider } from '@/components/Sound/SoundProvider'
 import SoundGate from '@/components/Sound/SoundGate'
 import Header from "@/components/Header";
 import Entrance from "@/components/EntraceOne";
-// import LenisWrapper from "@/components/LenisWrapper";
-
 
 const nikkyou = localFont({
   src: "../fonts/NikkyouSans-mLKax.ttf",
@@ -24,18 +19,27 @@ const hiragino = localFont({
 
 export const metadata: Metadata = {
   title: "Mizumi Kaito",
-  description: "This is a portfolio displaying James Rafty D. Libago's technical skills and abilities, blogs, and hobbies, please fell free to browse.",
+  description:
+    "This is a portfolio displaying James Rafty D. Libago's technical skills and abilities, blogs, and hobbies, please fell free to browse.",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
+      <head>
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="e6b811cb-dd17-4c69-9b7e-e2a1de9f8f33"
+        />
+      </head>
+
       <body
-      className={`${nikkyou.variable} ${hiragino.variable} antialiased`}
+        className={`${nikkyou.variable} ${hiragino.variable} antialiased`}
       >
         <SoundProvider>
           <SoundGate>
@@ -45,7 +49,7 @@ export default function RootLayout({
             </Entrance>
           </SoundGate>
         </SoundProvider>
-        
+
         {/* Portal root for viewport-fixed overlays */}
         <div id="overlay-root" />
       </body>
