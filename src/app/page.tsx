@@ -268,7 +268,7 @@ const Home: React.FC = () => {
           handleScroll();
         });
 
-        // Taiki Sato Works Gallery - Hover Interactions
+        // works Gallery - Hover Interactions
         const tsWorksGallery = document.getElementById('ts-works-gallery');
         if (tsWorksGallery) {
           const workItems = tsWorksGallery.querySelectorAll('.ts-work-item');
@@ -637,7 +637,7 @@ const Home: React.FC = () => {
 
             {/* Car Wash Reservation - Booking System */}
             <h2 className="ttl anime mt-24">
-              Car Wash Reservation
+              Car Wash Reservation(Video is the unfinished version) 
             </h2>
             <p className="anime decode-subtitle">
               Booking & Scheduling System
@@ -656,12 +656,19 @@ const Home: React.FC = () => {
             </p>
 
             {/* Car Wash Reservation Video Showcase */}
-            <div className="movie anime brackets mt-16 cursor-pointer group">
-              <div className="relative overflow-hidden" style={{backgroundColor: '#0a0a0a', aspectRatio: '16/9'}}>
-                {/* Dark placeholder - video coming soon */}
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-gray-600 text-sm">Video Coming Soon</span>
-                </div>
+            <div 
+              className="movie anime brackets mt-16 cursor-pointer group"
+              onClick={() => openModal(projectMedia[1], projectMedia, 1)}
+            >
+              <div className="relative overflow-hidden">
+                <video 
+                  className="w-full object-cover"
+                  src="/videos/Home/carws.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                />
                 <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex justify-between items-end">
                   <div>
                     <h3 className="dot an text-3xl md:text-5xl">
