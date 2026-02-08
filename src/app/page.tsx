@@ -37,6 +37,12 @@ const projectMedia: MediaItem[] = [
     title: 'Byte',
     subtitle: 'Peripherals E-Commerce',
   },
+    {
+    type: 'video',
+    src: '/videos/carws.mp4',
+    title: 'CarWash',
+    subtitle: 'CarWash reservation',
+  },
 ];
 
 // Define media items for Works gallery
@@ -658,7 +664,7 @@ const Home: React.FC = () => {
             {/* Car Wash Reservation Video Showcase */}
             <div 
               className="movie anime brackets mt-16 cursor-pointer group"
-              onClick={() => openModal(projectMedia[1], projectMedia, 1)}
+              onClick={() => openModal(projectMedia[3], projectMedia, 3)}
             >
               <div className="relative overflow-hidden">
                 <video 
@@ -675,6 +681,14 @@ const Home: React.FC = () => {
                       Car Wash
                       <span className="block text-base mt-2 font-serif">Reservation System</span>
                     </h3>
+                  </div>
+                  {/* Play button indicator */}
+                  <div className="btn_play opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <svg className="w-6 h-6 md:w-8 md:h-8 ml-1" viewBox="0 0 24 24" fill="white">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
