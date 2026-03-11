@@ -457,16 +457,16 @@ const Home: React.FC = () => {
 
   return (
     <div className="mizumi-page">
-      {/* Background Video */}
-      <div id="mizumi-bg-video">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          src="/videos/Home/LogoIntro.mp4"
-        />
-      </div>
+      {/* Background Logo */}
+<div id="mizumi-bg-video">
+  <Image
+    src="/images/Home/Initiallogo.png"
+    alt="Logo"
+    fill
+    className="object-contain"
+    priority
+  />
+</div>
 
       {/* Main Visual Section */}
       <section id="mizumi-mv">
