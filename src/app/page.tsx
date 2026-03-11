@@ -458,7 +458,7 @@ const Home: React.FC = () => {
   return (
     <div className="mizumi-page">
 {/* Background Logo */}
-<div id="mizumi-bg-video">
+<div id="mizumi-bg-video" style={{ height: '100vh' }}>
   <Image
     src="/images/Home/Initiallogo.png"
     alt="Logo"
