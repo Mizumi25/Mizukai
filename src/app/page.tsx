@@ -457,13 +457,13 @@ const Home: React.FC = () => {
 
   return (
     <div className="mizumi-page">
-      {/* Background Logo */}
+{/* Background Logo */}
 <div id="mizumi-bg-video">
   <Image
     src="/images/Home/Initiallogo.png"
     alt="Logo"
     fill
-    className="object-contain"
+    className="object-cover"
     priority
   />
 </div>
