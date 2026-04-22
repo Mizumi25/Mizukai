@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   title: "Mizumi Kaito",
   description:
     "This is a portfolio displaying James Rafty D. Libago's technical skills and abilities, blogs, and hobbies, please fell free to browse.",
+  verification: {
+    google: "EczX1nu6UgxsgWIoC0u-apwTol9FV7tv0ZV-HSip2ys",
+  },
 };
 
 export default function RootLayout({
