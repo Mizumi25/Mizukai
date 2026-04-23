@@ -84,6 +84,13 @@ const worksMedia: MediaItem[] = [
   },
 ];
 
+const shortsLinks = [
+  'https://m.youtube.com/shorts/BBQyhWfyDMY',
+  'https://m.youtube.com/shorts/BLeAEa-NIqE',
+  'https://m.youtube.com/shorts/U-nkvZL71xk',
+  'https://m.youtube.com/shorts/-aKXDlEF4cE',
+];
+
 const Home: React.FC = () => {
   const zoomSectionRef = useRef<HTMLElement>(null);
   const zoomInnerRef = useRef<HTMLDivElement>(null);
@@ -743,6 +750,31 @@ const Home: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="mizumi-shorts" aria-label="YouTube Shorts">
+        <div className="inner">
+          <div className="mizumi-shorts-header">
+            <h2 className="dot an">SHORTS</h2>
+          </div>
+          <ul className="mizumi-shorts-row" role="list">
+            {shortsLinks.map((url, index) => (
+              <li key={url} className="mizumi-shorts-item">
+                <a
+                  className="mizumi-shorts-card"
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Open YouTube Short ${index + 1} in a new tab`}
+                >
+                  <span className="mizumi-shorts-badge">▶ Shorts</span>
+                  <span className="mizumi-shorts-preview" aria-hidden="true" />
+                  <span className="mizumi-shorts-title">Short {index + 1}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
