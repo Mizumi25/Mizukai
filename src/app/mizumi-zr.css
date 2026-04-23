@@ -9,6 +9,7 @@
   font-size: 1.6rem;
   line-height: 1.8;
   letter-spacing: 0.05em;
+  overflow-x: hidden;
 }
 
 .mizumi-page .an {
@@ -1464,6 +1465,7 @@
   cursor: pointer;
   position: relative;
   padding: 0;
+  overflow: hidden;
 }
 
 #mizumi-shorts .mizumi-shorts-preview-frame::after {
@@ -1499,10 +1501,45 @@
   background-position: center;
 }
 
+#mizumi-shorts .mizumi-shorts-hover-info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.7rem 0.8rem;
+  display: grid;
+  gap: 0.35rem;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(7, 8, 7, 0.88) 52%);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+  pointer-events: none;
+}
+
+#mizumi-shorts .mizumi-shorts-hover-title {
+  font-size: 0.85rem;
+  line-height: 1.3;
+  font-weight: 600;
+  color: #fff;
+}
+
+#mizumi-shorts .mizumi-shorts-hover-description {
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+#mizumi-shorts .mizumi-shorts-card:hover .mizumi-shorts-hover-info,
+#mizumi-shorts .mizumi-shorts-card:focus-within .mizumi-shorts-hover-info,
+#mizumi-shorts .mizumi-shorts-card.is-active .mizumi-shorts-hover-info {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 #mizumi-shorts .mizumi-shorts-info {
   padding: 0.9rem;
   display: grid;
-  gap: 0.5rem;
+  gap: 0.35rem;
   background: rgba(8, 10, 8, 0.6);
 }
 
@@ -1511,17 +1548,6 @@
   font-size: 0.78rem;
   line-height: 1.45;
   color: rgba(255, 255, 255, 0.74);
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-}
-
-#mizumi-shorts .mizumi-shorts-card:hover .mizumi-shorts-description,
-#mizumi-shorts .mizumi-shorts-card:focus-within .mizumi-shorts-description,
-#mizumi-shorts .mizumi-shorts-card.is-active .mizumi-shorts-description {
-  max-height: 3.5rem;
-  opacity: 1;
 }
 
 #mizumi-shorts .mizumi-shorts-link {
@@ -1553,16 +1579,25 @@
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  align-items: baseline;
+  align-items: flex-start;
   padding: 0.8rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
   font-size: 0.85rem;
+}
+
+#mizumi-shorts .mizumi-shorts-list-description {
+  margin: 0.25rem 0 0;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 28rem;
 }
 
 #mizumi-shorts .mizumi-shorts-list a {
   color: rgba(255, 255, 255, 0.88);
   text-decoration: underline;
   text-underline-offset: 2px;
+  white-space: nowrap;
 }
 
 @media (max-width: 767px) {
@@ -1578,6 +1613,85 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.35rem;
+  }
+}
+
+/* ============================================
+   ARKZEN Coming Soon
+   ============================================ */
+#arkzen-coming-soon {
+  position: relative;
+  padding: 0 0 5.5rem;
+  background: #161916;
+}
+
+#arkzen-coming-soon .arkzen-inner {
+  border: 1px solid rgba(110, 58, 77, 0.24);
+  border-radius: 18px;
+  padding: 1.8rem;
+  background: linear-gradient(160deg, #ffdfe9 0%, #ffd7e5 55%, #ffd1e1 100%);
+  color: #2f1f26;
+}
+
+#arkzen-coming-soon .arkzen-inner h2 {
+  margin: 0;
+  color: #2b1b22;
+}
+
+#arkzen-coming-soon .arkzen-subhead {
+  margin: 0.55rem 0 0;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: rgba(47, 31, 38, 0.82);
+}
+
+#arkzen-coming-soon .arkzen-features {
+  margin: 1.2rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+#arkzen-coming-soon .arkzen-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid rgba(110, 58, 77, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.45);
+  min-height: 3rem;
+  padding: 0.7rem 0.8rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+#arkzen-coming-soon .arkzen-feature-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: #6f3f50;
+}
+
+@media (max-width: 767px) {
+  #arkzen-coming-soon {
+    padding-bottom: 3.5rem;
+  }
+
+  #arkzen-coming-soon .arkzen-inner {
+    border-radius: 14px;
+    padding: 1.25rem;
+  }
+
+  #arkzen-coming-soon .arkzen-features {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mizumi-shorts .mizumi-shorts-hover-info {
+    transition: none;
   }
 }
 
