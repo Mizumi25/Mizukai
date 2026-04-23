@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { AppWindow, Component, Flower2, WandSparkles } from 'lucide-react';
 import './mizumi-zr.css';
 import MediaModal, { MediaItem } from '@/components/MediaModal';
 
@@ -215,8 +214,6 @@ const Home: React.FC = () => {
         const arkzenSection = arkzenSectionRef.current;
         if (arkzenSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           const arkzenInner = arkzenSection.querySelector('.arkzen-inner');
-          const arkzenFeatures = arkzenSection.querySelectorAll('.arkzen-feature');
-          const arkzenIcons = arkzenSection.querySelectorAll('.arkzen-feature-icon');
 
           if (arkzenInner) {
             gsap.fromTo(
@@ -234,40 +231,6 @@ const Home: React.FC = () => {
               }
             );
           }
-
-          if (arkzenFeatures.length) {
-            gsap.fromTo(
-              arkzenFeatures,
-              { autoAlpha: 0, y: 20 },
-              {
-                autoAlpha: 1,
-                y: 0,
-                duration: 0.7,
-                stagger: 0.12,
-                ease: 'power2.out',
-                scrollTrigger: {
-                  trigger: arkzenSection,
-                  start: 'top 78%',
-                },
-              }
-            );
-          }
-
-          arkzenIcons.forEach((icon, index) => {
-            gsap.to(icon, {
-              y: -4,
-              duration: 2 + index * 0.2,
-              repeat: -1,
-              yoyo: true,
-              ease: 'sine.inOut',
-              scrollTrigger: {
-                trigger: arkzenSection,
-                start: 'top bottom',
-                end: 'bottom top',
-                toggleActions: 'play pause resume pause',
-              },
-            });
-          });
         }
 
         // Voice parallax - EXACT Nikon method (clones already exist in HTML)
@@ -926,26 +889,8 @@ const Home: React.FC = () => {
       <section id="arkzen-coming-soon" aria-labelledby="arkzen-heading" ref={arkzenSectionRef}>
         <div className="inner">
           <div className="arkzen-inner">
-            <h2 id="arkzen-heading" className="dot an">Coming soon: ARKZEN</h2>
-            <p className="arkzen-subhead">Personal framework</p>
-            <ul className="arkzen-features" role="list">
-              <li className="arkzen-feature">
-                <WandSparkles className="arkzen-feature-icon" aria-hidden="true" />
-                <span>GSAP-powered motion</span>
-              </li>
-              <li className="arkzen-feature">
-                <AppWindow className="arkzen-feature-icon" aria-hidden="true" />
-                <span>Lucide icon system</span>
-              </li>
-              <li className="arkzen-feature">
-                <Flower2 className="arkzen-feature-icon" aria-hidden="true" />
-                <span>Sakura UI theme</span>
-              </li>
-              <li className="arkzen-feature">
-                <Component className="arkzen-feature-icon" aria-hidden="true" />
-                <span>Component-first</span>
-              </li>
-            </ul>
+            <h2 id="arkzen-heading" className="dot an">ARKZEN</h2>
+            <p className="arkzen-subhead">Upcoming personal framework</p>
           </div>
         </div>
       </section>
