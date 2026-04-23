@@ -892,6 +892,7 @@ const Home: React.FC = () => {
                   </button>
                   <div className="mizumi-shorts-info">
                     <h3 className="mizumi-shorts-title">{short.title}</h3>
+                    <p className="mizumi-shorts-description">{short.description}</p>
                     <a
                       className="mizumi-shorts-link"
                       href={short.url}

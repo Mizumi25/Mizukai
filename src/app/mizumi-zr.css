@@ -1548,17 +1548,6 @@
   font-size: 0.78rem;
   line-height: 1.45;
   color: rgba(255, 255, 255, 0.74);
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-}
-
-#mizumi-shorts .mizumi-shorts-card:hover .mizumi-shorts-description,
-#mizumi-shorts .mizumi-shorts-card:focus-within .mizumi-shorts-description,
-#mizumi-shorts .mizumi-shorts-card.is-active .mizumi-shorts-description {
-  max-height: 3.5rem;
-  opacity: 1;
 }
 
 #mizumi-shorts .mizumi-shorts-link {
@@ -1590,7 +1579,7 @@
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  align-items: center;
+  align-items: flex-start;
   padding: 0.8rem 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
   font-size: 0.85rem;
