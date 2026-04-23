@@ -1402,6 +1402,90 @@
 }
 
 /* ============================================
+   Shorts Section
+   ============================================ */
+#mizumi-shorts {
+  position: relative;
+  padding: 6rem 0;
+  background: #161916;
+  z-index: 10;
+}
+
+#mizumi-shorts .mizumi-shorts-header h2 {
+  margin-bottom: 2rem;
+}
+
+#mizumi-shorts .mizumi-shorts-row {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  padding: 0 0 0.5rem;
+  margin: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+}
+
+#mizumi-shorts .mizumi-shorts-item {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+#mizumi-shorts .mizumi-shorts-card {
+  width: 176px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: #ffffff;
+  border-radius: 18px;
+  padding: 0.75rem;
+  background: linear-gradient(160deg, #ff2b56 0%, #a21874 50%, #2a1f54 100%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#mizumi-shorts .mizumi-shorts-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+}
+
+#mizumi-shorts .mizumi-shorts-card:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+#mizumi-shorts .mizumi-shorts-badge {
+  align-self: flex-start;
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+#mizumi-shorts .mizumi-shorts-preview {
+  flex: 1;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.12) 100%);
+}
+
+#mizumi-shorts .mizumi-shorts-title {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  #mizumi-shorts {
+    padding: 3.5rem 0;
+  }
+}
+
+/* ============================================
    Taiki Sato Works Gallery Section
    ============================================ */
 #ts-works-gallery {
