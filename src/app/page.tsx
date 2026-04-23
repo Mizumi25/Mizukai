@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { AppWindow, Component, Flower2, WandSparkles } from 'lucide-react';
 import './mizumi-zr.css';
 import MediaModal, { MediaItem } from '@/components/MediaModal';
 
@@ -87,23 +88,23 @@ const worksMedia: MediaItem[] = [
 const shortsLinks = [
   {
     url: 'https://m.youtube.com/shorts/BBQyhWfyDMY',
-    title: 'Frontend Build Snap',
-    description: 'A quick look at one focused coding session.',
+    title: 'Mizumi CSS Framework',
+    description: 'A Tailwind-like CSS framework with animation class names powered by GSAP (including ScrollTrigger).',
   },
   {
     url: 'https://m.youtube.com/shorts/BLeAEa-NIqE',
-    title: 'Portfolio Motion Study',
-    description: 'Micro-interactions and smooth transitions in action.',
+    title: 'Mobile Vibe-Coding AI Chat',
+    description: 'An AI chat that can write and edit directly in your directory from your phone.',
   },
   {
     url: 'https://m.youtube.com/shorts/U-nkvZL71xk',
-    title: 'UI Detail Pass',
-    description: 'Refining spacing, typography, and visual rhythm.',
+    title: 'Hana AI (Offline Voice Translator)',
+    description: 'Expo/React Native offline voice app: talk with an AI and translate English↔Japanese via text and voice.',
   },
   {
     url: 'https://m.youtube.com/shorts/-aKXDlEF4cE',
-    title: 'Mobile Dev Workflow',
-    description: 'Building and testing directly from a phone setup.',
+    title: 'ATOffice',
+    description: 'A mobile office app with multiple AIs collaborating in real time to complete project tasks.',
   },
 ];
 
@@ -122,6 +123,7 @@ const Home: React.FC = () => {
   const zoomInnerRef = useRef<HTMLDivElement>(null);
   const aboutSectionRef = useRef<HTMLElement>(null);
   const aboutBgRef = useRef<HTMLDivElement>(null);
+  const arkzenSectionRef = useRef<HTMLElement>(null);
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -209,6 +211,64 @@ const Home: React.FC = () => {
             onEnter: () => el.classList.add('on'),
           });
         });
+
+        const arkzenSection = arkzenSectionRef.current;
+        if (arkzenSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          const arkzenInner = arkzenSection.querySelector('.arkzen-inner');
+          const arkzenFeatures = arkzenSection.querySelectorAll('.arkzen-feature');
+          const arkzenIcons = arkzenSection.querySelectorAll('.arkzen-feature-icon');
+
+          if (arkzenInner) {
+            gsap.fromTo(
+              arkzenInner,
+              { autoAlpha: 0, y: 26 },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.85,
+                ease: 'power2.out',
+                scrollTrigger: {
+                  trigger: arkzenSection,
+                  start: 'top 82%',
+                },
+              }
+            );
+          }
+
+          if (arkzenFeatures.length) {
+            gsap.fromTo(
+              arkzenFeatures,
+              { autoAlpha: 0, y: 20 },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.7,
+                stagger: 0.12,
+                ease: 'power2.out',
+                scrollTrigger: {
+                  trigger: arkzenSection,
+                  start: 'top 78%',
+                },
+              }
+            );
+          }
+
+          arkzenIcons.forEach((icon, index) => {
+            gsap.to(icon, {
+              y: -4,
+              duration: 2 + index * 0.2,
+              repeat: -1,
+              yoyo: true,
+              ease: 'sine.inOut',
+              scrollTrigger: {
+                trigger: arkzenSection,
+                start: 'top bottom',
+                end: 'bottom top',
+                toggleActions: 'play pause resume pause',
+              },
+            });
+          });
+        }
 
         // Voice parallax - EXACT Nikon method (clones already exist in HTML)
         const articles = document.querySelectorAll('#mizumi-voice article');
@@ -825,10 +885,13 @@ const Home: React.FC = () => {
                         style={{ backgroundImage: `url(https://i.ytimg.com/vi/${videoId}/hqdefault.jpg)` }}
                       />
                     )}
+                    <span className="mizumi-shorts-hover-info" aria-hidden="true">
+                      <span className="mizumi-shorts-hover-title">{short.title}</span>
+                      <span className="mizumi-shorts-hover-description">{short.description}</span>
+                    </span>
                   </button>
                   <div className="mizumi-shorts-info">
                     <h3 className="mizumi-shorts-title">{short.title}</h3>
-                    <p className="mizumi-shorts-description">{short.description}</p>
                     <a
                       className="mizumi-shorts-link"
                       href={short.url}
@@ -846,13 +909,43 @@ const Home: React.FC = () => {
           <ul className="mizumi-shorts-list" role="list">
             {shortsLinks.map((short) => (
               <li key={`${short.url}-list`}>
-                <span>{short.title}</span>
+                <div>
+                  <span>{short.title}</span>
+                  <p className="mizumi-shorts-list-description">{short.description}</p>
+                </div>
                 <a href={short.url} target="_blank" rel="noopener noreferrer">
                   YouTube
                 </a>
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section id="arkzen-coming-soon" aria-labelledby="arkzen-heading" ref={arkzenSectionRef}>
+        <div className="inner">
+          <div className="arkzen-inner">
+            <h2 id="arkzen-heading" className="dot an">Coming soon: ARKZEN</h2>
+            <p className="arkzen-subhead">Personal framework</p>
+            <ul className="arkzen-features" role="list">
+              <li className="arkzen-feature">
+                <WandSparkles className="arkzen-feature-icon" aria-hidden="true" />
+                <span>GSAP-powered motion</span>
+              </li>
+              <li className="arkzen-feature">
+                <AppWindow className="arkzen-feature-icon" aria-hidden="true" />
+                <span>Lucide icon system</span>
+              </li>
+              <li className="arkzen-feature">
+                <Flower2 className="arkzen-feature-icon" aria-hidden="true" />
+                <span>Sakura UI theme</span>
+              </li>
+              <li className="arkzen-feature">
+                <Component className="arkzen-feature-icon" aria-hidden="true" />
+                <span>Component-first</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
 
