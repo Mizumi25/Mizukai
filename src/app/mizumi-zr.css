@@ -1409,6 +1409,7 @@
   padding: 6rem 0;
   background: #161916;
   z-index: 10;
+  overflow-x: clip;
 }
 
 #mizumi-shorts .mizumi-shorts-header h2 {
@@ -1417,13 +1418,14 @@
 
 #mizumi-shorts .mizumi-shorts-row {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   list-style: none;
   padding: 0 0 0.5rem;
   margin: 0;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
 }
 
 #mizumi-shorts .mizumi-shorts-item {
@@ -1432,56 +1434,150 @@
 }
 
 #mizumi-shorts .mizumi-shorts-card {
-  width: 176px;
-  min-height: 320px;
+  width: min(240px, calc(100vw - 4rem));
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 0.75rem;
-  text-decoration: none;
+  gap: 0;
   color: #ffffff;
-  border-radius: 18px;
-  padding: 0.75rem;
-  background: linear-gradient(160deg, #ff2b56 0%, #a21874 50%, #2a1f54 100%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: #1f231f;
+  overflow: hidden;
+  transition: border-color 0.3s ease;
 }
 
 #mizumi-shorts .mizumi-shorts-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
-#mizumi-shorts .mizumi-shorts-card:focus-visible {
+#mizumi-shorts .mizumi-shorts-card:focus-within {
   outline: 2px solid #ffffff;
   outline-offset: 3px;
 }
 
-#mizumi-shorts .mizumi-shorts-badge {
-  align-self: flex-start;
-  font-size: 0.75rem;
-  line-height: 1;
-  padding: 0.4rem 0.65rem;
-  border-radius: 999px;
-  background-color: rgba(0, 0, 0, 0.35);
+#mizumi-shorts .mizumi-shorts-preview-frame {
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  border: 0;
+  background: #101210;
+  display: block;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
 }
 
-#mizumi-shorts .mizumi-shorts-preview {
-  flex: 1;
-  border-radius: 14px;
+#mizumi-shorts .mizumi-shorts-preview-frame::after {
+  content: 'Tap or hover to preview';
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.35);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(0, 0, 0, 0.12) 100%);
+  border-radius: 999px;
+  padding: 0.35rem 0.55rem;
+  pointer-events: none;
+}
+
+#mizumi-shorts .mizumi-shorts-card.is-active .mizumi-shorts-preview-frame::after {
+  opacity: 0;
+}
+
+#mizumi-shorts .mizumi-shorts-thumb,
+#mizumi-shorts .mizumi-shorts-preview-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  object-fit: cover;
+}
+
+#mizumi-shorts .mizumi-shorts-thumb {
+  background-size: cover;
+  background-position: center;
+}
+
+#mizumi-shorts .mizumi-shorts-info {
+  padding: 0.9rem;
+  display: grid;
+  gap: 0.5rem;
+  background: rgba(8, 10, 8, 0.6);
+}
+
+#mizumi-shorts .mizumi-shorts-description {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.74);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+#mizumi-shorts .mizumi-shorts-card:hover .mizumi-shorts-description,
+#mizumi-shorts .mizumi-shorts-card:focus-within .mizumi-shorts-description,
+#mizumi-shorts .mizumi-shorts-card.is-active .mizumi-shorts-description {
+  max-height: 3.5rem;
+  opacity: 1;
+}
+
+#mizumi-shorts .mizumi-shorts-link {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+#mizumi-shorts .mizumi-shorts-link:hover {
+  color: #ffffff;
 }
 
 #mizumi-shorts .mizumi-shorts-title {
-  font-size: 0.95rem;
-  line-height: 1.4;
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.35;
   font-weight: 600;
+}
+
+#mizumi-shorts .mizumi-shorts-list {
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+#mizumi-shorts .mizumi-shorts-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 0.85rem;
+}
+
+#mizumi-shorts .mizumi-shorts-list a {
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 @media (max-width: 767px) {
   #mizumi-shorts {
     padding: 3.5rem 0;
+  }
+
+  #mizumi-shorts .mizumi-shorts-card {
+    width: min(220px, calc(100vw - 4rem));
+  }
+
+  #mizumi-shorts .mizumi-shorts-list li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
   }
 }
 
