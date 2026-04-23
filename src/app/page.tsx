@@ -85,11 +85,37 @@ const worksMedia: MediaItem[] = [
 ];
 
 const shortsLinks = [
-  'https://m.youtube.com/shorts/BBQyhWfyDMY',
-  'https://m.youtube.com/shorts/BLeAEa-NIqE',
-  'https://m.youtube.com/shorts/U-nkvZL71xk',
-  'https://m.youtube.com/shorts/-aKXDlEF4cE',
+  {
+    url: 'https://m.youtube.com/shorts/BBQyhWfyDMY',
+    title: 'Frontend Build Snap',
+    description: 'A quick look at one focused coding session.',
+  },
+  {
+    url: 'https://m.youtube.com/shorts/BLeAEa-NIqE',
+    title: 'Portfolio Motion Study',
+    description: 'Micro-interactions and smooth transitions in action.',
+  },
+  {
+    url: 'https://m.youtube.com/shorts/U-nkvZL71xk',
+    title: 'UI Detail Pass',
+    description: 'Refining spacing, typography, and visual rhythm.',
+  },
+  {
+    url: 'https://m.youtube.com/shorts/-aKXDlEF4cE',
+    title: 'Mobile Dev Workflow',
+    description: 'Building and testing directly from a phone setup.',
+  },
 ];
+
+const extractYouTubeVideoId = (url: string): string => {
+  const shortMatch = url.match(/shorts\/([A-Za-z0-9_-]{11})/);
+  if (shortMatch?.[1]) return shortMatch[1];
+
+  const watchMatch = url.match(/[?&]v=([A-Za-z0-9_-]{11})/);
+  if (watchMatch?.[1]) return watchMatch[1];
+
+  return url;
+};
 
 const Home: React.FC = () => {
   const zoomSectionRef = useRef<HTMLElement>(null);
@@ -102,6 +128,7 @@ const Home: React.FC = () => {
   const [currentMedia, setCurrentMedia] = useState<MediaItem | null>(null);
   const [currentMediaList, setCurrentMediaList] = useState<MediaItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [activeShortId, setActiveShortId] = useState<string | null>(null);
 
   // Modal handlers
   const openModal = useCallback((media: MediaItem, mediaList: MediaItem[] = [], index: number = 0) => {
@@ -759,18 +786,69 @@ const Home: React.FC = () => {
             <h2 className="dot an">SHORTS</h2>
           </div>
           <ul className="mizumi-shorts-row" role="list">
-            {shortsLinks.map((url, index) => (
-              <li key={url} className="mizumi-shorts-item">
-                <a
-                  className="mizumi-shorts-card"
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Open YouTube Short ${index + 1} in a new tab`}
+            {shortsLinks.map((short) => {
+              const videoId = extractYouTubeVideoId(short.url);
+              const isActive = activeShortId === videoId;
+
+              return (
+              <li key={videoId} className="mizumi-shorts-item">
+                <article
+                  className={`mizumi-shorts-card${isActive ? ' is-active' : ''}`}
+                  onMouseEnter={() => setActiveShortId(videoId)}
+                  onMouseLeave={() => setActiveShortId(null)}
+                  onFocus={() => setActiveShortId(videoId)}
+                  onBlur={(event) => {
+                    if (!event.currentTarget.contains(event.relatedTarget)) {
+                      setActiveShortId(null);
+                    }
+                  }}
                 >
-                  <span className="mizumi-shorts-badge">▶ Shorts</span>
-                  <span className="mizumi-shorts-preview" aria-hidden="true" />
-                  <span className="mizumi-shorts-title">Short {index + 1}</span>
+                  <button
+                    type="button"
+                    className="mizumi-shorts-preview-frame"
+                    onClick={() => setActiveShortId((current) => (current === videoId ? null : videoId))}
+                    aria-label={`Play preview for ${short.title}`}
+                  >
+                    {isActive ? (
+                      <iframe
+                        title={`${short.title} preview`}
+                        src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&loop=1&playlist=${videoId}&controls=0&rel=0`}
+                        loading="lazy"
+                        allow="autoplay; encrypted-media; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <span
+                        className="mizumi-shorts-thumb"
+                        role="img"
+                        aria-label={`${short.title} thumbnail`}
+                        style={{ backgroundImage: `url(https://i.ytimg.com/vi/${videoId}/hqdefault.jpg)` }}
+                      />
+                    )}
+                  </button>
+                  <div className="mizumi-shorts-info">
+                    <h3 className="mizumi-shorts-title">{short.title}</h3>
+                    <p className="mizumi-shorts-description">{short.description}</p>
+                    <a
+                      className="mizumi-shorts-link"
+                      href={short.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Open on YouTube
+                    </a>
+                  </div>
+                </article>
+              </li>
+              );
+            })}
+          </ul>
+          <ul className="mizumi-shorts-list" role="list">
+            {shortsLinks.map((short) => (
+              <li key={`${short.url}-list`}>
+                <span>{short.title}</span>
+                <a href={short.url} target="_blank" rel="noopener noreferrer">
+                  YouTube
                 </a>
               </li>
             ))}
