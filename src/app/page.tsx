@@ -528,9 +528,7 @@ const Home: React.FC = () => {
       {/* Main Visual Section */}
       <section id="mizumi-mv">
         <div className="inner">
-          <h2 className="tagline">
-            <span className="text-black text-3xl md:text-5xl font-serif whitespace-nowrap">James Rafty D. Libago</span>
-          </h2>
+          
           <h2 className="logo">
             <span className="text-black text-xl md:text-2xl tracking-widest an">Portfolio - Work in Progress</span>
           </h2>
