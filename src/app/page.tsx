@@ -530,7 +530,7 @@ const Home: React.FC = () => {
         <div className="inner">
           
           <h2 className="logo">
-            <span className="text-black text-xl md:text-2xl tracking-widest an">Portfolio - Work in Progress</span>
+            <span className="text-black text-xl md:text-2xl tracking-widest an">Scroll </span>
           </h2>
         </div>
       </section>
@@ -698,7 +698,7 @@ const Home: React.FC = () => {
 
             {/* Car Wash Reservation - Booking System */}
             <h2 className="ttl anime mt-24">
-              Car Wash Reservation(Video is the unfinished version) 
+              Car Wash Reservation
             </h2>
             <p className="anime decode-subtitle">
               Booking & Scheduling System
@@ -868,19 +868,7 @@ const Home: React.FC = () => {
               );
             })}
           </ul>
-          <ul className="mizumi-shorts-list" role="list">
-            {shortsLinks.map((short) => (
-              <li key={`${short.url}-list`}>
-                <div>
-                  <span>{short.title}</span>
-                  <p className="mizumi-shorts-list-description">{short.description}</p>
-                </div>
-                <a href={short.url} target="_blank" rel="noopener noreferrer">
-                  YouTube
-                </a>
-              </li>
-            ))}
-          </ul>
+          
         </div>
       </section>
 
